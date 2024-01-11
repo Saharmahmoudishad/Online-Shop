@@ -52,3 +52,4 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
         return self.is_admin
 
 
+
