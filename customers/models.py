@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, validate_email
 from django.db import models
 
@@ -52,4 +53,14 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
         return self.is_admin
 
 
+class Address(AbstractBaseUser, SoftDeleteMixin, ):
+    """ model of users Addresses  """
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    city = models.CharField(max_length=40)
+    address_description = models.CharField(max_length=40, verbose_name="address description")
+    postcode = models.CharField(max_length=40, validators=[validate_email])
 
+    def clean(self):
+        # validation for postcode length
+        if len(str(self.postcode)) > 10:
+            raise ValidationError("Postcode length should be 10 characters or less.")
