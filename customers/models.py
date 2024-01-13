@@ -58,7 +58,7 @@ class Address(AbstractBaseUser, SoftDeleteMixin, ):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     city = models.CharField(max_length=40)
     address_description = models.CharField(max_length=40, verbose_name="address description")
-    postcode = models.CharField(max_length=40, validators=[validate_email])
+    postcode = models.CharField(max_length=40,)
 
     def clean(self):
         # validation for postcode length
