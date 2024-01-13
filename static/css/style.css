@@ -9710,3 +9710,17 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+.orange-box {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    border: 3px solid orange !important;
+    background-color: #9e6565;
+}
+
+.site-name {
+  font-weight: bold;
+  color: #d93c03;
+  text-shadow: 2px 2px 4px rgba(250, 104, 0, 0.5);
+
+}
