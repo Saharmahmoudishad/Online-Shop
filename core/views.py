@@ -11,7 +11,7 @@ class IndexView(TemplateView):
 class ChangeLangView(View):
     def get(self, request, *args, **kwargs):
         language_code = request.GET.get('lang')
-        next_url = request.GET.get('next', '/')  # Default to '/' if 'next' is not provided
+        next_url = request.GET.get('next', '/')
 
         if language_code:
             activate(language_code)
