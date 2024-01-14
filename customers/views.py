@@ -3,6 +3,8 @@ from django.core.cache import cache
 from django.shortcuts import render, redirect
 from django.utils.crypto import get_random_string
 from django.views import View
+from django.views.generic import TemplateView
+
 from utils import send_registration_email
 from .forms import UserRegistrationFrom, VerifyCodeFrom
 from .models import CustomUser
@@ -21,6 +23,7 @@ class CustomerRegisterView(View):
     def get(self, request):
         form = self.form_class
         return render(request, 'customers/register.html', {'form': form})
+
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -66,3 +69,6 @@ class CustomerRegisterVerifyCodeView(View):
             otp_code = form.cleaned_data['code']
         if code_instance['otp_code'] == otp_code:
             CustomUser.objects.create_user(email=user_session['email'])
+
+
+
