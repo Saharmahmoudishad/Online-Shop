@@ -18,13 +18,18 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
 from core.views import ChangeLangView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
-    path('change-lang/', ChangeLangView.as_view(), name='change_lang'),
-]
+                  path('change-lang/', ChangeLangView.as_view(), name='change_lang'),
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-          path('', include('core.urls', namespace='home')),
-          path('customers/', include('customers.urls', namespace='customers')),
-    )
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('', include('core.urls', namespace='home')),
+    path('customers/', include('customers.urls', namespace='customers')),
+    path('catalog/', include('product.urls', namespace='product')),
+)

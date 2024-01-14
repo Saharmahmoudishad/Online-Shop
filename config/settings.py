@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'product.apps.ProductConfig',
     'orders.apps.OrdersConfig',
     'core.apps.CoreConfig',
+     'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -169,6 +171,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 # Media files (Files, Images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+CKEDITOR_UPLOAD_PATH = 'content/ckeditor/'
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # Default primary key field type
