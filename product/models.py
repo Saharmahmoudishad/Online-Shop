@@ -7,6 +7,23 @@ from mptt.models import MPTTModel, TreeForeignKey
 from core.models import Image
 
 
+class Brand(models.Model):
+    title = models.CharField(max_length=300)
+    slug = models.SlugField(max_length=300)
+
+    def get_absolute_url(self):
+        return reverse('catalog:brand', args=[self.slug])
+
+    def __str__(self):
+        return self.title
+
+    def image_tag(self):
+        images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
+        if images.exists():
+            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+        return None
+
+
 class Size(models.Model):
     name = models.CharField(max_length=300)
     code = models.CharField(max_length=10, blank=True, null=True)
