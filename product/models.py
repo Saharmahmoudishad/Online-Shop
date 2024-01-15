@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from mptt.models import MPTTModel, TreeForeignKey
 from ckeditor_uploader.fields import RichTextUploadingField
-
+from taggit.managers import TaggableManager
 from core.models import Image
 from customers.models import CustomUser
 
@@ -68,7 +68,7 @@ class CategoryProduct(MPTTModel):
     slug = models.SlugField(null=False, unique=True)
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     status = models.CharField(max_length=15, choices=STATUS)
-    keywords = models.CharField(max_length=255)
+    tags = TaggableManager()
     description = models.TextField(max_length=255)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -106,7 +106,7 @@ class Products(models.Model):
                 ('Brand-Size-Color', 'Brand-Size-Color'))
     category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products")
     title = models.CharField(max_length=150)
-    keywords = models.CharField(max_length=255)
+    tags = TaggableManager()
     description = models.TextField()
     price = models.FloatField(default=0)
     quantity = models.PositiveIntegerField(default=1)
@@ -119,7 +119,6 @@ class Products(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products")
 
     # like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
-    # tags = TaggableManager()
     def __str__(self):
         return self.title
 
