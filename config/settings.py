@@ -195,3 +195,7 @@ EMAIL_PORT = config.get('email_data', 'EMAIL_PORT')
 EMAIL_HOST_PASSWORD = config.get('email_data', 'EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config.get('email_data', 'EMAIL_USE_TLS')
 DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
+
+# -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+MPTT_ALLOW_TESTING_GENERATORS=True
