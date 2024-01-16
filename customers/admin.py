@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
 
 from customers.forms import UserChangeForm, UserCreationForm
-from customers.models import CustomUser
+from customers.models import CustomUser, Address
 
 
 class UserAdmin(BaseUserAdmin):
@@ -47,5 +47,10 @@ class CustomGroupAdmin(GroupAdmin):
         return request.user.is_authenticated and request.user.is_admin
 
 
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ["city", "address", "postcode", ]
+
+
 admin.site.register(CustomUser, UserAdmin)
 admin.site.register(Group)
+admin.site.register(Address, AddressAdmin)

@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.test import TestCase
 from customers.models import CustomUser, Address
 from model_bakery import baker
@@ -7,6 +8,37 @@ from model_bakery import baker
 class TestCustomUserModel(TestCase):
     def setUp(self):
         self.customuser = baker.make(CustomUser, firstname='sahar', lastname='mahmoodi')
+        self.sample_instance = CustomUser.objects.create_user(phonenumber="+989123456799", email="test@example.com",
+                                                              firstname="John", lastname="Doe", how_know_us="Ins")
+
+    def test_valid_instance(self):
+        """Test if the sample instance is valid"""
+        self.assertIsNone(self.sample_instance.full_clean())
+
+    def test_invalid_phonenumber(self):
+        """Test an invalid phone number"""
+        invalid_instance = CustomUser.objects.create_user(phonenumber="invalid_number", email="testa@example.com",
+                                                          firstname="John", lastname="Doe", how_know_us="Ins")
+        with self.assertRaises(ValidationError) as context:
+            invalid_instance.full_clean()
+            self.assertIn("Invalid phone number format. Example: +989123456789 or 09123456789",
+                          str(context.exception))
+
+    def test_invalid_email(self):
+        invalid_instance = CustomUser.objects.create_user(phonenumber="+989123456789", email="invalid_email",
+                                                          firstname="John", lastname="Doe", how_know_us="Ins")
+        with self.assertRaises(ValidationError) as context:
+            invalid_instance.full_clean()
+        self.assertIn("Enter a valid email address.", str(context.exception))
+
+    #
+    def test_unique_email(self):
+        with self.assertRaises(IntegrityError) as context:
+            CustomUser.objects.create_user(phonenumber="+989987654321", email="test@example.com",
+                                           firstname="Jane", lastname="Doe", how_know_us="Referral")
+
+        self.assertIn('duplicate key value violates unique constraint "customers_customuser_email_key"',
+                      str(context.exception))
 
     def test_model_str(self):
         """Test __str__ method"""
@@ -59,14 +91,23 @@ class TestCustomUserModel(TestCase):
 
 class TestAddressModel(TestCase):
     def setUp(self):
-        self.address = baker.make(Address, postcode='12345678901')
+        self.address1 = baker.make(Address, postcode='12345678901')
+        self.user = CustomUser.objects.create_user(phonenumber="+989123456799", email="test@example.com",
+                                                   firstname="John", lastname="Doe", how_know_us="Ins")
 
     def test_invalid_postcode_length(self):
         """Attempt to create an address with an invalid postcode length"""
         self.assertRaises(Address.DoesNotExist)
 
-    def setUp(self):
-        self.address = baker.make(Address, )
+    def test_address_created(self):
+        """Test that Address model is created correctly."""
+        self.address2 = Address.objects.create(user=self.user, city='TestCity',
+                                               address='TestAddress', postcode='12345')
+        print("1" * 40, self.address2.user)
+        self.assertEqual(self.address2.user, self.user)
+        self.assertEqual(self.address2.city, 'TestCity')
+        self.assertEqual(self.address2.address, 'TestAddress')
+        self.assertEqual(self.address2.postcode, '12345')
 
     def test_valid_address(self):
         """T Create a valid address"""
