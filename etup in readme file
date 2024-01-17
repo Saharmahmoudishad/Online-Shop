@@ -1,0 +1,59 @@
+[33m6a45551[m[33m ([m[1;36mHEAD -> [m[1;32mdevelop[m[33m)[m HEAD@{0}: merge feature/manage_models: Merge made by the 'ort' strategy.
+[33m65c835c[m[33m ([m[1;31morigin/develop[m[33m)[m HEAD@{1}: checkout: moving from feature/manage_models to develop
+[33m033548a[m HEAD@{2}: commit: feat: initial setup in readme file
+[33mc523660[m HEAD@{3}: commit: refactor:modify receipt model
+[33mbb5b7a6[m HEAD@{4}: commit: feat: add erd2 file
+[33m189ceaf[m HEAD@{5}: commit: feat: add discountproduct in product models
+[33m63cbce5[m HEAD@{6}: commit: fix:remove unnecessary
+[33m3797f97[m HEAD@{7}: commit: fix:remove unnecessary
+[33mbaf5505[m HEAD@{8}: commit: feat:add test_models for core app
+[33m49527d4[m HEAD@{9}: pull origin feature/manage_models --rebase (finish): returning to refs/heads/feature/manage_models
+[33m49527d4[m HEAD@{10}: pull origin feature/manage_models --rebase (pick): refactor: modify requirements.txt
+[33m41682aa[m HEAD@{11}: pull origin feature/manage_models --rebase (pick): feat:add test_models for orders app
+[33mb6c3e1e[m HEAD@{12}: pull origin feature/manage_models --rebase (pick): feat: add template for register, login and verify code
+[33m008a85e[m HEAD@{13}: pull origin feature/manage_models --rebase (pick): feat: create media folder for imges saved in database"
+[33mbf1ed4f[m HEAD@{14}: pull origin feature/manage_models --rebase (pick): refactor: recheck and modify models, tes_models,admin.py
+[33m9c43466[m HEAD@{15}: pull origin feature/manage_models --rebase (pick): refactor: add city and province models in core app
+[33m21fc8aa[m HEAD@{16}: pull origin feature/manage_models --rebase (pick): refactor:add city and province in models of core app
+[33m7707343[m HEAD@{17}: pull origin feature/manage_models --rebase (start): checkout 7707343c06fbf0b77e6c297d7697aedbe3afbf11
+[33m456a1a6[m HEAD@{18}: pull origin feature/manage_models --no-rebase: Merge made by the 'ort' strategy.
+[33m0a3a90d[m HEAD@{19}: commit: refactor: modify requirements.txt
+[33m105682e[m HEAD@{20}: commit: feat:add test_models for orders app
+[33m602ba1e[m HEAD@{21}: commit: feat: add template for register, login and verify code
+[33md451e8a[m HEAD@{22}: commit: feat: create media folder for imges saved in database"
+[33m3574020[m HEAD@{23}: commit: refactor: recheck and modify models, tes_models,admin.py
+[33mea06ea7[m HEAD@{24}: commit: refactor: add city and province models in core app
+[33m2c59701[m HEAD@{25}: commit: refactor:add city and province in models of core app
+[33ma7b31a1[m HEAD@{26}: commit: feat: add models of order app
+[33m3ee7a87[m HEAD@{27}: commit: refactor: modify test_models
+[33m9baee83[m HEAD@{28}: commit: feat: add locale directory to create translate file django po and django.mo
+[33m6602d4b[m HEAD@{29}: commit: feat:add initial models of order app
+[33m53fb8c6[m HEAD@{30}: commit: feat: add tests for model of product app
+[33m12a0c08[m HEAD@{31}: commit: refactor: updating erd file
+[33m9af8715[m HEAD@{32}: commit: "feat: add test for models of product app"
+[33m6dac2da[m HEAD@{33}: commit: refactor: updating requirements.txt file
+[33m27dc9e6[m HEAD@{34}: commit: feat: add model Atribute, product and variants for products app
+[33md06c54e[m HEAD@{35}: commit: feat:add test for methods of Brand model
+[33m452ad7a[m HEAD@{36}: commit: refactor: modify and update requirements.txt
+[33m40e5dee[m HEAD@{37}: commit: feat: add image and comment models in panel admin
+[33m11b7eb1[m HEAD@{38}: commit: feat: add Brand model in product app
+[33m152909f[m HEAD@{39}: commit: feat: add CategoryProduct models in product app
+[33mc88f82f[m HEAD@{40}: commit: feat: add size , and color models in products app
+[33m89f8211[m HEAD@{41}: commit: refactor: modify erd
+[33m8643625[m HEAD@{42}: commit: feat:add test for address model in test_models.py
+[33mf4755cf[m HEAD@{43}: commit: feat:add image and comment models in core app
+[33m3168d9b[m HEAD@{44}: commit: refactor: modify requirement.txt file
+[33me566e4a[m HEAD@{45}: commit: feat: add and manage user register by otp code
+[33m998d0e5[m HEAD@{46}: commit: feat: add forms.py
+[33ma5f2427[m HEAD@{47}: commit: feat: add model adress in customers app
+[33m6a8134e[m HEAD@{48}: commit: refactor:modify requirement.txt
+[33m631c673[m HEAD@{49}: commit: " feat: add class SoftDeleteMixin for handling
+[33m0662326[m HEAD@{50}: commit: feat class CustomUser models
+[33m8a6492a[m HEAD@{51}: commit: feat: add test_models
+[33mf726974[m HEAD@{52}: commit: fix: Initial set up for settings.py file
+[33m65c835c[m[33m ([m[1;31morigin/develop[m[33m)[m HEAD@{53}: checkout: moving from develop to feature/manage_models
+[33m65c835c[m[33m ([m[1;31morigin/develop[m[33m)[m HEAD@{54}: commit: "feat:The initial design of the overall theme of the templates
+[33m18afcc7[m HEAD@{55}: commit: feat: Add initial Erd
+[33m0238677[m HEAD@{56}: checkout: moving from develop to develop
+[33m0238677[m HEAD@{57}: checkout: moving from main to develop
+[33mc1148db[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{58}: clone: from https://github.com/Saharmahmoudishad/Online-Shop.git
