@@ -13,10 +13,10 @@
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'My Account' %}</button>
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Account' %}</button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <button class="dropdown-item" type="button">{% translate 'My Sign in' %}</button>
-                            <button class="dropdown-item" type="button">{% translate 'My Sign up' %}</button>
+                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:customer_register'%}" >{% translate 'My Sign up' %}</a></button>
                         </div>
                     </div>
                     <div class="btn-group mx-2">
@@ -30,8 +30,8 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Language' %}</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=en&next={{request.path}}" >FR</a>
-                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=fa&next={{request.path}}" >EN</a>
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=en&next=/en/{{request.path|slice:'4:'}}" >{% translate 'English' %}</a>
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=fa&next=/fa/{{request.path|slice:'4:'}}" >{% translate 'Persian' %}</a>
                         </div>
                     </div>
                 </div>
@@ -51,13 +51,17 @@
             <div class="col-lg-4">
                 <a href="" class="text-decoration-none">
                     <span class="h1 text-uppercase text-primary bg-dark px-2">DroomBT</span>
-                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">Shop</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">{% translate 'Shop' %}</span>
                 </a>
             </div>
             <div class="col-lg-4 col-6 text-left">
                 <form action="">
                     <div class="input-group">
+                        {% if LANGUAGE_CODE == 'en' %}
                         <input type="text" class="form-control" placeholder="Search for products">
+                        {% else %}
+                        <input type="text" class="form-control" placeholder="جستجو برای محصول">
+                        {% endif %}
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
                                 <i class="fa fa-search"></i>

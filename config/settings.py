@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'taggit',
+    'translated_fields'
 ]
 
 MIDDLEWARE = [
@@ -117,8 +118,8 @@ CACHES = {
         }
     }
 }
+CACHE_TTL = 60 * 15
 
-# Other Django settings...
 
 # Configure Django-Heroku if using Heroku
 # django_heroku.settings(locals())
@@ -150,7 +151,7 @@ LANGUAGES = [
     ('fa', 'Persian'),
     ('en', 'English'),
 ]
-LANGUAGE_CODE = 'fa'
+# LANGUAGE_CODE = 'fa'
 TIME_ZONE = 'Asia/Tehran'
 USE_I18N = True
 
@@ -199,4 +200,5 @@ DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
+# Other Django settings...
 MPTT_ALLOW_TESTING_GENERATORS=True

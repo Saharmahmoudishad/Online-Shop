@@ -71,4 +71,14 @@ class CustomerRegisterVerifyCodeView(View):
             CustomUser.objects.create_user(email=user_session['email'])
 
 
+class CustomerloginCodeView(View):
+    def get(self, request):
+        pass
 
+    def post(self, request):
+        pass
+
+
+class CustomerlogoutCodeView(View):
+    def get(self, request):
+        pass

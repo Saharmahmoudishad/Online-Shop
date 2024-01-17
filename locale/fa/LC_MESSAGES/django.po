@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-16 18:54+0330\n"
+"POT-Creation-Date: 2024-01-17 19:36+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,34 +22,58 @@ msgstr ""
 msgid "Core"
 msgstr "هسته"
 
-#: core/models.py:9
+#: core/models.py:10
 msgid "Content"
 msgstr "محتوا"
 
-#: core/models.py:11 core/models.py:23
+#: core/models.py:12 core/models.py:24
 msgid "object id"
 msgstr " کد شی"
 
-#: core/models.py:16
+#: core/models.py:17
 msgid "Comment"
 msgstr "پیفام"
 
-#: core/models.py:17
+#: core/models.py:18
 msgid "Comments"
 msgstr "پیفام‌ها"
 
-#: core/models.py:21
+#: core/models.py:22
 msgid "image"
 msgstr "تصویر"
 
-#: core/models.py:27
+#: core/models.py:28
 #: env/lib/python3.10/site-packages/django/db/models/fields/files.py:393
 msgid "Image"
 msgstr "تصویر"
 
-#: core/models.py:28
+#: core/models.py:29
 msgid "Images"
 msgstr "تصاویر"
+
+#: core/models.py:40
+msgid "Province Name"
+msgstr "نام استان"
+
+#: core/models.py:43 core/models.py:49 customers/models.py:66
+msgid "Province"
+msgstr "استان"
+
+#: core/models.py:44
+msgid "Provinces"
+msgstr "استان‌ها"
+
+#: core/models.py:48
+msgid "City Name"
+msgstr "شهر"
+
+#: core/models.py:52 customers/models.py:67
+msgid "City"
+msgstr "شهر"
+
+#: core/models.py:53
+msgid "Cites"
+msgstr "شهرها"
 
 #: customers/apps.py:7
 msgid "Customers"
@@ -75,11 +99,11 @@ msgstr "نام خانوادگی"
 msgid "how know us"
 msgstr "نحوی آشنایی با ما"
 
-#: customers/models.py:29
+#: customers/models.py:29 product/models.py:102 product/models.py:147
 msgid "created"
 msgstr "زمان ایجاد"
 
-#: customers/models.py:30
+#: customers/models.py:30 product/models.py:103 product/models.py:148
 msgid "updated"
 msgstr "زمان آخرین بروزرسانی"
 
@@ -99,27 +123,19 @@ msgstr "کاربر"
 msgid "Users"
 msgstr "کاربران"
 
-#: customers/models.py:66
-msgid "City"
-msgstr "شهر"
-
-#: customers/models.py:67
-#, fuzzy
-#| msgid "description"
+#: customers/models.py:68
 msgid "address description"
 msgstr "توضیحات"
 
-#: customers/models.py:68
-#, fuzzy
-#| msgid "code"
+#: customers/models.py:69
 msgid "post code"
 msgstr "کد پستی"
 
-#: customers/models.py:71
+#: customers/models.py:72
 msgid "Address"
 msgstr "آدرس"
 
-#: customers/models.py:72
+#: customers/models.py:73
 msgid "Addresses"
 msgstr "آدرس‌ها"
 
@@ -569,6 +585,7 @@ msgid ""
 msgstr ""
 
 #: env/lib/python3.10/site-packages/django/db/models/fields/__init__.py:2515
+#: orders/models.py:46
 msgid "Time"
 msgstr "زمان"
 
@@ -1369,7 +1386,7 @@ msgstr ""
 
 #: env/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:229
 msgid "Django Documentation"
-msgstr ""
+msgstr "مدارک جنگو"
 
 #: env/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:230
 msgid "Topics, references, &amp; how-to’s"
@@ -1399,17 +1416,37 @@ msgstr "هیچ کدام"
 msgid "orders"
 msgstr "سفارشات"
 
-#: orders/models.py:13 product/models.py:92 product/models.py:139
+#: orders/models.py:12 product/models.py:149
+msgid "user"
+msgstr "کاربر"
+
+#: orders/models.py:13 product/models.py:99 product/models.py:146
 msgid "status"
 msgstr "موجود"
+
+#: orders/models.py:14
+msgid "order time"
+msgstr "محصول سفارش داده شده"
 
 #: orders/models.py:20
 msgid "Orders"
 msgstr "سفارشات"
 
-#: orders/models.py:32 product/models.py:135 product/models.py:171
+#: orders/models.py:32 product/models.py:142 product/models.py:177
 msgid "quantity"
 msgstr "مقدارـ تعداد"
+
+#: orders/models.py:33
+msgid "delivery cost"
+msgstr "هزینه ارسال"
+
+#: orders/models.py:34
+msgid "Items"
+msgstr "اقلام سفارش"
+
+#: orders/models.py:35
+msgid "order Item"
+msgstr "محصول سفارش داده شده"
 
 #: orders/models.py:38
 msgid "Order Item"
@@ -1419,6 +1456,10 @@ msgstr "محصول سفارش داده شده"
 msgid "Order Items"
 msgstr "اقلام سفارش"
 
+#: orders/models.py:47
+msgid "order"
+msgstr "سفارشات"
+
 #: orders/models.py:52
 msgid "Receipt"
 msgstr "رسید"
@@ -1427,89 +1468,129 @@ msgstr "رسید"
 msgid "Receipts"
 msgstr "رسیدها"
 
-#: product/apps.py:8 product/models.py:149
+#: product/apps.py:8 product/models.py:155
 msgid "Product"
 msgstr "محصول"
 
-#: product/models.py:15
+#: product/models.py:17
 msgid "Title"
 msgstr "عنوان"
 
-#: product/models.py:16 product/models.py:90 product/models.py:138
+#: product/models.py:18 product/models.py:97 product/models.py:145
 msgid "slug"
 msgstr "اسلاگ"
 
-#: product/models.py:19
+#: product/models.py:21
 msgid "Brand"
 msgstr "برند"
 
-#: product/models.py:20
+#: product/models.py:22
 msgid "Brands"
 msgstr "برندها"
 
-#: product/models.py:36 product/models.py:48 product/models.py:59
-msgid "name"
-msgstr "نام"
+#: product/models.py:43
+msgid "gender"
+msgstr "جنسیت"
 
-#: product/models.py:37 product/models.py:60
+#: product/models.py:44 product/models.py:67
 msgid "code"
 msgstr "کد"
 
-#: product/models.py:40 product/models.py:41
+#: product/models.py:47 product/models.py:48
 msgid "Size"
 msgstr "سایز"
 
-#: product/models.py:51 product/models.py:52
+#: product/models.py:55 product/models.py:66
+msgid "name"
+msgstr "نام"
+
+#: product/models.py:58 product/models.py:59
 msgid "Material"
 msgstr "جنس و مواد"
 
-#: product/models.py:63 product/models.py:64
+#: product/models.py:70 product/models.py:71
 msgid "Color"
 msgstr "رنگ"
 
-#: product/models.py:76
+#: product/models.py:83 product/models.py:175
 msgid "attribute"
 msgstr "خصوصیات"
 
-#: product/models.py:80 product/models.py:81
+#: product/models.py:84
+msgid "type"
+msgstr "نوع"
+
+#: product/models.py:87 product/models.py:88
 msgid "Attribute"
 msgstr "خصوصیات"
 
-#: product/models.py:89 product/models.py:131 product/models.py:163
+#: product/models.py:96 product/models.py:138 product/models.py:169
 msgid "title"
 msgstr "عنوان"
 
-#: product/models.py:94 product/models.py:133
+#: product/models.py:98
+msgid "parent"
+msgstr "والد"
+
+#: product/models.py:101 product/models.py:140
 msgid "description"
 msgstr "توضیحات"
 
-#: product/models.py:102
+#: product/models.py:109
 msgid "Product Category"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:103
+#: product/models.py:110
 msgid "Products Categories"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:134 product/models.py:170
+#: product/models.py:137
+msgid "category"
+msgstr "دسته‌بندی محصولات"
+
+#: product/models.py:141 product/models.py:176
 msgid "price"
 msgstr "قیمت"
 
-#: product/models.py:136
+#: product/models.py:143
 msgid "variant"
 msgstr "گونه"
 
-#: product/models.py:137
+#: product/models.py:144
 msgid "detail"
 msgstr "جزییات"
 
-#: product/models.py:150
+#: product/models.py:156
 msgid "Products"
 msgstr "محصولات"
 
+#: product/models.py:170
+msgid "product"
+msgstr "محصول"
+
+#: product/models.py:171
+msgid "brand"
+msgstr "برند"
+
+#: product/models.py:172
+msgid "size"
+msgstr "سایز"
+
+#: product/models.py:173
+msgid "color"
+msgstr "رنگ"
+
 #: product/models.py:174
+msgid "material"
+msgstr "جنس و مواد"
+
+#: product/models.py:180
 msgid "Variant"
 msgstr "گونه"
+
+#: templates/index.html:4 templates/partials/navbar.html:43
+msgid "Home"
+msgstr "خانه"
 
 #: templates/index.html:21
 msgid "Men Fashion"
@@ -1517,13 +1598,16 @@ msgstr "مد آقایان"
 
 #: templates/index.html:22 templates/index.html:32 templates/index.html:42
 msgid ""
-"Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet "
-"ndiam elitr ipsum diam"
+"Having a beautiful appearance is not limited to buying expensive clothes, "
+"but your smart choice will bring you beauty, glory and dignity."
 msgstr ""
+"داشتن ظاهر زیبا در خرید لباس‌های گران قیمت خلاصه نمی‌شود بلکه انتخاب هوشمندانه "
+"شما برایتان زیبایی، شکوه و وقار را به ارمغان خواهند آورد.  "
 
 #: templates/index.html:23 templates/index.html:33 templates/index.html:43
+#: templates/index.html:56
 msgid "Shop Now"
-msgstr "هم اکنون نمایش دهید"
+msgstr "هم اکنون خرید کنید"
 
 #: templates/index.html:31
 msgid "Women Fashion"
@@ -1533,9 +1617,17 @@ msgstr "مد بانوان"
 msgid "Kids Fashion"
 msgstr "مد کودکان"
 
+#: templates/index.html:54
+msgid "Save 20"
+msgstr "صرفه جویی 20%"
+
+#: templates/index.html:55
+msgid "Special Offer"
+msgstr "پیشنهاد ویژه"
+
 #: templates/partials/header.html:16
-msgid "My Account"
-msgstr "حساب من"
+msgid "Account"
+msgstr "حساب"
 
 #: templates/partials/header.html:18
 msgid "My Sign in"
@@ -1553,33 +1645,32 @@ msgstr "انگلیسی"
 msgid "Persian"
 msgstr "فارسی"
 
-#: templates/partials/header.html:70
+#: templates/partials/header.html:54 templates/partials/navbar.html:36
+#: templates/partials/navbar.html:44
+msgid "Shop"
+msgstr "فروشگاه"
+
+#: templates/partials/header.html:74
 msgid "Customer Service"
 msgstr "سرویس مشتریان"
 
 #: templates/partials/navbar.html:7
-
 msgid "Categories"
 msgstr "دسته‌بندی محصولات"
 
 #: templates/partials/navbar.html:13
-#, fuzzy
-#| msgid "Addresses"
 msgid "Dresses"
 msgstr "پیراهن"
 
 #: templates/partials/navbar.html:15
-
 msgid "Men's Dresses"
 msgstr "لباس آقایان"
 
 #: templates/partials/navbar.html:16
-
 msgid "Women's Dresses"
 msgstr "لباس بانوان"
 
 #: templates/partials/navbar.html:17
-
 msgid "Baby's Dresses"
 msgstr "لباس کودکان"
 
@@ -1623,21 +1714,11 @@ msgstr "کفش"
 msgid "Multi"
 msgstr "چندتا"
 
-#: templates/partials/navbar.html:36 templates/partials/navbar.html:44
-
-msgid "Shop"
-msgstr "هم اکنون نمایش دهید"
-
-#: templates/partials/navbar.html:43
-msgid "Home"
-msgstr "خانه"
-
 #: templates/partials/navbar.html:45
 msgid "Shop Detail"
 msgstr "جزییات خرید"
 
 #: templates/partials/navbar.html:47
-
 msgid "Pages"
 msgstr "تصاویر"
 
@@ -1650,7 +1731,6 @@ msgid "Checkout"
 msgstr "تسویه حساب"
 
 #: templates/partials/navbar.html:53
-
 msgid "Contact"
 msgstr "محتوا"
 

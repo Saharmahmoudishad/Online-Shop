@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 from core.mixins import SoftDeleteMixin
+from core.models import City, Province
 from .manager import MyUserManager
 
 
@@ -59,10 +60,11 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
         return self.is_admin
 
 
-class Address(AbstractBaseUser, SoftDeleteMixin, ):
+class Address(AbstractBaseUser, SoftDeleteMixin):
     """ model of users Addresses  """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    city = models.CharField(max_length=40, verbose_name=_("City"))
+    province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"))
+    city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name=_("City"))
     address = models.CharField(max_length=40, verbose_name=_("address description"))
     postcode = models.CharField(max_length=40, verbose_name=_("post code"))
 

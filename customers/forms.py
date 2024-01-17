@@ -58,3 +58,7 @@ class VerifyCodeFrom(forms.Form):
                            widget=forms.TextInput(attrs={"class": "form-control",
                                                          "placeholder": "verification code",
                                                          "style": "background: transparent !important;", }))
+
+
+class UserLoginForm(forms.Form):
+    pass

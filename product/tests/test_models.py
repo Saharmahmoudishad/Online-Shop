@@ -37,7 +37,7 @@ class TestSizeModel(TestCase):
 
     def test_model_str(self):
         """Test __str__ method"""
-        self.assertEquals(str(self.size), 'test_size')
+        self.assertEquals(str(self.size), 'test-Size')
 
     def tearDown(self):
         """Delete the test data created in setUp"""
@@ -108,23 +108,25 @@ class CategoryProductModelTest(TestCase):
         self.assertEquals(str(self.categoryproduct), 'Test category product')
 
     def test_category_has_children(self):
+        """Test TreeForeignKey """
         self.assertIn(self.child_category, self.categoryproduct.children.all())
 
     def test_category_has_no_parent(self):
+        """Test TreeForeignKey """
         self.assertIsNone(self.categoryproduct.parent)
 
     def test_category_has_keywords(self):
-        # Test if a category has keywords
+        """Test if a category has keywords"""
         self.assertEqual(self.child_category.tags, "child, category")
 
     def test_category_has_description(self):
-        # Test if a category has a description
+        """ Test if a category has a description"""
         self.assertEqual(self.child_category.description, "Child category description")
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.categoryproduct.hard_delete()
         self.child_category.hard_delete()
+        self.categoryproduct.hard_delete()
 
 
 class TestProductModel(TestCase):
@@ -154,6 +156,11 @@ class TestVariantsModel(TestCase):
         self.product = baker.make(Products, title='Test product', detail="")
         self.variant = baker.make(Variants, title='Test variant', product=self.product)
         self.image = Image.objects.create(content_object=self.variant, image="/static/img/cat-1.jpg")
+
+    def test_default_values(self):
+        """Test the default values of the model"""
+        self.assertEqual(self.variant.price, 0)
+        self.assertEqual(self.variant.quantity, 1)
 
     def test_model_str(self):
         """Test __str__ method"""

@@ -9,6 +9,7 @@ from taggit.managers import TaggableManager
 from core.mixins import SoftDeleteMixin
 from core.models import Image
 from customers.models import CustomUser
+from translated_fields import TranslatedField as translate
 from django.utils.translation import gettext_lazy as _
 
 
@@ -47,7 +48,7 @@ class Size(SoftDeleteMixin):
         verbose_name_plural = _('Size')
 
     def __str__(self):
-        return self.gender
+        return self.code
 
 
 class Material(SoftDeleteMixin):
@@ -131,8 +132,8 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
 
 class Products(SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
-    VARIANTS = (('None', 'None'), ('Size', 'Size'), ('Color', 'Color'), ('Size-Color', 'Size-Color'),
-                ('Brand-Size-Color', 'Brand-Size-Color'))
+    VARIANTS = (('None', 'None'), ('Brand-Size', 'Brand-Size'), ('Brand-Color', 'Brand-Color'), ('Brand-Size-Color', 'Brand-Size-Color'),
+                ('Brand-Size-Color-material', 'Brand-Size-Color_material'), ('Brand-Size-Color', 'Brand-Size-Color'))
     category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",verbose_name=_("category"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
     tags = TaggableManager()

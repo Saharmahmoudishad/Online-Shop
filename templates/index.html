@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{%  block title %}Home{% endblock %}
+{%  block title %}{% translate 'Home' %}{% endblock %}
 {% block content %}
     <!-- Carousel Start -->
     <div class="container-fluid mb-3">
@@ -19,7 +19,7 @@
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Men Fashion' %}</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam' %}</p>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
@@ -29,7 +29,7 @@
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Women Fashion' %}</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam' %}</p>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
                             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Kids Fashion' %}</h1>
-                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Lorem rebum magna amet lorem magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam' %}</p>
+                                    <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
@@ -51,9 +51,9 @@
                 <div class="product-offer mb-30" style="height: 200px;">
                     <img class="img-fluid" src="{% static 'img/offer-1.jpg' %}" alt="">
                     <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
+                        <h6 class="text-white text-uppercase">{% translate 'Save 20' %}</h6>
+                        <h3 class="text-white mb-3">{% translate 'Special Offer' %}</h3>
+                        <a href="" class="btn btn-primary">{% translate 'Shop Now' %}</a>
                     </div>
                 </div>
                 <div class="product-offer mb-30" style="height: 200px;">

@@ -15,7 +15,7 @@ class MyUserManager(BaseUserManager):
         """
         Creates and saves a User with the given phonenumber,email and password.
         """
-        if not phonenumber:
+        if not phonenumber or not email:
             raise ValueError("Users must have an phone number")
         email = self.normalize_email(email)
         user = self.model(phonenumber=phonenumber, email=email, **extra_fields)

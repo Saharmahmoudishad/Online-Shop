@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
+
+from core.models import Province, City
 from customers.models import CustomUser, Address
 from model_bakery import baker
 
@@ -91,9 +93,11 @@ class TestCustomUserModel(TestCase):
 
 class TestAddressModel(TestCase):
     def setUp(self):
-        self.address1 = baker.make(Address, postcode='12345678901')
         self.user = CustomUser.objects.create_user(phonenumber="+989123456799", email="test@example.com",
                                                    firstname="John", lastname="Doe", how_know_us="Ins")
+        self.province = Province.objects.create(name='TestProvince')
+        self.city = City.objects.create(name='TestCity', province=self.province)
+        self.address1 = baker.make(Address, postcode='12345678901', city=self.city)
 
     def test_invalid_postcode_length(self):
         """Attempt to create an address with an invalid postcode length"""
@@ -101,11 +105,10 @@ class TestAddressModel(TestCase):
 
     def test_address_created(self):
         """Test that Address model is created correctly."""
-        self.address2 = Address.objects.create(user=self.user, city='TestCity',
+        self.address2 = Address.objects.create(user=self.user, province=self.province, city=self.city,
                                                address='TestAddress', postcode='12345')
-        print("1" * 40, self.address2.user)
         self.assertEqual(self.address2.user, self.user)
-        self.assertEqual(self.address2.city, 'TestCity')
+        self.assertEqual(self.address2.city, self.city)
         self.assertEqual(self.address2.address, 'TestAddress')
         self.assertEqual(self.address2.postcode, '12345')
 
