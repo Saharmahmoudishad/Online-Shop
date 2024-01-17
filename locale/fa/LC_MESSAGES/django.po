@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 00:40+0330\n"
+"POT-Creation-Date: 2024-01-18 01:08+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1485,11 +1485,15 @@ msgstr "اقلام سفارش"
 msgid "order"
 msgstr "سفارشات"
 
-#: orders/models.py:52
+#: orders/models.py:48
+msgid "Calculation"
+msgstr "جمع فاکتور"
+
+#: orders/models.py:54
 msgid "Receipt"
 msgstr "رسید"
 
-#: orders/models.py:53
+#: orders/models.py:55
 msgid "Receipts"
 msgstr "رسیدها"
 
@@ -1610,12 +1614,10 @@ msgid "Variant"
 msgstr "گونه"
 
 #: product/models.py:210
-
 msgid "Discount Product"
 msgstr "تخفیف محصول"
 
 #: product/models.py:211
-
 msgid "Discount Products"
 msgstr " تخیف محصولات"
 
