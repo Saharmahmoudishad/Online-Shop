@@ -81,7 +81,7 @@ class Color(SoftDeleteMixin):
 
 class Attribute(SoftDeleteMixin):
     attribute = models.CharField(max_length=300, verbose_name=_("attribute"))
-    type = models.CharField(max_length=300,verbose_name=_("type"))
+    type = models.CharField(max_length=300, verbose_name=_("type"))
 
     class Meta:
         verbose_name = _('Attribute')
@@ -95,11 +95,12 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
     title = models.CharField(max_length=300, verbose_name=_("title"))
     slug = models.SlugField(null=False, unique=True, verbose_name=_("slug"))
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children', verbose_name=_("parent"))
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children',
+                            verbose_name=_("parent"))
     status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
     tags = TaggableManager()
     description = models.TextField(max_length=255, verbose_name=_("description"))
-    created = models.DateTimeField(auto_now_add=True,verbose_name=_("created"))
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
 
     class MPTTMeta:
@@ -132,9 +133,11 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
 
 class Products(SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
-    VARIANTS = (('None', 'None'), ('Brand-Size', 'Brand-Size'), ('Brand-Color', 'Brand-Color'), ('Brand-Size-Color', 'Brand-Size-Color'),
+    VARIANTS = (('None', 'None'), ('Brand-Size', 'Brand-Size'), ('Brand-Color', 'Brand-Color'),
+                ('Brand-Size-Color', 'Brand-Size-Color'),
                 ('Brand-Size-Color-material', 'Brand-Size-Color_material'), ('Brand-Size-Color', 'Brand-Size-Color'))
-    category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",verbose_name=_("category"))
+    category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",
+                                 verbose_name=_("category"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
     tags = TaggableManager()
     description = models.TextField(verbose_name=_("description"))
@@ -144,9 +147,11 @@ class Products(SoftDeleteMixin):
     detail = RichTextUploadingField(verbose_name=_("detail"))
     slug = models.SlugField(null=False, unique=True, verbose_name=_("slug"))
     status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
-    created = models.DateTimeField(auto_now_add=True,verbose_name=_("created"))
-    updated = models.DateTimeField(auto_now=True,verbose_name=_("updated"))
-    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products",verbose_name=_("user"))
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
+    updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products",
+                             verbose_name=_("user"))
+
     # like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
     def __str__(self):
         return self.title
@@ -168,11 +173,16 @@ class Products(SoftDeleteMixin):
 class Variants(SoftDeleteMixin):
     title = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("title"))
     product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="products", verbose_name=_("product"))
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", null=True, verbose_name=_("brand"))
-    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="products", null=True, verbose_name=_("size"))
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="products", null=True,verbose_name=_("color"))
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="products", null=True, verbose_name=_("material"))
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="products", null=True,verbose_name=_("attribute"))
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", null=True,
+                              verbose_name=_("brand"))
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="products", null=True,
+                             verbose_name=_("size"))
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="products", null=True,
+                              verbose_name=_("color"))
+    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="products", null=True,
+                                 verbose_name=_("material"))
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="products", null=True,
+                                  verbose_name=_("attribute"))
     price = models.PositiveIntegerField(default=0, verbose_name=_("price"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("quantity"))
 
@@ -188,3 +198,18 @@ class Variants(SoftDeleteMixin):
         if images.exists():
             return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
         return None
+
+
+class DiscountProduct(SoftDeleteMixin):
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name=_("Product"))
+    deadline = models.DateTimeField(verbose_name=_("Deadline"))
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Amount"))
+
+    class Meta:
+        verbose_name = _('Discount Product')
+        verbose_name_plural = _("Discount Products")
+
+    def __str__(self):
+        return f'{self.title}_{self.amount}'
+

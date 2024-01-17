@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-17 19:36+0330\n"
+"POT-Creation-Date: 2024-01-18 00:40+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,6 +75,30 @@ msgstr "شهر"
 msgid "Cites"
 msgstr "شهرها"
 
+#: core/models.py:57 product/models.py:17 product/models.py:204
+msgid "Title"
+msgstr "عنوان"
+
+#: core/models.py:58 product/models.py:207
+msgid "Amount"
+msgstr "حساب"
+
+#: core/models.py:59 product/models.py:206
+msgid "Deadline"
+msgstr "تاریخ اتمام"
+
+#: core/models.py:61
+msgid "Object ID"
+msgstr " کد شی"
+
+#: core/models.py:65
+msgid "Discount"
+msgstr "حساب"
+
+#: core/models.py:66
+msgid "Discounts"
+msgstr "حساب"
+
 #: customers/apps.py:7
 msgid "Customers"
 msgstr "مشتریان"
@@ -99,11 +123,11 @@ msgstr "نام خانوادگی"
 msgid "how know us"
 msgstr "نحوی آشنایی با ما"
 
-#: customers/models.py:29 product/models.py:102 product/models.py:147
+#: customers/models.py:29 product/models.py:103 product/models.py:150
 msgid "created"
 msgstr "زمان ایجاد"
 
-#: customers/models.py:30 product/models.py:103 product/models.py:148
+#: customers/models.py:30 product/models.py:104 product/models.py:151
 msgid "updated"
 msgstr "زمان آخرین بروزرسانی"
 
@@ -139,6 +163,7 @@ msgstr "آدرس"
 msgid "Addresses"
 msgstr "آدرس‌ها"
 
+#: customers/templates/customers/login.html:18
 #: customers/templates/customers/register.html:18
 #: customers/templates/customers/verify_code.html:18
 #: templates/partials/header.html:31
@@ -1416,11 +1441,11 @@ msgstr "هیچ کدام"
 msgid "orders"
 msgstr "سفارشات"
 
-#: orders/models.py:12 product/models.py:149
+#: orders/models.py:12 product/models.py:153
 msgid "user"
 msgstr "کاربر"
 
-#: orders/models.py:13 product/models.py:99 product/models.py:146
+#: orders/models.py:13 product/models.py:100 product/models.py:149
 msgid "status"
 msgstr "موجود"
 
@@ -1432,7 +1457,7 @@ msgstr "محصول سفارش داده شده"
 msgid "Orders"
 msgstr "سفارشات"
 
-#: orders/models.py:32 product/models.py:142 product/models.py:177
+#: orders/models.py:32 product/models.py:145 product/models.py:187
 msgid "quantity"
 msgstr "مقدارـ تعداد"
 
@@ -1468,15 +1493,11 @@ msgstr "رسید"
 msgid "Receipts"
 msgstr "رسیدها"
 
-#: product/apps.py:8 product/models.py:155
+#: product/apps.py:8 product/models.py:160 product/models.py:205
 msgid "Product"
 msgstr "محصول"
 
-#: product/models.py:17
-msgid "Title"
-msgstr "عنوان"
-
-#: product/models.py:18 product/models.py:97 product/models.py:145
+#: product/models.py:18 product/models.py:97 product/models.py:148
 msgid "slug"
 msgstr "اسلاگ"
 
@@ -1512,7 +1533,7 @@ msgstr "جنس و مواد"
 msgid "Color"
 msgstr "رنگ"
 
-#: product/models.py:83 product/models.py:175
+#: product/models.py:83 product/models.py:185
 msgid "attribute"
 msgstr "خصوصیات"
 
@@ -1524,69 +1545,79 @@ msgstr "نوع"
 msgid "Attribute"
 msgstr "خصوصیات"
 
-#: product/models.py:96 product/models.py:138 product/models.py:169
+#: product/models.py:96 product/models.py:141 product/models.py:174
 msgid "title"
 msgstr "عنوان"
 
-#: product/models.py:98
+#: product/models.py:99
 msgid "parent"
 msgstr "والد"
 
-#: product/models.py:101 product/models.py:140
+#: product/models.py:102 product/models.py:143
 msgid "description"
 msgstr "توضیحات"
 
-#: product/models.py:109
+#: product/models.py:110
 msgid "Product Category"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:110
+#: product/models.py:111
 msgid "Products Categories"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:137
+#: product/models.py:140
 msgid "category"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:141 product/models.py:176
+#: product/models.py:144 product/models.py:186
 msgid "price"
 msgstr "قیمت"
 
-#: product/models.py:143
+#: product/models.py:146
 msgid "variant"
 msgstr "گونه"
 
-#: product/models.py:144
+#: product/models.py:147
 msgid "detail"
 msgstr "جزییات"
 
-#: product/models.py:156
+#: product/models.py:161
 msgid "Products"
 msgstr "محصولات"
 
-#: product/models.py:170
+#: product/models.py:175
 msgid "product"
 msgstr "محصول"
 
-#: product/models.py:171
+#: product/models.py:177
 msgid "brand"
 msgstr "برند"
 
-#: product/models.py:172
+#: product/models.py:179
 msgid "size"
 msgstr "سایز"
 
-#: product/models.py:173
+#: product/models.py:181
 msgid "color"
 msgstr "رنگ"
 
-#: product/models.py:174
+#: product/models.py:183
 msgid "material"
 msgstr "جنس و مواد"
 
-#: product/models.py:180
+#: product/models.py:190
 msgid "Variant"
 msgstr "گونه"
+
+#: product/models.py:210
+
+msgid "Discount Product"
+msgstr "تخفیف محصول"
+
+#: product/models.py:211
+
+msgid "Discount Products"
+msgstr " تخیف محصولات"
 
 #: templates/index.html:4 templates/partials/navbar.html:43
 msgid "Home"

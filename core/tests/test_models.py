@@ -2,9 +2,10 @@ from unittest import TestCase
 
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
 from model_bakery import baker
 
-from core.models import Comment, Image, Province, City
+from core.models import Comment, Image, Province, City, DiscountCode
 from customers.models import CustomUser
 
 
@@ -39,3 +40,22 @@ class ModelsTestCase(TestCase):
     def test_city_creation(self):
         self.assertEqual(self.city.name, 'Test City')
         self.assertEqual(self.city.province, self.province)
+
+
+class DiscountCodeTest(TestCase):
+
+    def setUp(self):
+        self.content_type, created = ContentType.objects.get_or_create(model='testmodel', app_label='testapp')
+        self.discount_code = DiscountCode.objects.create(title='Test Discount', amount=10.00,
+                                                         deadline=timezone.now() + timezone.timedelta(days=7), content_type=self.content_type,
+                                                         object_id=1)
+
+    def test_discount_code_creation(self):
+        self.assertEqual(self.discount_code.title, 'Test Discount')
+        self.assertEqual(self.discount_code.amount, 10.00)
+        self.assertTrue(self.discount_code.deadline > timezone.now())
+        self.assertEqual(self.discount_code.content_type, self.content_type)
+        self.assertEqual(self.discount_code.object_id, 1)
+
+    def test_discountcode_str_method(self):
+        self.assertEqual(str(self.discount_code), 'Test Discount_10.0')

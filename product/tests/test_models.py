@@ -1,7 +1,9 @@
 from unittest import TestCase
+
+from django.utils import timezone
 from model_bakery import baker
 from core.models import Image
-from product.models import Brand, Size, Material, Color, Attribute, CategoryProduct, Products, Variants
+from product.models import Brand, Size, Material, Color, Attribute, CategoryProduct, Products, Variants, DiscountProduct
 
 
 class TestBrandModel(TestCase):
@@ -178,3 +180,29 @@ class TestVariantsModel(TestCase):
         self.product.hard_delete()
         self.variant.hard_delete()
         self.image.hard_delete()
+
+
+class DiscountProductTestCase(TestCase):
+    def setUp(self):
+        self.categoryproduct = baker.make(CategoryProduct, title='Test category product')
+        self.product = Products.objects.create(title="Sample Product", price=100.00, category=self.categoryproduct, detail="", slug="0")
+        self.discountproduct = baker.make(DiscountProduct,product=self.product)
+        self.discountproduct2 = DiscountProduct.objects.create(title="Discounted Product", product=self.product,
+                                                               deadline=timezone.now() + timezone.timedelta(days=7), amount=10.00, )
+
+    def test_discountproduct_created(self):
+        """Check the attributes of the DiscountProduct"""
+        self.assertEqual(self.discountproduct2.title, "Discounted Product")
+        self.assertEqual(self.discountproduct2.product, self.product)
+        self.assertTrue(self.discountproduct2.deadline > timezone.now())
+        self.assertEqual(self.discountproduct2.amount, 10.00)
+
+    def test_model_str(self):
+        """Check the __str__ representation of DiscountProduct"""
+        self.assertEqual(str(self.discountproduct2), f"{self.discountproduct2.title}_{self.discountproduct2.amount}", )
+
+    def tearDown(self):
+        """Delete the test data created in setUp"""
+        self.product.hard_delete()
+        self.discountproduct.hard_delete()
+        self.discountproduct2.hard_delete()
