@@ -42,7 +42,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class VariantsAdmin(admin.ModelAdmin):
-    list_display = ["title", "color", "size", "brand", "material", "attribute", "price", "quantity", "image_tag", ]
+    list_display = ["title", "color", "size", "brand", "material", "attribute", "price", "quantity",]
     search_field = ["product", ]
     list_filter = ["product", "title", "quantity"]
 
