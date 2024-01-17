@@ -47,6 +47,11 @@ class VariantsAdmin(admin.ModelAdmin):
     list_filter = ["product", "title", "quantity"]
 
 
+class DiscountProductAdmin(admin.ModelAdmin):
+    list_display = ["title", "product", "time",]
+    list_filter = ["title",]
+
+
 admin.site.register(CategoryProduct, CategoryProductAdmin)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(Size, SizeAdmin)
