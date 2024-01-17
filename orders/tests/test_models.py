@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from model_bakery import baker
-
 from customers.models import CustomUser
 from orders.models import Order, OrderItem, Receipt
 from product.models import Products
@@ -45,7 +44,7 @@ class ReceiptModelTest(TestCase):
     def setUp(self):
         self.user = baker.make(CustomUser, firstname='sahar', lastname='mahmoudishad')
         self.order = Order.objects.create(user=self.user, status='order')
-        self.receipt = Receipt.objects.create(order=self.order)
+        self.receipt = Receipt.objects.create(order=self.order, calculation="0")
 
     def test_receipt_creation(self):
         """Check if the Receipt was created successfully"""
