@@ -4,7 +4,7 @@ from product.models import Color, Size, CategoryProduct, Brand, Material, Attrib
 
 
 class CategoryProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "parent", "status", "image_tag", ]
+    list_display = ["id","title", "parent", "status", "image_tag", ]
 
 
 class BrandAdmin(admin.ModelAdmin):
@@ -12,7 +12,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ["name", "code", ]
+    list_display = ["gender", "code", ]
 
 
 class ColorAdmin(admin.ModelAdmin):
