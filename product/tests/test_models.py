@@ -28,9 +28,9 @@ class TestBrandModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.brand.hard_delete()
-        self.image.hard_delete()
-        self.brand2.hard_delete()
+        self.brand.delete()
+        self.image.delete()
+        self.brand2.delete()
 
 
 class TestSizeModel(TestCase):
@@ -43,7 +43,7 @@ class TestSizeModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.size.hard_delete()
+        self.size.delete()
 
 
 class TestMaterialModel(TestCase):
@@ -56,7 +56,7 @@ class TestMaterialModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.material.hard_delete()
+        self.material.delete()
 
 
 class TestColorModel(TestCase):
@@ -82,8 +82,8 @@ class TestColorModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.color_with_code.hard_delete()
-        self.color_without_code.hard_delete()
+        self.color_with_code.delete()
+        self.color_without_code.delete()
 
 
 class TestAttributeModel(TestCase):
@@ -96,12 +96,12 @@ class TestAttributeModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.attribute.hard_delete()
+        self.attribute.delete()
 
 
 class CategoryProductModelTest(TestCase):
     def setUp(self):
-        self.categoryproduct = baker.make(CategoryProduct, title='Test category product', )
+        self.categoryproduct = CategoryProduct.objects.create(title='Test category product', )
         self.child_category = baker.make(CategoryProduct, title="Child Category", parent=self.categoryproduct,
                                          tags="child, category", description="Child category description")
 
@@ -127,8 +127,8 @@ class CategoryProductModelTest(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.child_category.hard_delete()
-        self.categoryproduct.hard_delete()
+        self.child_category.delete()
+        self.categoryproduct.delete()
 
 
 class TestProductModel(TestCase):
@@ -149,8 +149,8 @@ class TestProductModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.product.hard_delete()
-        self.image.hard_delete()
+        self.product.delete()
+        self.image.delete()
 
 
 class TestVariantsModel(TestCase):
@@ -177,9 +177,9 @@ class TestVariantsModel(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.product.hard_delete()
-        self.variant.hard_delete()
-        self.image.hard_delete()
+        self.product.delete()
+        self.variant.delete()
+        self.image.delete()
 
 
 class DiscountProductTestCase(TestCase):
@@ -203,6 +203,6 @@ class DiscountProductTestCase(TestCase):
 
     def tearDown(self):
         """Delete the test data created in setUp"""
-        self.product.hard_delete()
-        self.discountproduct.hard_delete()
-        self.discountproduct2.hard_delete()
+        self.product.delete()
+        self.discountproduct.delete()
+        self.discountproduct2.delete()
