@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Brand(SoftDeleteMixin):
     title = models.CharField(max_length=300, verbose_name=_("Title"), unique=True)
-    slug = models.SlugField(max_length=300, verbose_name=_("slug"))
+    slug = models.SlugField(max_length=300,null=True, blank=True, verbose_name=_("slug"))
 
     class Meta:
         verbose_name = _('Brand')
@@ -94,7 +94,7 @@ class Attribute(SoftDeleteMixin):
 class CategoryProduct(MPTTModel, SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
     title = models.CharField(max_length=300, verbose_name=_("title"))
-    slug = models.SlugField(null=False, unique=True, verbose_name=_("slug"))
+    slug = models.SlugField(null=True, blank=True, verbose_name=_("slug"))
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children',
                             verbose_name=_("parent"))
     status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
@@ -130,6 +130,11 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
             return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
         return None
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
 
 class Products(SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
@@ -145,7 +150,7 @@ class Products(SoftDeleteMixin):
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("quantity"))
     variant = models.CharField(max_length=30, choices=VARIANTS, default='None', verbose_name=_("variant"))
     detail = RichTextUploadingField(verbose_name=_("detail"))
-    slug = models.SlugField(null=False, unique=True, verbose_name=_("slug"))
+    slug = models.SlugField(null=True, blank=True, verbose_name=_("slug"))
     status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
@@ -168,6 +173,11 @@ class Products(SoftDeleteMixin):
         if images.exists():
             return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
         return None
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 
 class Variants(SoftDeleteMixin):
@@ -212,4 +222,3 @@ class DiscountProduct(SoftDeleteMixin):
 
     def __str__(self):
         return f'{self.title}_{self.amount}'
-
