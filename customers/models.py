@@ -19,9 +19,9 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     phonenumber = models.CharField(max_length=50, validators=[RegexValidator(
         regex=r'^(?:\+98|0)?9[0-9]{2}(?:[0-9](?:[ -]?[0-9]{3}){2}|[0-9]{8})$',
         message="Invalid phone number format. Example: +989123456789 or 09123456789", ), ],
-                                   verbose_name=_("Phone number"), unique=True)
+                                   verbose_name=_("Phone number"), unique=True, )
     email = models.EmailField(max_length=100, verbose_name=_("email address"), validators=[validate_email],
-                              unique=True, )
+                              blank=True, null=True)
     firstname = models.CharField(max_length=40, verbose_name=_("First name"))
     lastname = models.CharField(max_length=40, verbose_name=_("Last name"))
     how_know_us = models.CharField(choices=link_of_connection, default="False", null=True, max_length=20,
@@ -42,6 +42,13 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
 
     def __str__(self):
         return f"{self.firstname}_{self.lastname}"
+
+    # def clean(self):
+    #     super().clean()
+    #     if not (self.phonenumber or self.email):
+    #         raise ValidationError(_('You must provide either a phone number or an email address.'))
+    #     if self.phonenumber and self.email:
+    #         raise ValidationError(_('You can only provide either a phone number or an email address, not both.'))
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""

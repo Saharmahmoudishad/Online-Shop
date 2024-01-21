@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.core.exceptions import ValidationError
 
 from customers.models import CustomUser
 
@@ -13,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ('phonenumber',"firstname","lastname","how_know_us",)
 
     def clean(self):
         datas = super().clean()
@@ -46,11 +47,38 @@ class UserChangeForm(forms.ModelForm):
                   "is_active", "is_admin", "is_deleted"]
 
 
-class UserRegistrationFrom(forms.Form):
-    email_or_phone = forms.CharField(max_length=100, label='Please enter your Phone number or Email',
-                                     widget=forms.TextInput(attrs={"class": "form-control",
-                                                                   "placeholder": "Phone number or Email",
-                                                                   "style": "background: transparent !important;", }))
+class RequestRegisterByEmailForm(forms.Form):
+    email = forms.CharField(max_length=100, label='Please enter your Email',
+                            widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email",
+                                                          "style": "background: transparent !important;", }))
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        user = CustomUser.objects.filter(email=email).exists()
+        if user:
+            raise ValidationError('this email already exist')
+        return email
+
+
+# class UserRegistrationByEmailFrom(forms.ModelForm):
+#     class Meta:
+#         model = CustomUser
+#         fields = '__all__'
+
+
+class RequestRegistrationByPhoneFrom(forms.Form):
+    phone = forms.CharField(max_length=100, label='Please enter your Phone number ',
+                            widget=forms.TextInput(attrs={"class": "form-control",
+                                                          "placeholder": "Phone number",
+                                                          "style": "background: transparent !important;", }))
+
+
+def clean_email(self):
+    phone = self.cleaned_data['phone']
+    user = CustomUser.objects.filter(phonenumber=phone).exists()
+    if user:
+        raise ValidationError('this Phone number already exist')
+    return phone
 
 
 class VerifyCodeFrom(forms.Form):

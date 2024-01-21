@@ -33,9 +33,9 @@
     <!-- register Start -->
     <div class="container-fluid">
         <div class="row px-xl-5 justify-content-center">
-            <div class="col-lg-8">
+            <div class="col-lg-6">
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Registration Form</span></h5>
-                <form action="{% url 'customers:customer_register' %}" method="post" class="bg-light p-30 mb-5 orange-box" enctype="multipart/form-data" novalidate>
+                <form action="{% url 'customers:request_register_by_email' %}" method="post" class="bg-light p-30 mb-5 orange-box" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
                     <div class="row">
                         <div>
@@ -43,15 +43,19 @@
                             <p class="site-name">Hello</p>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label>{{ form.email_or_phone.label_tag }}</label>
+                            <label>{{ form.email.label_tag }}</label>
                            <div>
-                                 {{ form.email_or_phone }}
-                                  <div style="font-size: 10px">{{ form.email_or_phone.errors }}</div>
+                                 {{ form.email }}
+                                  <div style="font-size: 10px">{{ form.email.errors }}</div>
                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-dark btn-sm btn-block" type="submit"><a href="{% url 'customers:verify_registeration_code'%}" >Sign Up</a></button>
+                    <div class="row justify-content-center align-items-center">
+                        <div class="col-md-6 justify-content-center ">
+                            <button class="btn btn-dark btn-sm btn-block" type="submit" value ="send"><a href="{% url 'core:home'%}" >Sign Up</a></button>
+                            <button class="btn btn-dark btn-sm btn-block" type="button" value ="send"> or </button>
+                            <button class="btn btn-dark btn-sm btn-block" type="submit" value ="send"><a href="{% url 'customers:Register_With_Phone_Number'%}" >With Phone Number</a></button>
+                        </div>
                     </div>
                  </form>
             </div>
