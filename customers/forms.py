@@ -14,7 +14,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ('phonenumber',"firstname","lastname","how_know_us",)
+        fields = ('phonenumber', "firstname", "lastname", "how_know_us",)
 
     def clean(self):
         datas = super().clean()
@@ -50,20 +50,13 @@ class UserChangeForm(forms.ModelForm):
 class RequestRegisterByEmailForm(forms.Form):
     email = forms.CharField(max_length=100, label='Please enter your Email',
                             widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email",
-                                                          "style": "background: transparent !important;", }))
+                                                          "style": "background: transparent !important; border: 1px solid darkorange;", }))
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        user = CustomUser.objects.filter(email=email).exists()
-        if user:
-            raise ValidationError('this email already exist')
-        return email
-
-
-# class UserRegistrationByEmailFrom(forms.ModelForm):
-#     class Meta:
-#         model = CustomUser
-#         fields = '__all__'
+    # def clean_email(self):
+    #     email = self.cleaned_data.get('email')
+    #     if CustomUser.objects.filter(email=email).exists():
+    #         raise ValidationError("This email is already registered.Please sign in", code='email_exists')
+    #     return email
 
 
 class RequestRegistrationByPhoneFrom(forms.Form):
@@ -73,16 +66,16 @@ class RequestRegistrationByPhoneFrom(forms.Form):
                                                           "style": "background: transparent !important;", }))
 
 
-def clean_email(self):
-    phone = self.cleaned_data['phone']
-    user = CustomUser.objects.filter(phonenumber=phone).exists()
-    if user:
-        raise ValidationError('this Phone number already exist')
-    return phone
+# def clean_email(self):
+#     phone = self.cleaned_data['phone']
+#     user = CustomUser.objects.filter(phonenumber=phone).exists()
+#     if user:
+#         raise ValidationError('this Phone number already exist')
+#     return phone
 
 
 class VerifyCodeFrom(forms.Form):
-    code = forms.CharField(max_length=20, label='Please enter the verification code sent to the email',
+    code = forms.CharField(max_length=20, label='Please enter the verification code',
                            widget=forms.TextInput(attrs={"class": "form-control",
                                                          "placeholder": "verification code",
                                                          "style": "background: transparent !important;", }))
