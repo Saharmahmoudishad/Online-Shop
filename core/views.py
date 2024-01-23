@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.shortcuts import render, redirect
+from django.utils import timezone
 from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView
@@ -15,6 +18,7 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         top_level_categories = CategoryProduct.objects.filter(parent__isnull=True)
         category_data = []
         for category in top_level_categories:
@@ -29,10 +33,16 @@ class IndexView(ListView):
                 category_info['children'].append(child_info)
             category_data.append(category_info)
         context['categories'] = category_data
+        context['products'] = Products.objects.all()[:6]
+        context['recent_products'] = Products.objects.filter(created__gte=timezone.now() - timedelta(days=6))
         return context
 
 
 index_view_cached = cache_page(CACHE_TTL)(IndexView.as_view())
+
+
+class ContactUsView(TemplateView):
+    template_name = 'contact.html'
 
 
 class ChangeLangView(View):
