@@ -13,11 +13,17 @@
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
                     <div class="btn-group">
+                        {% if user.is_authenticated %}
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{user}}</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <form action="{% url 'customers:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="background: transparent; border: none" type="submit" value="log out" ></form>
+                        </div>
+                        {% else %}
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Account' %}</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">{% translate 'My Sign in' %}</button>
-                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:customer_register'%}" >{% translate 'My Sign up' %}</a></button>
+                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:request_register_by_email' %}" >{% translate 'Sign up| Sign in' %}</a></button>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="btn-group mx-2">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>
