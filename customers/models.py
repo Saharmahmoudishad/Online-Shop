@@ -1,13 +1,17 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, Group
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, validate_email
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 
 from core.mixins import SoftDeleteMixin
 from core.models import City, Province
 from .manager import MyUserManager
+from .permissions import add_view_permission_to_group, add_full_permission, \
+    add_all_permission_of_app
 
 
 class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
@@ -29,7 +33,8 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     is_active = models.BooleanField(default=True, verbose_name=_("is active"))
-    is_admin = models.BooleanField(default=True, verbose_name=_("is admin"))
+    is_admin = models.BooleanField(default=False, verbose_name=_("is admin"))
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=1)
 
     class Meta:
         verbose_name = _('User')
@@ -55,7 +60,11 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
         # user_groups = self.groups.all()
         if self.is_active:
             if self.is_admin:
-                return True
+                user_groups = self.groups.all()
+                app_label, codename = perm.split('.')
+                for group in user_groups:
+                    return group.permissions.filter(codename=codename).exists()
+        return True
 
     def has_module_perms(self, app_label):
         """Does the user have permissions to view the app """
@@ -65,6 +74,20 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     def is_staff(self):
         """Is the user a member of staff?"""
         return self.is_admin
+
+
+@receiver(post_migrate, sender=None)
+def handle_group(sender, **kwargs):
+    list_group = ['managers', 'operators', 'supervisors', 'customers']
+    for group_name in list_group:
+        group, created = Group.objects.get_or_create(name=group_name)
+        if group_name == 'supervisors':
+            add_view_permission_to_group(group, 'view')
+        elif group_name == 'operators':
+            add_all_permission_of_app('orders', group)
+            add_all_permission_of_app('customers', group)
+        elif group_name == 'managers':
+            add_full_permission(group)
 
 
 class Address(AbstractBaseUser, SoftDeleteMixin):

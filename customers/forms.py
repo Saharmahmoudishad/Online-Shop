@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.core.exceptions import ValidationError
 
 from customers.models import CustomUser
@@ -75,11 +75,25 @@ class RequestRegistrationByPhoneFrom(forms.Form):
 
 
 class VerifyCodeFrom(forms.Form):
-    code = forms.CharField(max_length=20, label='Please enter the verification code',
+    code = forms.CharField(max_length=20, label='Please enter the verification code', error_messages={
+        'required': 'Please enter the verification code.',
+        'invalid': 'Invalid code format. Please enter a valid code.', },
                            widget=forms.TextInput(attrs={"class": "form-control",
                                                          "placeholder": "verification code",
                                                          "style": "background: transparent !important;", }))
 
 
-class UserLoginForm(forms.Form):
-    pass
+class CustomAuthenticationForm(AuthenticationForm):
+    """
+    Base class for authenticating users. Extend this to get a form that accepts
+    phonenumber/password logins.
+    """
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={"class": "form-control", "autocomplete": "off",
+               'placeholder': 'Enter your phone number or email address',
+               "style": "background: transparent !important;"}),
+        help_text="Please enter a valid phone number of email address.",
+        label='phone number or Email Address')
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password',
+               "style": "background: transparent !important;"}), help_text="forgot your" "password", )
