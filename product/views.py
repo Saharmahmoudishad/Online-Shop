@@ -1,7 +1,9 @@
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView
 
+from core.models import Image
 from product.models import Products, Variants
 
 
@@ -35,7 +37,6 @@ class AllProductView(ListView):
         return queryset
 
 
-
 class ProductDetailView(DetailView):
     model = Products
     template_name = 'product/detail.html'
@@ -47,3 +48,11 @@ class ProductDetailView(DetailView):
         slug = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(self.model, slug=slug)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product_variants = Variants.objects.filter(product=context['product'])
+        product_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products), object_id=context['product'].id)
+        context['product_images'] = product_images
+        context['product_variants'] = product_variants
+
+        return context

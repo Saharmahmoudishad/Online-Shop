@@ -32,10 +32,10 @@ class Brand(SoftDeleteMixin):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
 
@@ -138,9 +138,9 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
 
 class Products(SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
-    VARIANTS = (('None', 'None'), ('Brand-Size', 'Brand-Size'), ('Brand-Color', 'Brand-Color'),
-                ('Brand-Size-Color', 'Brand-Size-Color'),
-                ('Brand-Size-Color-material', 'Brand-Size-Color_material'), ('Brand-Size-Color', 'Brand-Size-Color'))
+    VARIANTS = (('None', 'None'), ('Size', 'Size'), ('Color', 'Color'),
+                ('Size-Color', 'Size-Color'),
+                ('Size-Color-material', 'Size-Color_material'), ('Size-Color', 'Size-Color'))
     category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",
                                  verbose_name=_("category"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
@@ -166,12 +166,12 @@ class Products(SoftDeleteMixin):
         verbose_name_plural = _("Products")
 
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'slug': self.slug})
+        return reverse('product:product_detail', kwargs={'slug': self.slug})
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
     def save(self, *args, **kwargs):
@@ -182,16 +182,16 @@ class Products(SoftDeleteMixin):
 
 class Variants(SoftDeleteMixin):
     title = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("title"))
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="products", verbose_name=_("product"))
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", null=True,
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="Variants", verbose_name=_("product"))
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="Variants", null=True,
                               verbose_name=_("brand"))
-    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="products", null=True,
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="Variants", null=True,
                              verbose_name=_("size"))
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="products", null=True,
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="Variants", null=True,
                               verbose_name=_("color"))
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="products", null=True,
+    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="Variants", null=True,
                                  verbose_name=_("material"))
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="products", null=True,
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="Variants", null=True,blank=True,
                                   verbose_name=_("attribute"))
     price = models.PositiveIntegerField(default=0, verbose_name=_("price"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("quantity"))
@@ -203,10 +203,10 @@ class Variants(SoftDeleteMixin):
     def __str__(self):
         return self.title
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
 
