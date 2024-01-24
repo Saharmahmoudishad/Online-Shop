@@ -124,10 +124,10 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
         else:
             return self.title
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
     def save(self, *args, **kwargs):
