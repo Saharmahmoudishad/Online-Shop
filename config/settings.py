@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'taggit',
-    'translated_fields'
+    'translated_fields',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -120,7 +121,6 @@ CACHES = {
 }
 CACHE_TTL = 60 * 15
 
-
 # Configure Django-Heroku if using Heroku
 # django_heroku.settings(locals())
 
@@ -185,7 +185,7 @@ AUTH_USER_MODEL = 'customers.CustomUser'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
-LOGIN_URL = 'account:User_login'
+# LOGIN_URL = 'customers:User_login'
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
@@ -198,7 +198,25 @@ EMAIL_HOST_PASSWORD = config.get('email_data', 'EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config.get('email_data', 'EMAIL_USE_TLS')
 DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
 
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
+                           "customers.authenticate.EmailBackend",
+                           'social_core.backends.google.GoogleOAuth2',]
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 # Other Django settings...
-MPTT_ALLOW_TESTING_GENERATORS=True
+MPTT_ALLOW_TESTING_GENERATORS = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+
+
+
