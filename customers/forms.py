@@ -66,12 +66,6 @@ class RequestRegistrationByPhoneFrom(forms.Form):
                                                           "style": "background: transparent !important;", }))
 
 
-# def clean_email(self):
-#     phone = self.cleaned_data['phone']
-#     user = CustomUser.objects.filter(phonenumber=phone).exists()
-#     if user:
-#         raise ValidationError('this Phone number already exist')
-#     return phone
 
 
 class VerifyCodeFrom(forms.Form):

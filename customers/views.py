@@ -10,7 +10,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.views import View
 from django.views.generic import CreateView, FormView
 from django.contrib.auth import views as auth_view
-from utils import send_registration_email, send_otp_code_by_phone, generate_and_store_otp, send_otpcode_email
+from utils import send_registration_email, generate_and_store_otp, send_otpcode_email, \
+    kave_negar_token_send
 from .forms import VerifyCodeFrom, RequestRegisterByEmailForm, \
     RequestRegistrationByPhoneFrom, UserCreationForm, CustomAuthenticationForm
 from .models import CustomUser
@@ -109,7 +110,7 @@ class RequestRegisterByPhoneView(View):
             phone = form.cleaned_data['phone']
             otp_code = generate_and_store_otp(phone)
             print("3" * 60, "saraaaa")
-            send_otp_code_by_phone(phone, otp_code)
+            kave_negar_token_send(phone, otp_code)
             print("4 " * 60, "saraaaa")
             request.session['user_registration_info'] = {'phone': phone}
             messages.success(request, "send registeration code to your Phone Number", "success")
