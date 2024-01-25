@@ -28,3 +28,4 @@ types-python-dateutil==2.8.19.20240106
 typing_extensions==4.9.0
 urllib3==2.1.0
 wcwidth==0.2.13
+django-admin-interface==0.28.3
