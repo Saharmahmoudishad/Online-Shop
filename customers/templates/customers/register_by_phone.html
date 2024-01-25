@@ -1,7 +1,7 @@
 {% extends 'base_account.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}SignUp{% endblock %}
+{% block title %}SignUp|SignIn{% endblock %}
 {% block content %}
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -43,10 +43,10 @@
                             <p class="site-name">Hello</p>
                         </div>
                         <div class="col-md-12 form-group">
-                            <label>{{ form.phone.label_tag }}</label>
+                            <label>{{ form.phonenumber.label_tag }}</label>
                            <div>
-                                 {{ form.phone }}
-                                  <div style="font-size: 10px">{{ form.phone.errors }}</div>
+                                 {{ form.phonenumber }}
+                                  <div style="font-size: 10px">{{ form.phonenumber.errors }}</div>
                            </div>
                         </div>
                     </div>

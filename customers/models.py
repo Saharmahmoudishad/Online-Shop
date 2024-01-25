@@ -6,7 +6,6 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-
 from core.mixins import SoftDeleteMixin
 from core.models import City, Province
 from .manager import MyUserManager
@@ -47,13 +46,6 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
 
     def __str__(self):
         return f"{self.firstname}_{self.lastname}"
-
-    # def clean(self):
-    #     super().clean()
-    #     if not (self.phonenumber or self.email):
-    #         raise ValidationError(_('You must provide either a phone number or an email address.'))
-    #     if self.phonenumber and self.email:
-    #         raise ValidationError(_('You can only provide either a phone number or an email address, not both.'))
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""

@@ -11,6 +11,10 @@ urlpatterns = [
     path('verify_code/', views.CompleteRegisterVerifyCodeView.as_view(), name='verify_registeration_code'),
     path('login/', views.UserLoginByPassView.as_view(), name='user_login_by_pass'),
     path('logout/', views.UserLogoutView.as_view(), name='User_logout'),
-
-
+]
+urlpatterns += [
+path('reset_pass/', views.UserPasswordResetView.as_view(), name='reset_password'),
+path('reset_done/', views.UserPasswordResetDoneView.as_view(), name='password_reset_done'),
+path('confirm/<uidb64>/<token>', views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+path('confirm/complete', views.UserPasswordResetCompleteView.as_view(), name='password_reset_completed'),
 ]

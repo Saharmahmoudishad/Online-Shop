@@ -60,7 +60,7 @@ class RequestRegisterByEmailForm(forms.Form):
 
 
 class RequestRegistrationByPhoneFrom(forms.Form):
-    phone = forms.CharField(max_length=100, label='Please enter your Phone number ',
+    phonenumber = forms.CharField(max_length=100, label='Please enter your Phone number ',
                             widget=forms.TextInput(attrs={"class": "form-control",
                                                           "placeholder": "Phone number",
                                                           "style": "background: transparent !important;", }))

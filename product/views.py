@@ -1,21 +1,20 @@
+from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render, get_object_or_404
-from django.views import View
+from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
-
-from core.models import Image
+from core.models import Image, Comment
+from product.forms import CommentToManagerForm
 from product.models import Products, Variants
 
 
-# class AllProductView(View):
-#     def get(self, request):
-#         products = Products.objects.all()
-#         return render(request, 'product/shop.html', {'products': products})
 class AllProductView(ListView):
+    """ show all of the products
+    sorting products is handled in this view
+    """
     model = Products
     template_name = 'product/shop.html'
     context_object_name = 'products'
-    paginate_by = 10  # Set the number of products to display per page
+    paginate_by = 10
 
     def get_queryset(self):
         queryset = Products.objects.all()
@@ -30,7 +29,6 @@ class AllProductView(ListView):
 
         price_range = self.request.GET.get('price', 'all')
         if price_range != 'all':
-            # Extract min and max values from the price_range
             min_price, max_price = map(int, price_range.split('-'))
             queryset = queryset.filter(price__gte=min_price, price__lte=max_price)
 
@@ -38,21 +36,44 @@ class AllProductView(ListView):
 
 
 class ProductDetailView(DetailView):
+    """ show detail of the product base on variants data of product
+    login user can send comment in this part
+    """
     model = Products
     template_name = 'product/detail.html'
     context_object_name = 'product'
-    slug_url_kwarg = 'slug'  # Use slug_url_kwarg instead of pk_url_kwarg
+    slug_url_kwarg = 'slug'
 
     def get_object(self, queryset=None):
-        # Override get_object to use slug for lookup
         slug = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(self.model, slug=slug)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product_variants = Variants.objects.filter(product=context['product'])
-        product_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products), object_id=context['product'].id)
+        product_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products),
+                                              object_id=context['product'].id)
+        product_content_type = ContentType.objects.get_for_model(Products)
+        comments = Comment.objects.filter(content_type=product_content_type, object_id=context['product'].id)
+        form = CommentToManagerForm
+        context['comments'] = comments
         context['product_images'] = product_images
         context['product_variants'] = product_variants
+        context['form'] = form
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            form = CommentToManagerForm(request.POST)
+            if form.is_valid():
+                datas = form.cleaned_data
+                product_id = self.get_object().id
+                new_comment = Comment.objects.create(
+                    content=datas["content"],
+                    content_type=ContentType.objects.get_for_model(Products),
+                    object_id=product_id,
+                    user=request.user,
+                )
+                messages.success(request, 'Comment added successfully.')
+        return self.get(request, *args, **kwargs)

@@ -1,28 +1,27 @@
 {% extends 'base_account.html' %}
 {% load static %}
 {% load i18n %}
-{% block title %}SignUp{% endblock %}
+{% block title %}SignUp|SignIn{% endblock %}
 {% block content %}
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-12">
-<nav class="breadcrumb bg-light mb-30 d-flex justify-content-between align-items-center">
-    <div class="d-flex">
-        <a class="breadcrumb-item text-dark" href="{% url 'core:home' %}">Home</a>
-        <span class="breadcrumb-item active">Verify registration code</span>
-    </div>
-
-    <div class="dropdown">
-        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
-            {% translate 'Language' %}
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=en&next={{request.path}}" >FR</a>
-            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=fa&next={{request.path}}" >EN</a>
-        </div>
-    </div>
-</nav>
+                <nav class="breadcrumb bg-light mb-30 d-flex justify-content-between align-items-center">
+                    <div class="d-flex">
+                        <a class="breadcrumb-item text-dark" href="{% url 'core:home' %}">Home</a>
+                        <span class="breadcrumb-item active">Verify registration code</span>
+                    </div>
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">
+                            {% translate 'Language' %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=en&next={{request.path}}" >FR</a>
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=fa&next={{request.path}}" >EN</a>
+                        </div>
+                    </div>
+                </nav>
 
             </div>
 
@@ -51,7 +50,7 @@
                     </div>
                     <div class="col-md-4">
                         <button class="btn btn-dark btn-sm btn-block" type="submit">Verify</button>
-
+                        <a class="" href="{% url 'customers:user_login_by_pass' %}" >Sign in with Password</a>
                     </div>
                  </form>
             </div>

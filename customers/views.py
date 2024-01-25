@@ -48,6 +48,7 @@ class RequestRegisterView(FormView):
 
 
 class CompleteRegisterByEmailView(SuccessMessageMixin, CreateView):
+    """complete registeration by post register form"""
     model = CustomUser
     template_name = 'customers/complete_register_by_email_form.html'
     success_url = reverse_lazy('core:home')
@@ -64,6 +65,7 @@ class CompleteRegisterByEmailView(SuccessMessageMixin, CreateView):
 
 
 class LoginVerifyCodeView(View):
+    """sign in user by email who is registered before by sending code"""
     form_class = VerifyCodeFrom
     template_name = 'customers/verify_code_toemail.html'
 
@@ -95,6 +97,7 @@ class LoginVerifyCodeView(View):
 
 
 class RequestRegisterByPhoneView(View):
+    """handle Request of user for register by phonenumber and otp code"""
     form_class = RequestRegistrationByPhoneFrom
     template_name = 'customers/register_by_phone.html'
 
@@ -112,7 +115,7 @@ class RequestRegisterByPhoneView(View):
         if form.is_valid():
             phone = form.cleaned_data['phonenumber']
             otp_code = generate_and_store_otp(phone)
-            kave_negar_token_send(phone, otp_code)
+            # kave_negar_token_send(phone, otp_code)
             request.session['user_registration_info'] = {'phone': phone}
             messages.success(request, "send registeration code to your Phone Number", "success")
             return redirect('customers:verify_registeration_code')
@@ -120,6 +123,7 @@ class RequestRegisterByPhoneView(View):
 
 
 class CompleteRegisterVerifyCodeView(View):
+    """complete sign in user by phone_number and verification code """
     form_class = VerifyCodeFrom
     template_name = 'customers/verify_code.html'
 
@@ -157,6 +161,7 @@ class CompleteRegisterVerifyCodeView(View):
 
 
 class UserLoginByPassView(auth_view.LoginView):
+    """complete sign in user by password """
     template_name = 'customers/login_bypassword.html'
     success_url = reverse_lazy('core:home')
     form_class = CustomAuthenticationForm
@@ -183,9 +188,10 @@ class UserLoginByPassView(auth_view.LoginView):
 
 
 class UserLogoutView(auth_view.LogoutView):
-    class UserLogoutView(auth_view.LogoutView):
-        def get_success_url(self):
-            return self.request.GET.get('next', reverse_lazy('core:home'))
+    """handle logout of users"""
+    def get_success_url(self):
+        return self.request.GET.get('next', reverse_lazy('core:home'))
+
 
 class UserPasswordResetView(auth_view.PasswordResetView):
     template_name = 'customers/resetpassword/password_resetform.html'

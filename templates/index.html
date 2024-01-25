@@ -165,7 +165,7 @@
                                 </div>
                             </div>
                             <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="">{{ product.title }}</a>
+                                <a class="h6 text-decoration-none text-truncate" href="{{product.get_absolute_url}}">{{ product.title }}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
                                     <h5>${{ product.price }}</h5><h6 class="text-muted ml-2"><del>${{ product.price }}</del></h6>
                                 </div>
@@ -227,7 +227,7 @@
                         </div>
                     </div>
                     <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="">{{recent_product.title}}</a>
+                        <a class="h6 text-decoration-none text-truncate" href="{{recent_product.get_absolute_url}}">{{recent_product.title}}</a>
                         <div class="d-flex align-items-center justify-content-center mt-2">
                             <h5>$123.00</h5><h6 class="text-muted ml-2"><del>{{recent_product.price}}</del></h6>
                         </div>

@@ -1,12 +1,10 @@
 from datetime import timedelta
-
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView
 from django.utils.translation import activate
-
 from config.settings import CACHE_TTL
 from product.models import CategoryProduct, Products
 

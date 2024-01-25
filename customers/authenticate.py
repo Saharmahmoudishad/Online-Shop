@@ -3,6 +3,7 @@ from django.contrib.auth.backends import ModelBackend
 
 
 class EmailBackend(ModelBackend):
+    """Authenticated by email"""
     user = get_user_model()
 
     def authenticate(self, request, username=None, password=None, **kwargs):

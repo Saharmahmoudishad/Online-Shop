@@ -12,6 +12,7 @@ class Comment(SoftDeleteMixin):
     object_id = models.PositiveIntegerField(verbose_name=_("object id"))
     content_object = GenericForeignKey('content_type', 'object_id')
     user = models.ForeignKey("customers.CustomUser", on_delete=models.CASCADE, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"),)
 
     class Meta:
         verbose_name = _('Comment')
