@@ -216,7 +216,10 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE
 MPTT_ALLOW_TESTING_GENERATORS = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+# -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
-
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 
