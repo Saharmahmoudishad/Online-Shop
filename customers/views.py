@@ -9,9 +9,8 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views import View
 from django.views.generic import CreateView, FormView
+from utils import generate_and_store_otp, send_otpcode_email, send_registration_email, kave_negar_token_send
 from django.contrib.auth import views as auth_view
-from utils import send_registration_email, generate_and_store_otp, send_otpcode_email, \
-    kave_negar_token_send
 from .forms import VerifyCodeFrom, RequestRegisterByEmailForm, \
     RequestRegistrationByPhoneFrom, UserCreationForm, CustomAuthenticationForm
 from .models import CustomUser
@@ -20,6 +19,10 @@ user = get_user_model()
 
 
 class RequestRegisterView(FormView):
+    """handle Request of user for register
+    if user sign in for first time, this class send email by link for register
+    if user registered before, this class send email by code for login
+    """
     model = CustomUser
     template_name = 'customers/registeration_by_email.html'
     success_url = reverse_lazy('core:home')
@@ -107,11 +110,9 @@ class RequestRegisterByPhoneView(View):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            phone = form.cleaned_data['phone']
+            phone = form.cleaned_data['phonenumber']
             otp_code = generate_and_store_otp(phone)
-            print("3" * 60, "saraaaa")
             kave_negar_token_send(phone, otp_code)
-            print("4 " * 60, "saraaaa")
             request.session['user_registration_info'] = {'phone': phone}
             messages.success(request, "send registeration code to your Phone Number", "success")
             return redirect('customers:verify_registeration_code')
@@ -133,23 +134,26 @@ class CompleteRegisterVerifyCodeView(View):
 
     def post(self, request):
         user_session = self.request.session.get('user_registration_info', {}).get('phone')
-        code_instance = cache.get(user_session)
-        # code_instance = cache.get(email=user_session['email'])
+        code_instance = cache.get(user_session)['otp_code']
         form = self.form_class(request.POST)
         if form.is_valid():
-            print("7" * 60, "saraaaa")
             otp_code = form.cleaned_data['code']
-            if code_instance['otp_code'] == otp_code:
-                requester = user.objects.filter(phonenumber=user_session).exists()
+            if code_instance == otp_code:
+                requester = user.objects.filter(phonenumber=user_session).first()
                 if requester:
+                    login(request, requester, backend='django.contrib.auth.backends.ModelBackend')
                     messages.success(request, 'you login successfully', 'success')
+                    return redirect('core:home')
                 else:
-                    CustomUser.objects.create_user(phone=user_session['phone'], password="")
+                    CustomUser.objects.create_user(phone=user_session, password="")
                     messages.success(request, 'you registered', 'success')
                     return redirect('core:home')
             else:
                 messages.error(request, 'this code is wrong', 'danger')
-                return redirect('accounts:verify_code')
+                return redirect('customers:verify_registeration_code')
+        else:
+            messages.error(request, 'Invalid form submission', 'danger')
+            return render(request, self.template_name, {'form': form})
 
 
 class UserLoginByPassView(auth_view.LoginView):
@@ -182,3 +186,21 @@ class UserLogoutView(auth_view.LogoutView):
     class UserLogoutView(auth_view.LogoutView):
         def get_success_url(self):
             return self.request.GET.get('next', reverse_lazy('core:home'))
+
+class UserPasswordResetView(auth_view.PasswordResetView):
+    template_name = 'customers/resetpassword/password_resetform.html'
+    success_url = reverse_lazy('customers:password_reset_done')
+    email_template_name = "customers/resetpassword/password_reset_email.html"
+
+
+class UserPasswordResetDoneView(auth_view.PasswordResetDoneView):
+    template_name = 'customers/resetpassword/password_reset_done.html'
+
+
+class UserPasswordResetConfirmView(auth_view.PasswordResetConfirmView):
+    template_name = 'customers/resetpassword/password_reset_confirm.html'
+    success_url = reverse_lazy('customers:password_reset_completed')
+
+
+class UserPasswordResetCompleteView(auth_view.PasswordResetCompleteView):
+    template_name = 'customers/resetpassword/password_reset_complete.html'
