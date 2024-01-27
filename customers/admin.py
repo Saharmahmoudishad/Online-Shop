@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
-
+from django.contrib import admin
 from customers.forms import UserChangeForm, UserCreationForm
 from customers.models import CustomUser, Address
 
@@ -13,9 +13,9 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     list_display = ["phonenumber", "firstname", "lastname", "is_active",
-                    "is_admin", ]
+                    "is_admin", "is_deleted"]
     search_field = ["phonenumber", "is_admin", "is_active"]
-    list_filter = ["is_admin", "created", "is_active"]
+    list_filter = ["is_admin", "created", "is_active", "is_deleted"]
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
         ("Personal info", {"fields": ["phonenumber", "firstname", "lastname", ]}),
@@ -33,6 +33,9 @@ class UserAdmin(BaseUserAdmin):
     ]
     ordering = ["is_admin", "created"]
     filter_horizontal = []
+
+    def get_queryset(self, request):
+        return CustomUser._base_manager.all()
 
 
 admin.site.unregister(Group)
