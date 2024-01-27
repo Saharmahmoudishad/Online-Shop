@@ -22,3 +22,6 @@ This class handle logical deleted for all model which is inheriting it
     def save(self, *args, **kwargs):
         if not self.is_deleted:
             super().save(*args, **kwargs)
+        else:
+            super().save(using=self._state.db, force_insert=False, force_update=True)
+
