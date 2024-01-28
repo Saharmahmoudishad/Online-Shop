@@ -3,17 +3,12 @@ from mptt.admin import DraggableMPTTAdmin
 
 from product.models import Color, Size, CategoryProduct, Brand, Material, Attribute, Products, Variants
 
-
-# class CategoryProductAdmin(admin.ModelAdmin):
-#     list_display = ["id", "title", "parent", "status", "image_tag", ]
-#     search_field = ["title", ]
-#     list_filter = ["parent", ]
-
 class CategoryProductAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
     list_display = ('tree_actions', 'indented_title',
-                    'related_products_count', 'related_products_cumulative_count')
+                    'related_products_count', 'related_products_cumulative_count', "status", "image_tag",)
     list_display_links = ('indented_title',)
+    # draggable = True
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
