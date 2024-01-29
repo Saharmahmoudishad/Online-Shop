@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import ListView, DetailView
 from core.models import Image, Comment
 from product.forms import CommentToManagerForm
-from product.models import Products, Variants
+from product.models import Products, Variants, CategoryProduct
 
 
 class AllProductView(ListView):
@@ -14,10 +15,13 @@ class AllProductView(ListView):
     model = Products
     template_name = 'product/shop.html'
     context_object_name = 'products'
-    paginate_by = 10
+    paginate_by = 12
 
     def get_queryset(self):
-        queryset = Products.objects.all()
+        queryset = Products.objects.filter(is_deleted=False)
+        slug = self.kwargs.get('slug', None)
+        category = get_object_or_404(CategoryProduct, slug=slug) if slug else None
+        queryset = queryset.filter(category=category.id) if category else queryset
         # sorting logic
         sort_option = self.request.GET.get('sort', 'latest')
         if sort_option == 'latest':
@@ -26,13 +30,23 @@ class AllProductView(ListView):
             queryset = queryset.order_by('-price')
         elif sort_option == 'cheapest':
             queryset = queryset.order_by('price')
-
         price_range = self.request.GET.get('price', 'all')
         if price_range != 'all':
             min_price, max_price = map(int, price_range.split('-'))
             queryset = queryset.filter(price__gte=min_price, price__lte=max_price)
-
         return queryset
+
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        paginator = Paginator(queryset, self.paginate_by)
+        page = self.request.GET.get('page')
+        try:
+            products = paginator.page(page)
+        except PageNotAnInteger:
+            products = paginator.page(1)
+        except EmptyPage:
+            products = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"products": products})
 
 
 class ProductDetailView(DetailView):
