@@ -26,3 +26,8 @@ class CommentReplyForm(forms.ModelForm):
         fields = ('content',)
         widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 500px;'})}
         validators = [MaxLengthValidator(limit_value=1000)]
+
+
+class ProductSearchForm(forms.Form):
+    search = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'search for product',
+                                                           'style': 'width: 350px;height:45px;'},))

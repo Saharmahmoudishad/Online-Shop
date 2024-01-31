@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView
 from core.models import Image, Comment
-from product.forms import CommentToManagerForm, CommentReplyForm
+from product.forms import CommentToManagerForm, CommentReplyForm, ProductSearchForm
 from product.models import Products, Variants, CategoryProduct, Vote
 
 
@@ -17,6 +17,7 @@ class AllProductView(ListView):
     model = Products
     template_name = 'product/shop.html'
     context_object_name = 'products'
+    form_class = ProductSearchForm
     paginate_by = 12
 
     def get_queryset(self):
@@ -39,6 +40,11 @@ class AllProductView(ListView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        form = self.form_class
+        products = Products.objects.all()
+        if request.GET.get('search'):
+            products = products.filter(title__contains=request.GET['search'])
+            return render(request, 'product/shop.html', {'products': products, 'form': self.form_class})
         queryset = self.get_queryset()
         paginator = Paginator(queryset, self.paginate_by)
         page = self.request.GET.get('page')
@@ -48,7 +54,7 @@ class AllProductView(ListView):
             products = paginator.page(1)
         except EmptyPage:
             products = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"products": products})
+        return render(request, self.template_name, {"products": products, 'form': form})
 
 
 class ProductDetailView(DetailView):
