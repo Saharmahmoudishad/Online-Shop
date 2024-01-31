@@ -180,59 +180,99 @@
                             <p>{{product.description}}</p>
                         </div>
                         <div class="tab-pane fade" id="tab-pane-3">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {% for comment in comments %}
-                                    <div class="media mb-4">
-                                        <img src="{% static 'img/customers.jpeg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 100px;">
-                                        <div class="media-body">
-                                            <h6>{{comment.user}}<small> - <i>{{comment.created}}</i></small></h6>
-                                            <div class="text-primary mb-2">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                                <i class="far fa-star"></i>
-                                            </div>
-                                            <p>{{comment.content}}</p>
-                                        </div>
-                                    </div>
-                                    {% endfor %}
-                                </div>
+                             <div class="row">
+                                 <div class="col-md-6">
+                                     <p>{{ comments.count }}comments</p>
+                                     {% for comment in comments %}
+                                     <div class="media mb-4">
+                                         <img src="{% static 'img/customers.jpeg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 100px;">
+                                         <div class="media-body">
+                                             <h6>{{ comment.user }}<small> - <i>{{ comment.created|timesince }}</i></small></h6>
+                                             <div class="text-primary mb-2">
+                                                 <i class="fas fa-star"></i>
+                                                 <i class="fas fa-star"></i>
+                                                 <i class="fas fa-star"></i>
+                                                 <i class="fas fa-star-half-alt"></i>
+                                                 <i class="far fa-star"></i>
+                                             </div>
+                                             <p>{{ comment.content }}</p>
+                                             {% if comment.replies.exists %}
+                                             <div class="ml-4">
+                                                 <strong>Replies:</strong>
+                                                 {% include 'include/nested_comment.html' %}
+                                             </div>
+                                             {% endif %}
+                                             {% if request.user.is_authenticated %}
+                                             <form class="" method="post" action="{% url 'product:reply_product_comment' product.slug comment.id %}">
+                                                 {% csrf_token %}
+                                                 <!-- Hidden field for parent comment ID -->
+                                                 <p> {{ request.user }}</p>
+                                                 <div class="form-group">
+                                                     <label for="message">{{ form_reply.content.label_tag }} *</label>
+                                                     <div>{{ form_reply.content }}</div>
+                                                 </div>
+                                                     <button type="submit" class="btn btn-success btn-block" style="background-color: rgb(23,20,10);border: 1px solid #000000;">
+                                             {% if parent_comment_id %}
+                                                 Reply to Comment
+                                                         {% else %}
+                                                             Add Comment
+                                                         {% endif %}
+                                                     </button>
+                                                     {% else %}
+                                                     <p>only Logged in users can comment</p>
+                                                     {% endif %}
+                                             </form>
+                                         </div>
+                                     </div>
+                                     {% empty %}
+                                     <p>leave your comment</p>
+                                     {% endfor %}
+                                 </div>
+                                 <div class="col-md-6">
+                                     <h4 class="mb-4">Leave a Comment</h4>
+                                     <div class="d-flex my-3">
+                                         <p class="mb-0 mr-2">Your Rating * :</p>
+                                         <div class="text-primary">
+                                             <i class="far fa-star"></i>
+                                             <i class="far fa-star"></i>
+                                             <i class="far fa-star"></i>
+                                             <i class="far fa-star"></i>
+                                             <i class="far fa-star"></i>
+                                         </div>
+                                     </div>
+                                     <form class="" method="post" action="{% url 'product:product_detail' product.slug  %}">
+                                         {% csrf_token %}
+                                         <!-- Hidden field for parent comment ID -->
+                                         <input type="hidden" name="parent_comment_id" value="{{ parent_comment_id }}" />
 
-                                <div class="col-md-6">
-                                    <h4 class="mb-4">Leave a Comments</h4>
-                                    <small>Your email address will not be published. Required fields are marked *</small>
-                                    <div class="d-flex my-3">
-                                        <p class="mb-0 mr-2">Your Rating * :</p>
-                                        <div class="text-primary">
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                    </div>
-                                    <form class="" method="post" action="#">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <label for="message">{{ form.content.label_tag }} *</label>
-                                            <div>{{ form.content}}</div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="name">Your Name *</label>
-                                            <input type="text" class="form-control" id="name" placeholder={{request.user}}>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="email">Your Email *</label>
-                                            <input type="email" class="form-control" id="email"placeholder={{request.user.email}}>
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <button type="submit" class="btn btn-success btn-block " style="background-color: rgb(23,20,10);border: 1px solid #000000;" >Add Comment</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                                         <div class="form-group">
+                                             <label for="message">{{ form.content.label_tag }} *</label>
+                                             <div>{{ form.content }}</div>
+                                         </div>
+                                         <div class="form-group">
+                                             <label for="name">Your Name *</label>
+                                             <input type="text" class="form-control" id="name" placeholder="{{ request.user }}">
+                                         </div>
+                                         <div class="form-group">
+                                             <label for="email">Your Email *</label>
+                                             <input type="email" class="form-control" id="email" placeholder="{{ request.user.email }}">
+                                         </div>
+                                         <div class="form-group mb-0">
+                                             {% if request.user.is_authenticated %}
+                                             <button type="submit" class="btn btn-success btn-block" style="background-color: rgb(23,20,10);border: 1px solid #000000;">
+                                                 {% if parent_comment_id %}
+                                                     Reply to Comment
+                                                 {% else %}
+                                                     Add Comment
+                                                 {% endif %}
+                                             </button>
+                                             {% else %}
+                                             <p>only Logged in users can comment</p>
+                                             {% endif %}
+                                         </div>
+                                     </form>
+                                 </div>
+                             </div>
                         </div>
                     </div>
                 </div>
