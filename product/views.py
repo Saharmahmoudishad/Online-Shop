@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, render, redirect
@@ -6,7 +7,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView
 from core.models import Image, Comment
 from product.forms import CommentToManagerForm, CommentReplyForm
-from product.models import Products, Variants, CategoryProduct
+from product.models import Products, Variants, CategoryProduct, Vote
 
 
 class AllProductView(ListView):
@@ -97,11 +98,7 @@ class ProductDetailView(DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class LoginRequireMixin:
-    pass
-
-
-class ReplyProductCommentView(LoginRequireMixin, View):
+class ReplyProductCommentView(LoginRequiredMixin, View):
     form_class = CommentReplyForm
 
     def post(self, request, product_slug, comment_id):
@@ -118,7 +115,15 @@ class ReplyProductCommentView(LoginRequireMixin, View):
             reply.parent_comment = comment
             # reply.is_reply = True
             reply.save()
-        return redirect ('product:product_detail', product.slug)
+        return redirect('product:product_detail', product.slug)
 
 
-
+class ProductLikeView(LoginRequiredMixin, View):
+    def get(self, request, product_id):
+        product = get_object_or_404(Products, id=product_id)
+        like = Vote.objects.filter(product=product, user=request.user)
+        if like.exists():
+            like.delete()
+        else:
+            Vote.objects.create(product=product, user=request.user)
+        return redirect('product:product_detail', product.slug)

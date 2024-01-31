@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Brand(SoftDeleteMixin):
     title = models.CharField(max_length=300, verbose_name=_("Title"), unique=True)
-    slug = models.SlugField(max_length=300,null=True, blank=True, verbose_name=_("slug"))
+    slug = models.SlugField(max_length=300, null=True, blank=True, verbose_name=_("slug"))
 
     class Meta:
         verbose_name = _('Brand')
@@ -111,7 +111,7 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
         verbose_name_plural = _("Products Categories")
 
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'slug': self.slug})
+        return reverse('product:category_filter', kwargs={'slug': self.slug})
 
     def __str__(self):
         if self.parent:
@@ -141,8 +141,8 @@ class Products(SoftDeleteMixin):
     VARIANTS = (('None', 'None'), ('Size', 'Size'), ('Color', 'Color'),
                 ('Size-Color', 'Size-Color'),
                 ('Size-Color-material', 'Size-Color_material'), ('Size-Color', 'Size-Color'))
-    category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",
-                                 verbose_name=_("category"))
+    category = models.ManyToManyField(CategoryProduct, related_name="products",
+                                      verbose_name=_("category"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
     tags = TaggableManager()
     description = models.TextField(verbose_name=_("description"))
@@ -174,6 +174,15 @@ class Products(SoftDeleteMixin):
             return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
+    def likes_count(self, ):
+        return self.pvotes.count()
+
+    def user_can_like(self,user):
+        user_like = user.uvotes.filter(product=self)
+        if user_like.exists():
+            return True
+        return False
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
@@ -191,7 +200,7 @@ class Variants(SoftDeleteMixin):
                               verbose_name=_("color"))
     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="Variants", null=True,
                                  verbose_name=_("material"))
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="Variants", null=True,blank=True,
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="Variants", null=True, blank=True,
                                   verbose_name=_("attribute"))
     price = models.PositiveIntegerField(default=0, verbose_name=_("price"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("quantity"))
@@ -222,3 +231,12 @@ class DiscountProduct(SoftDeleteMixin):
 
     def __str__(self):
         return f'{self.title}_{self.amount}'
+
+
+class Vote(models.Model):
+    user = models.ForeignKey("customers.CustomUser", on_delete=models.CASCADE, blank=True, null=True,
+                             related_name='uvotes')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, blank=True, null=True, related_name='pvotes')
+
+    def __str__(self):
+        return f'{self.user}_{self.product}'
