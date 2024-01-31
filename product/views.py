@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
+from django.views import View
 from django.views.generic import ListView, DetailView
 from core.models import Image, Comment
-from product.forms import CommentToManagerForm
+from product.forms import CommentToManagerForm, CommentReplyForm
 from product.models import Products, Variants, CategoryProduct
 
 
@@ -68,12 +69,15 @@ class ProductDetailView(DetailView):
         product_images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products),
                                               object_id=context['product'].id)
         product_content_type = ContentType.objects.get_for_model(Products)
-        comments = Comment.objects.filter(content_type=product_content_type, object_id=context['product'].id)
+        comments = Comment.objects.filter(content_type=product_content_type, object_id=context['product'].id,
+                                          parent_comment__isnull=True)
         form = CommentToManagerForm
+        form_reply = CommentReplyForm
         context['comments'] = comments
         context['product_images'] = product_images
         context['product_variants'] = product_variants
         context['form'] = form
+        context['form_reply'] = form_reply
 
         return context
 
@@ -91,3 +95,30 @@ class ProductDetailView(DetailView):
                 )
                 messages.success(request, 'Comment added successfully.')
         return self.get(request, *args, **kwargs)
+
+
+class LoginRequireMixin:
+    pass
+
+
+class ReplyProductCommentView(LoginRequireMixin, View):
+    form_class = CommentReplyForm
+
+    def post(self, request, product_slug, comment_id):
+        product = get_object_or_404(Products, slug=product_slug)
+        comment = get_object_or_404(Comment, id=comment_id)
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            datas = form.cleaned_data
+            reply = form.save(commit=False)
+            reply.content = datas["content"]
+            reply.content_type = ContentType.objects.get_for_model(Products)
+            reply.object_id = product.id
+            reply.user = request.user
+            reply.parent_comment = comment
+            # reply.is_reply = True
+            reply.save()
+        return redirect ('product:product_detail', product.slug)
+
+
+
