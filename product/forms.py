@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import MaxLengthValidator
+
 from core.models import Comment
 
 
@@ -10,7 +12,8 @@ class CommentToManagerForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
-        widgets = {'body': forms.Textarea(attrs={'class': 'form-control'})}
+        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 630px;'})}
+        validators = [MaxLengthValidator(limit_value=1000)]
 
 
 class CommentReplyForm(forms.ModelForm):
@@ -21,4 +24,5 @@ class CommentReplyForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
-        widget = forms.Textarea(attrs={'class': 'form-control'})
+        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 500px;'})}
+        validators = [MaxLengthValidator(limit_value=1000)]
