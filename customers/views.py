@@ -184,6 +184,7 @@ class UserLoginByPassView(auth_view.LoginView):
 
     def form_valid(self, form):
         identifier_value = self.kwargs['identifier']
+        print("1"*50,identifier_value)
         super().form_valid(form)
         username_from_session = self.request.session.get('user_registration_info', {}).get(identifier_value)
         print("1" * 50, username_from_session)

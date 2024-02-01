@@ -135,7 +135,7 @@
                                            </div>
                                        </div>
                                        <div class="flex-fill pl-2">
-                                           <a href="{{child_info.get_absolute_url}}"><h6>{{ child_info.title }}</h6></a>
+                                           <a href="{{child_info.get_absolute_url}}">{{ child_info.title }}</a>
                                        </div>
                                    </div>
                                </a>
@@ -159,7 +159,8 @@
                                 {% endif %}
                                 <div class="product-action">
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                                     <a class="btn btn-outline-dark btn-square" href="{% url 'product:product_like' product.id %}">{{product.likes_count}}
+                                        <i class="far fa-heart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                                 </div>
@@ -167,7 +168,11 @@
                             <div class="text-center py-4">
                                 <a class="h6 text-decoration-none text-truncate" href="{{product.get_absolute_url}}">{{ product.title }}</a>
                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>${{ product.price }}</h5><h6 class="text-muted ml-2"><del>${{ product.price }}</del></h6>
+                                {% if product.discount_products.exists %}
+                                 <h5>{{ product.final_price }}</h5><h6 class="text-muted ml-2"><del>{{ product.price }}</del></h6>
+                                 {% else %}
+                                 <h5>{{ product.price }}</h5>
+                                 {% endif %}
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
                                     <small class="fa fa-star text-primary mr-1"></small>
@@ -223,7 +228,8 @@
                           {% endif %}
                         <div class="product-action">
                             <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
+                             <a class="btn btn-outline-dark btn-square" href="{% url 'product:product_like' recent_product.id %}">{{recent_product.likes_count}}
+                             <i class="far fa-heart"></i></a>
                             <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
                             <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                         </div>
@@ -231,7 +237,11 @@
                     <div class="text-center py-4">
                         <a class="h6 text-decoration-none text-truncate" href="{{recent_product.get_absolute_url}}">{{recent_product.title}}</a>
                         <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>{{recent_product.price}}</h5><h6 class="text-muted ml-2"><del>{{recent_product.price}}</del></h6>
+                            {% if recent_product.discount_products.exists %}
+                            <h5>{{ recent_product.final_price }}</h5><h6 class="text-muted ml-2"><del>{{ recent_product.price }}</del></h6>
+                            {% else %}
+                            <h5>{{ recent_product.price }}</h5>
+                            {% endif %}
                         </div>
                         <div class="d-flex align-items-center justify-content-center mb-1">
                             <small class="fa fa-star text-primary mr-1"></small>
