@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
@@ -157,7 +158,6 @@ class Products(SoftDeleteMixin):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products",
                              verbose_name=_("user"))
 
-    # like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
     def __str__(self):
         return self.title
 
@@ -177,11 +177,24 @@ class Products(SoftDeleteMixin):
     def likes_count(self, ):
         return self.pvotes.count()
 
-    def user_can_like(self,user):
+    def user_can_like(self, user):
         user_like = user.uvotes.filter(product=self)
         if user_like.exists():
             return True
         return False
+
+    def final_price(self):
+        try:
+            discount_product = self.discount_products.first()
+            if discount_product:
+                if discount_product.amount_type == 'amount':
+                    return self.price - discount_product.amount
+                elif discount_product.amount_type == 'percentage':
+                    return self.price - (self.price * float(discount_product.amount))
+        except DiscountProduct.DoesNotExist:
+            pass
+
+        return self.price
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -220,9 +233,14 @@ class Variants(SoftDeleteMixin):
 
 
 class DiscountProduct(SoftDeleteMixin):
+    AMOUNT_TYPE_CHOICES = [('amount', _('Amount')), ('percentage', _('Percentage')), ]
     title = models.CharField(max_length=255, verbose_name=_("Title"))
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name=_("Product"))
-    deadline = models.DateTimeField(verbose_name=_("Deadline"))
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name=_("Product"),
+                                related_name='discount_products')
+    deadline_duration = models.DurationField(default=timedelta(days=7), verbose_name=_("Deadline Duration"))
+    deadline = models.DateTimeField(verbose_name=_("Deadline"), null=True, blank=True)
+    amount_type = models.CharField(max_length=10, choices=AMOUNT_TYPE_CHOICES, default='amount',
+                                   verbose_name=_("Amount Type"))
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Amount"))
 
     class Meta:
@@ -230,7 +248,7 @@ class DiscountProduct(SoftDeleteMixin):
         verbose_name_plural = _("Discount Products")
 
     def __str__(self):
-        return f'{self.title}_{self.amount}'
+        return f'{self.amount_type}_{self.amount}'
 
 
 class Vote(models.Model):

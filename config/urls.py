@@ -32,5 +32,5 @@ urlpatterns += i18n_patterns(
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('core.urls', namespace='home')),
     path('customers/', include('customers.urls', namespace='customers')),
-    path('catalog/', include('product.urls', namespace='product')),
+    path('category/', include('product.urls', namespace='product')),
 )

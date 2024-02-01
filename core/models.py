@@ -1,6 +1,8 @@
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from core.mixins import SoftDeleteMixin
@@ -12,11 +14,18 @@ class Comment(SoftDeleteMixin):
     object_id = models.PositiveIntegerField(verbose_name=_("object id"))
     content_object = GenericForeignKey('content_type', 'object_id')
     user = models.ForeignKey("customers.CustomUser", on_delete=models.CASCADE, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"),)
+    created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"), )
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
 
     class Meta:
         verbose_name = _('Comment')
         verbose_name_plural = _("Comments")
+
+    def __str__(self):
+        return self.parent_comment
+
+    def get_absolute_url(self):
+        return reverse('core:comment_detail', )
 
 
 class Image(SoftDeleteMixin):
@@ -28,6 +37,8 @@ class Image(SoftDeleteMixin):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _("Images")
+
+
 
     def image_tag(self):
         if self.image:

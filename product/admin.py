@@ -10,18 +10,11 @@ class ImageInline(admin.TabularInline):
     extra = 1
 
 
-class ProductInline(admin.TabularInline):
-    model = Products
-    readonly_fields = ('id',)
-    extra = 1
-
-
 class CategoryProductAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
     list_display = ('tree_actions', 'indented_title',
                     'related_products_count', 'related_products_cumulative_count', "status", "image_tag",)
     list_display_links = ('indented_title',)
-    inlines = [ProductInline]
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -83,22 +76,22 @@ class VariantsInline(admin.TabularInline):
     extra = 1
 
 
-
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "category", "status", "image_tag", ]
+    list_display = ["title", "status", "image_tag", ]
     search_fields = ["category__title", "title", ]
     list_filter = ["category", "quantity"]
-    inlines = [VariantsInline,]
+    inlines = [VariantsInline, ]
 
 
 class VariantsAdmin(admin.ModelAdmin):
     list_display = ["title", "color", "size", "brand", "material", "attribute", "price", "quantity", ]
+    raw_id_fields = ("product",)
     search_fields = ["product__title", 'brand__name']
     list_filter = ["product", "title", "quantity"]
 
 
 class DiscountProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "product", "deadline", "amount", ]
+    list_display = ["title", "deadline_duration", "amount", ]
     list_filter = ["title", ]
 
 
@@ -111,3 +104,4 @@ admin.site.register(Attribute, AttributeAdmin)
 admin.site.register(Products, ProductAdmin)
 admin.site.register(Variants, VariantsAdmin)
 admin.site.register(DiscountProduct, DiscountProductAdmin)
+

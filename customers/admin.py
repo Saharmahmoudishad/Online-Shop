@@ -19,7 +19,6 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
         ("Personal info", {"fields": ["phonenumber", "firstname", "lastname", ]}),
-        # ("Address info", {"fields": ["user_city", "user_address", "user_postcode", ]}),
         ("General info", {"fields": ["how_know_us", "is_deleted"]}),
         ("Permissions", {"fields": ["is_active", "is_admin", "groups", "user_permissions"]}),
     ]

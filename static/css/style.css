@@ -9734,4 +9734,6 @@ a.text-dark:hover, a.text-dark:focus {
     color: black;
 }
 
-
+a{
+  color: #565454;
+}

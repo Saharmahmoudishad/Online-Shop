@@ -30,6 +30,11 @@ class RequestRegisterView(FormView):
     token_generator = default_token_generator
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('core:home')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         email = form.cleaned_data['email']
         self.request.session['user_registration_info'] = {'email': email}
@@ -54,6 +59,11 @@ class CompleteRegisterByEmailView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('core:home')
     form_class = UserCreationForm
     success_message = 'Account created successfully. You can now log in.'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('core:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -115,6 +125,7 @@ class RequestRegisterByPhoneView(View):
         if form.is_valid():
             phone = form.cleaned_data['phonenumber']
             otp_code = generate_and_store_otp(phone)
+            print("1" * 50, otp_code)
             # kave_negar_token_send(phone, otp_code)
             request.session['user_registration_info'] = {'phone': phone}
             messages.success(request, "send registeration code to your Phone Number", "success")
@@ -172,23 +183,30 @@ class UserLoginByPassView(auth_view.LoginView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        email_from_session = self.request.session.get('user_registration_info', {}).get('email')
-        if email_from_session:
-            form.cleaned_data['username'] = email_from_session
-            user = authenticate(self.request, email=email_from_session, password=form.cleaned_data['password'])
-            if user is not None:
-                login(self.request, user)
+        identifier_value = self.kwargs['identifier']
+        super().form_valid(form)
+        username_from_session = self.request.session.get('user_registration_info', {}).get(identifier_value)
+        print("1" * 50, username_from_session)
+        if username_from_session:
+            form.cleaned_data['username'] = username_from_session
+            if identifier_value =='email':
+               user_login = authenticate(self.request, username=username_from_session, password=form.cleaned_data['password'])
+            else:
+                user_login = authenticate(self.request, username=username_from_session, password=form.cleaned_data['password'])
+                print("2" * 50, user_login)
+            if user_login is not None:
+                login(self.request, user_login)
                 return redirect(reverse('core:home'))
-        return redirect(reverse('customers:user_login_by_pass'))
+        return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier': identifier_value}))
 
     def form_invalid(self, form):
         messages.error(self.request, 'Invalid login credentials. Please try again.')
-        return redirect(reverse('customers:user_login_by_pass'))
+        return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier':self.kwargs['identifier']}))
 
 
 class UserLogoutView(auth_view.LogoutView):
     """handle logout of users"""
+
     def get_success_url(self):
         return self.request.GET.get('next', reverse_lazy('core:home'))
 

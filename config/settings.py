@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'taggit',
     'translated_fields',
     'social_django',
+    'mptt',
+    'django_mptt_admin',
 ]
 
 MIDDLEWARE = [
@@ -121,7 +123,7 @@ CACHES = {
         }
     }
 }
-CACHE_TTL = 60 * 15
+CACHE_TTL = 60 * 1
 
 # Configure Django-Heroku if using Heroku
 # django_heroku.settings(locals())
@@ -217,11 +219,14 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE
 # Other Django settings...
 MPTT_ALLOW_TESTING_GENERATORS = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 15*60
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 

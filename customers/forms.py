@@ -91,3 +91,4 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={"class": "form-control", "autocomplete": "off", 'placeholder': 'Enter your password',
                "style": "background: transparent !important;"}), help_text="forgot your" "password", )
+

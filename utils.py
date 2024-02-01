@@ -17,7 +17,7 @@ def generate_and_store_otp(phone_or_email):
     else:
         otp_code = get_random_string(length=6, allowed_chars="0123456789")
         data_to_cache = {"otp_code": otp_code}
-        cache.set(cache_key, data_to_cache, timeout=60)
+        cache.set(cache_key, data_to_cache, timeout=259200)
     return otp_code
 
 
@@ -28,7 +28,7 @@ def send_otpcode_email(email, otp_code):
     plain_message = strip_tags(html_message)
     from_email = settings.EMAIL_HOST_USER
     to_email = [email]
-    send_email_task(subject, plain_message, from_email, to_email, html_message=html_message)
+    send_email_task.delay(subject, plain_message, from_email, to_email, html_message=html_message)
 
 
 def send_registration_email(email, uidb64, token_generator, protocol, domain):
@@ -40,7 +40,7 @@ def send_registration_email(email, uidb64, token_generator, protocol, domain):
     plain_message = strip_tags(html_message)
     from_email = settings.EMAIL_HOST_USER
     to_email = [email]
-    send_email_task(subject, plain_message, from_email, to_email, html_message=html_message)
+    send_email_task.delay(subject, plain_message, from_email, to_email, html_message=html_message)
 
 
 def kave_negar_token_send(receptor, token):

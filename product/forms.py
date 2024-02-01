@@ -12,7 +12,7 @@ class CommentToManagerForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
-        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 630px;'})}
+        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 400px;'})}
         validators = [MaxLengthValidator(limit_value=1000)]
 
 
@@ -24,7 +24,7 @@ class CommentReplyForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('content',)
-        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 500px;'})}
+        widgets = {'content': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 300px; height:40px;'})}
         validators = [MaxLengthValidator(limit_value=1000)]
 
 
