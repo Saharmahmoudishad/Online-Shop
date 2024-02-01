@@ -9,8 +9,8 @@ class TestAllProductView(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.categoryproduct = baker.make(CategoryProduct, title='Test category product')
-        self.product = Products.objects.create(title="Sample Product", price=100.00, category=self.categoryproduct,
-                                               detail="", slug="0")
+        self.product = Products.objects.create(title="Sample Product", price=100.00, detail="", slug="0")
+        self.product.category.add(self.categoryproduct)
 
     def test_sort_latest(self):
         request = self.factory.get(reverse('product:products'))
@@ -29,7 +29,7 @@ class TestAllProductView(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
-        """Delete the test data created in setUp"""
+        self.product.category.clear()
         self.product.delete()
         self.categoryproduct.delete()
 
@@ -37,14 +37,19 @@ class TestAllProductView(TestCase):
 class TestProductDetailView(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
-        self.product = baker.make(Products, slug='Sample_Product')
+        self.product = baker.make(Products, slug='Sample_Product', detail="")
 
     def test_context_data(self):
         request = self.factory.get(reverse('product:product_detail', kwargs={'slug': 'Sample_Product'}))
         response = ProductDetailView.as_view()(request, slug='Sample_Product')
+
         self.assertEqual(response.status_code, 200)
-        self.assertIn('product', response.context)
-        self.assertIn('product_variants', response.context)
-        self.assertIn('product_images', response.context)
-        self.assertIn('comments', response.context)
-        self.assertIn('form', response.context)
+
+        context_data = response.context_data
+
+        self.assertIn('product', context_data)
+        self.assertIn('product_variants', context_data)
+        self.assertIn('product_images', context_data)
+        self.assertIn('comments', context_data)
+        self.assertIn('form', context_data)
+        self.assertIn('form_reply', context_data)

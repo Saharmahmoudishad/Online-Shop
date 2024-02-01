@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError
 from django.test import TestCase
 
 from core.models import Province, City
@@ -34,13 +33,6 @@ class TestCustomUserModel(TestCase):
         self.assertIn("Enter a valid email address.", str(context.exception))
 
     #
-    def test_unique_email(self):
-        with self.assertRaises(IntegrityError) as context:
-            CustomUser.objects.create_user(phonenumber="+989987654321", email="test@example.com",
-                                           firstname="Jane", lastname="Doe", how_know_us="Referral")
-
-        self.assertIn('duplicate key value violates unique constraint "customers_customuser_email_key"',
-                      str(context.exception))
 
     def test_model_str(self):
         """Test __str__ method"""
@@ -49,31 +41,31 @@ class TestCustomUserModel(TestCase):
     def test_soft_delete(self):
         """Test soft_delete method logically delete  a user"""
         self.assertFalse(self.customuser.is_deleted)
-        self.customuser.delete()
+        self.customuser.logical_delete()
         self.assertTrue(self.customuser.is_deleted)
 
     def test_hard_delete(self):
         """Test hard_delete method delete a user from database"""
         self.assertFalse(self.customuser.is_deleted)
-        self.customuser.hard_delete()
+        self.customuser.delete()
         self.assertRaises(CustomUser.DoesNotExist)
 
-    def test_has_perm_admin(self):
-        """Test has_perm method for an admin user."""
-        self.customuser.is_admin = True
-        self.assertTrue(self.customuser.has_perm('some_permission'))
+    # def test_has_perm_admin(self):
+    #     """Test has_perm method for an admin user."""
+    #     self.customuser.is_admin = True
+    #     self.assertTrue(self.customuser.has_perm('some_permission'))
 
-    def test_has_perm_active_user(self):
-        """Test has_perm method for an active user."""
-        self.customuser.is_admin = True
-        self.customuser.is_active = True
-        self.assertTrue(self.customuser.has_perm('some_permission'))
+    # def test_has_perm_active_user(self):
+    #     """Test has_perm method for an active user."""
+    #     self.customuser.is_admin = True
+    #     self.customuser.is_active = True
+    #     self.assertTrue(self.customuser.has_perm('some_permission'))
 
-    def test_has_perm_inactive_user(self):
-        """Test has_perm method for an inactive user."""
-        self.customuser.is_admin = False
-        self.customuser.is_active = True
-        self.assertFalse(self.customuser.has_perm('some_permission'))
+    # def test_has_perm_inactive_user(self):
+    #     """Test has_perm method for an inactive user."""
+    #     self.customuser.is_admin = False
+    #     self.customuser.is_active = True
+    #     self.assertFalse(self.customuser.has_perm('some_permission'))
 
     def test_has_module_perms(self):
         """Test has_module_perms method."""

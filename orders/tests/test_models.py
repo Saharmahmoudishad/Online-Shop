@@ -21,7 +21,7 @@ class OrderModelTest(TestCase):
 
 class OrderItemModelTest(TestCase):
     def setUp(self):
-        self.user = baker.make(CustomUser, firstname='sahar', lastname='mahmoudishad')
+        self.user = baker.make(CustomUser, firstname='sahar', lastname='mahmoudi')
         self.product = baker.make(Products, detail='0')
         self.order = Order.objects.create(user=self.user, status='order')
         self.orderitem = OrderItem.objects.create(quantity=2, delivery_cost=5, order=self.order)
@@ -36,13 +36,13 @@ class OrderItemModelTest(TestCase):
 
     def test_order_item_str_method(self):
         """Test the __str__ method"""
-        self.assertEqual(str(self.orderitem), str(self.order))
+        self.assertEqual(str(self.order))
 
 
 class ReceiptModelTest(TestCase):
 
     def setUp(self):
-        self.user = baker.make(CustomUser, firstname='sahar', lastname='mahmoudishad')
+        self.user = baker.make(CustomUser, firstname='sahar', lastname='mahmoudi')
         self.order = Order.objects.create(user=self.user, status='order')
         self.receipt = Receipt.objects.create(order=self.order, calculation="0")
 
