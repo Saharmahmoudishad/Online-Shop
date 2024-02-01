@@ -43,10 +43,9 @@ class OrderItem(SoftDeleteMixin):
 
 
 class Receipt(SoftDeleteMixin):
-    time = models.DateTimeField(auto_now_add=True,verbose_name=_("Time"))
+    time = models.DateTimeField(auto_now_add=True, verbose_name=_("Time"))
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='receipt_order', verbose_name=_("order"))
     calculation = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Calculation"))
-
 
     class Meta:
         ordering = ['-time']
@@ -56,4 +55,3 @@ class Receipt(SoftDeleteMixin):
 
     def __str__(self):
         return f"{self.time}"
-

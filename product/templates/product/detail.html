@@ -263,7 +263,7 @@
                         </div>
                     </div>
                     <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="{{recent_product.get_absolute_url}}">{{related_product.title}}</a>
+                        <a class="h6 text-decoration-none text-truncate" href="{{related_product.get_absolute_url}}">{{related_product.title}}</a>
                         <div class="d-flex align-items-center justify-content-center mt-2">
                             {% if related_product.discount_products.exists %}
                             <h5>{{ related_product.final_price }}</h5><h6 class="text-muted ml-2"><del>{{ related_product.price }}</del></h6>
