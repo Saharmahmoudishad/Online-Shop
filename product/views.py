@@ -18,7 +18,7 @@ class AllProductView(ListView):
     template_name = 'product/shop.html'
     context_object_name = 'products'
     form_class = ProductSearchForm
-    paginate_by = 12
+    paginate_by = 8
 
     def get_queryset(self):
         queryset = Products.objects.filter(is_deleted=False)
@@ -78,14 +78,15 @@ class ProductDetailView(DetailView):
         product_content_type = ContentType.objects.get_for_model(Products)
         comments = Comment.objects.filter(content_type=product_content_type, object_id=context['product'].id,
                                           parent_comment__isnull=True)
+        related_products = Products.objects.filter(tags__in=context['product'].tags.all()).exclude(id=context['product'].id).distinct()[:5]
         form = CommentToManagerForm
         form_reply = CommentReplyForm
+        context['related_products'] = related_products
         context['comments'] = comments
         context['product_images'] = product_images
         context['product_variants'] = product_variants
         context['form'] = form
         context['form_reply'] = form_reply
-
         return context
 
     def post(self, request, *args, **kwargs):
