@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.urls import reverse
@@ -15,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 class Brand(SoftDeleteMixin):
     title = models.CharField(max_length=300, verbose_name=_("Title"), unique=True)
-    slug = models.SlugField(max_length=300,null=True, blank=True, verbose_name=_("slug"))
+    slug = models.SlugField(max_length=300, null=True, blank=True, verbose_name=_("slug"))
 
     class Meta:
         verbose_name = _('Brand')
@@ -32,10 +33,10 @@ class Brand(SoftDeleteMixin):
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
 
@@ -111,7 +112,7 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
         verbose_name_plural = _("Products Categories")
 
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'slug': self.slug})
+        return reverse('product:category_filter', kwargs={'slug': self.slug})
 
     def __str__(self):
         if self.parent:
@@ -124,10 +125,10 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
         else:
             return self.title
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
     def save(self, *args, **kwargs):
@@ -138,11 +139,11 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
 
 class Products(SoftDeleteMixin):
     STATUS = (('True', 'True'), ('False', 'False'))
-    VARIANTS = (('None', 'None'), ('Brand-Size', 'Brand-Size'), ('Brand-Color', 'Brand-Color'),
-                ('Brand-Size-Color', 'Brand-Size-Color'),
-                ('Brand-Size-Color-material', 'Brand-Size-Color_material'), ('Brand-Size-Color', 'Brand-Size-Color'))
-    category = models.ForeignKey(CategoryProduct, on_delete=models.CASCADE, related_name="products",
-                                 verbose_name=_("category"))
+    VARIANTS = (('None', 'None'), ('Size', 'Size'), ('Color', 'Color'),
+                ('Size-Color', 'Size-Color'),
+                ('Size-Color-material', 'Size-Color_material'), ('Size-Color', 'Size-Color'))
+    category = models.ManyToManyField(CategoryProduct, related_name="products",
+                                      verbose_name=_("category"))
     title = models.CharField(max_length=150, verbose_name=_("title"))
     tags = TaggableManager()
     description = models.TextField(verbose_name=_("description"))
@@ -157,7 +158,6 @@ class Products(SoftDeleteMixin):
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products",
                              verbose_name=_("user"))
 
-    # like = models.ManyToManyField(CustomUser, through='Like', related_name='liked_item')
     def __str__(self):
         return self.title
 
@@ -166,13 +166,35 @@ class Products(SoftDeleteMixin):
         verbose_name_plural = _("Products")
 
     def get_absolute_url(self):
-        return reverse('category_detail', kwargs={'slug': self.slug})
+        return reverse('product:product_detail', kwargs={'slug': self.slug})
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
+
+    def likes_count(self, ):
+        return self.pvotes.count()
+
+    def user_can_like(self, user):
+        user_like = user.uvotes.filter(product=self)
+        if user_like.exists():
+            return True
+        return False
+
+    def final_price(self):
+        try:
+            discount_product = self.discount_products.first()
+            if discount_product:
+                if discount_product.amount_type == 'amount':
+                    return self.price - discount_product.amount
+                elif discount_product.amount_type == 'percentage':
+                    return self.price - (self.price * float(discount_product.amount))
+        except DiscountProduct.DoesNotExist:
+            pass
+
+        return self.price
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -182,16 +204,16 @@ class Products(SoftDeleteMixin):
 
 class Variants(SoftDeleteMixin):
     title = models.CharField(max_length=100, blank=True, null=True, verbose_name=_("title"))
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="products", verbose_name=_("product"))
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="products", null=True,
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name="Variants", verbose_name=_("product"))
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name="Variants", null=True,
                               verbose_name=_("brand"))
-    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="products", null=True,
+    size = models.ForeignKey(Size, on_delete=models.SET_NULL, related_name="Variants", null=True,
                              verbose_name=_("size"))
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="products", null=True,
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="Variants", null=True,
                               verbose_name=_("color"))
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="products", null=True,
+    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="Variants", null=True,
                                  verbose_name=_("material"))
-    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="products", null=True,
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE, related_name="Variants", null=True, blank=True,
                                   verbose_name=_("attribute"))
     price = models.PositiveIntegerField(default=0, verbose_name=_("price"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("quantity"))
@@ -203,17 +225,22 @@ class Variants(SoftDeleteMixin):
     def __str__(self):
         return self.title
 
-    def image_tag(self):
+    def image_tag(self, width=120, height=120):
         images = Image.objects.filter(content_type=ContentType.objects.get_for_model(self), object_id=self.id)
         if images.exists():
-            return mark_safe('<img src="{}" height="50"/>'.format(images.first().image.url))
+            return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
 
 class DiscountProduct(SoftDeleteMixin):
+    AMOUNT_TYPE_CHOICES = [('amount', _('Amount')), ('percentage', _('Percentage')), ]
     title = models.CharField(max_length=255, verbose_name=_("Title"))
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name=_("Product"))
-    deadline = models.DateTimeField(verbose_name=_("Deadline"))
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, verbose_name=_("Product"),
+                                related_name='discount_products')
+    deadline_duration = models.DurationField(default=timedelta(days=7), verbose_name=_("Deadline Duration"))
+    deadline = models.DateTimeField(verbose_name=_("Deadline"), null=True, blank=True)
+    amount_type = models.CharField(max_length=10, choices=AMOUNT_TYPE_CHOICES, default='amount',
+                                   verbose_name=_("Amount Type"))
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Amount"))
 
     class Meta:
@@ -221,4 +248,13 @@ class DiscountProduct(SoftDeleteMixin):
         verbose_name_plural = _("Discount Products")
 
     def __str__(self):
-        return f'{self.title}_{self.amount}'
+        return f'{self.amount_type}_{self.amount}'
+
+
+class Vote(models.Model):
+    user = models.ForeignKey("customers.CustomUser", on_delete=models.CASCADE, blank=True, null=True,
+                             related_name='uvotes')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, blank=True, null=True, related_name='pvotes')
+
+    def __str__(self):
+        return f'{self.user}_{self.product}'

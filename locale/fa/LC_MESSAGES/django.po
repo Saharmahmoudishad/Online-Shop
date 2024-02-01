@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-18 01:08+0330\n"
+"POT-Creation-Date: 2024-01-31 12:14+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,80 +22,85 @@ msgstr ""
 msgid "Core"
 msgstr "هسته"
 
-#: core/models.py:10
+#: core/models.py:12
 msgid "Content"
 msgstr "محتوا"
 
-#: core/models.py:12 core/models.py:24
+#: core/models.py:14 core/models.py:34
 msgid "object id"
 msgstr " کد شی"
 
-#: core/models.py:17
+#: core/models.py:17 customers/models.py:32 product/models.py:103
+#: product/models.py:155
+msgid "created"
+msgstr "زمان ایجاد"
+
+#: core/models.py:21
 msgid "Comment"
 msgstr "پیفام"
 
-#: core/models.py:18
+#: core/models.py:22
 msgid "Comments"
 msgstr "پیفام‌ها"
 
-#: core/models.py:22
+#: core/models.py:32
 msgid "image"
 msgstr "تصویر"
 
-#: core/models.py:28
+#: core/models.py:38
 #: env/lib/python3.10/site-packages/django/db/models/fields/files.py:393
 msgid "Image"
 msgstr "تصویر"
 
-#: core/models.py:29
+#: core/models.py:39
 msgid "Images"
 msgstr "تصاویر"
 
-#: core/models.py:40
+#: core/models.py:53
 msgid "Province Name"
 msgstr "نام استان"
 
-#: core/models.py:43 core/models.py:49 customers/models.py:66
+#: core/models.py:56 core/models.py:62 customers/models.py:88
 msgid "Province"
 msgstr "استان"
 
-#: core/models.py:44
+#: core/models.py:57
 msgid "Provinces"
 msgstr "استان‌ها"
 
-#: core/models.py:48
+#: core/models.py:61
 msgid "City Name"
 msgstr "شهر"
 
-#: core/models.py:52 customers/models.py:67
+#: core/models.py:65 customers/models.py:89
 msgid "City"
 msgstr "شهر"
 
-#: core/models.py:53
+#: core/models.py:66
 msgid "Cites"
 msgstr "شهرها"
 
-#: core/models.py:57 product/models.py:17 product/models.py:204
+#: core/models.py:70 product/models.py:17 product/models.py:223
 msgid "Title"
 msgstr "عنوان"
 
-#: core/models.py:58 product/models.py:207
+#: core/models.py:71 product/models.py:226
 msgid "Amount"
 msgstr "حساب"
 
-#: core/models.py:59 product/models.py:206
+#: core/models.py:72 product/models.py:225
 msgid "Deadline"
 msgstr "تاریخ اتمام"
 
-#: core/models.py:61
+#: core/models.py:74
 msgid "Object ID"
 msgstr " کد شی"
 
-#: core/models.py:65
+#: core/models.py:78
 msgid "Discount"
 msgstr "حساب"
 
-#: core/models.py:66
+#: core/models.py:79
 msgid "Discounts"
 msgstr "حساب"
 
@@ -103,70 +108,73 @@ msgstr "حساب"
 msgid "Customers"
 msgstr "مشتریان"
 
-#: customers/models.py:22
+#: customers/models.py:25
 msgid "Phone number"
 msgstr "شماره تلفن"
 
-#: customers/models.py:23
+#: customers/models.py:26
 msgid "email address"
 msgstr "آدرس ایمیل"
 
-#: customers/models.py:25
+#: customers/models.py:28
 msgid "First name"
 msgstr "نام"
 
-#: customers/models.py:26
+#: customers/models.py:29
 msgid "Last name"
 msgstr "نام خانوادگی"
 
-#: customers/models.py:28
+#: customers/models.py:31
 msgid "how know us"
 msgstr "نحوی آشنایی با ما"
 
-#: customers/models.py:29 product/models.py:103 product/models.py:150
-msgid "created"
-msgstr "زمان ایجاد"
-
-#: customers/models.py:30 product/models.py:104 product/models.py:151
+#: customers/models.py:33 product/models.py:104 product/models.py:156
 msgid "updated"
 msgstr "زمان آخرین بروزرسانی"
 
-#: customers/models.py:31
+#: customers/models.py:34
 msgid "is active"
 msgstr "کاربر فعال"
 
-#: customers/models.py:32
+#: customers/models.py:35
 msgid "is admin"
 msgstr "کاربر ادمین"
 
-#: customers/models.py:35
+#: customers/models.py:39
 msgid "User"
 msgstr "کاربر"
 
-#: customers/models.py:36
+#: customers/models.py:40
 msgid "Users"
 msgstr "کاربران"
 
-#: customers/models.py:68
+#: customers/models.py:90
 msgid "address description"
 msgstr "توضیحات"
 
-#: customers/models.py:69
+#: customers/models.py:91
 msgid "post code"
 msgstr "کد پستی"
 
-#: customers/models.py:72
+#: customers/models.py:94
 msgid "Address"
 msgstr "آدرس"
 
-#: customers/models.py:73
+#: customers/models.py:95
 msgid "Addresses"
 msgstr "آدرس‌ها"
 
-#: customers/templates/customers/login.html:18
-#: customers/templates/customers/register.html:18
-#: customers/templates/customers/verify_code.html:18
-#: templates/partials/header.html:31
+#: customers/templates/customers/complete_register_by_email_form.html:18
+#: customers/templates/customers/login_bypassword.html:18
+#: customers/templates/customers/register_by_phone.html:18
+#: customers/templates/customers/registeration_by_email.html:17
+#: customers/templates/customers/resetpassword/password_reset_complete.html:18
+#: customers/templates/customers/resetpassword/password_reset_confirm.html:17
+#: customers/templates/customers/resetpassword/password_reset_done.html:18
+#: customers/templates/customers/resetpassword/password_resetform.html:18
+#: customers/templates/customers/verify_code.html:17
+#: customers/templates/customers/verify_code_toemail.html:18
+#: templates/partials/header.html:37
 msgid "Language"
 msgstr "زبان"
 
@@ -220,6 +228,287 @@ msgstr "بعد"
 #: env/lib/python3.10/site-packages/ckeditor_uploader/templates/ckeditor/browse.html:151
 msgid "&lsaquo; Prev"
 msgstr "قبل"
+
+#: env/lib/python3.10/site-packages/click/_termui_impl.py:518
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/_termui_impl.py:522
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1120
+msgid "Aborted!"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1309
+#: env/lib/python3.10/site-packages/click/decorators.py:559
+msgid "Show this message and exit."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1340
+#: env/lib/python3.10/site-packages/click/core.py:1370
+#, python-brace-format
+msgid "(Deprecated) {text}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1387
+msgid "Options"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1413
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1429
+msgid "DeprecationWarning: The command {name!r} is deprecated."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1636
+msgid "Commands"
+msgstr "پیفام‌ها"
+
+#: env/lib/python3.10/site-packages/click/core.py:1668
+msgid "Missing command."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:1746
+msgid "No such command {name!r}."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2310
+msgid "Value must be an iterable."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2331
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2778
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2808
+msgid "(dynamic)"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2821
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/core.py:2834
+msgid "required"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/decorators.py:528
+msgid "Show the version and exit."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:44
+#: env/lib/python3.10/site-packages/click/exceptions.py:80
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:72
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:121
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:123
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:179
+msgid "Missing argument"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:181
+msgid "Missing option"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:183
+msgid "Missing parameter"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:185
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:192
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:212
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:224
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:262
+
+msgid "unknown error"
+msgstr "نامشخص"
+
+#: env/lib/python3.10/site-packages/click/exceptions.py:269
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/parser.py:231
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/parser.py:413
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/parser.py:474
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/shell_completion.py:319
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/shell_completion.py:326
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:158
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:174
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:176
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:187
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:243
+msgid "Error: invalid input"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/termui.py:773
+msgid "Press any key to continue..."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:266
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:298
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/types.py:392
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: env/lib/python3.10/site-packages/click/types.py:414
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:470
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:611
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:635
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:822
+msgid "file"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:824
+msgid "directory"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:826
+msgid "path"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:877
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:886
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:894
+#, python-brace-format
+msgid "{name} '{filename}' is a directory."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:903
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:912
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:921
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: env/lib/python3.10/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
 
 #: env/lib/python3.10/site-packages/django/contrib/messages/apps.py:16
 msgid "Messages"
@@ -1433,6 +1722,21 @@ msgstr "انجمن جنگو"
 msgid "Connect, get help, or contribute"
 msgstr "ارتباط، کمک گرفتن یا کمک کردن، "
 
+#: env/lib/python3.10/site-packages/kombu/transport/qpid.py:1311
+#, python-format
+msgid "Attempting to connect to qpid with SASL mechanism %s"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/kombu/transport/qpid.py:1316
+#, python-format
+msgid "Connected to qpid with SASL mechanism %s"
+msgstr ""
+
+#: env/lib/python3.10/site-packages/kombu/transport/qpid.py:1334
+#, python-format
+msgid "Unable to connect to qpid with SASL mechanism %s"
+msgstr ""
+
 #: env/lib/python3.10/site-packages/modeltranslation/widgets.py:24
 msgid "None"
 msgstr "هیچ کدام"
@@ -1441,11 +1745,11 @@ msgstr "هیچ کدام"
 msgid "orders"
 msgstr "سفارشات"
 
-#: orders/models.py:12 product/models.py:153
+#: orders/models.py:12 product/models.py:158
 msgid "user"
 msgstr "کاربر"
 
-#: orders/models.py:13 product/models.py:100 product/models.py:149
+#: orders/models.py:13 product/models.py:100 product/models.py:154
 msgid "status"
 msgstr "موجود"
 
@@ -1457,7 +1761,7 @@ msgstr "محصول سفارش داده شده"
 msgid "Orders"
 msgstr "سفارشات"
 
-#: orders/models.py:32 product/models.py:145 product/models.py:187
+#: orders/models.py:32 product/models.py:150 product/models.py:206
 msgid "quantity"
 msgstr "مقدارـ تعداد"
 
@@ -1497,11 +1801,11 @@ msgstr "رسید"
 msgid "Receipts"
 msgstr "رسیدها"
 
-#: product/apps.py:8 product/models.py:160 product/models.py:205
+#: product/apps.py:8 product/models.py:165 product/models.py:224
 msgid "Product"
 msgstr "محصول"
 
-#: product/models.py:18 product/models.py:97 product/models.py:148
+#: product/models.py:18 product/models.py:97 product/models.py:153
 msgid "slug"
 msgstr "اسلاگ"
 
@@ -1537,7 +1841,7 @@ msgstr "جنس و مواد"
 msgid "Color"
 msgstr "رنگ"
 
-#: product/models.py:83 product/models.py:185
+#: product/models.py:83 product/models.py:204
 msgid "attribute"
 msgstr "خصوصیات"
 
@@ -1549,7 +1853,7 @@ msgstr "نوع"
 msgid "Attribute"
 msgstr "خصوصیات"
 
-#: product/models.py:96 product/models.py:141 product/models.py:174
+#: product/models.py:96 product/models.py:146 product/models.py:193
 msgid "title"
 msgstr "عنوان"
 
@@ -1557,7 +1861,7 @@ msgstr "عنوان"
 msgid "parent"
 msgstr "والد"
 
-#: product/models.py:102 product/models.py:143
+#: product/models.py:102 product/models.py:148
 msgid "description"
 msgstr "توضیحات"
 
@@ -1569,59 +1873,61 @@ msgstr "دسته‌بندی محصولات"
 msgid "Products Categories"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:140
+#: product/models.py:145
 msgid "category"
 msgstr "دسته‌بندی محصولات"
 
-#: product/models.py:144 product/models.py:186
+#: product/models.py:149 product/models.py:205
 msgid "price"
 msgstr "قیمت"
 
-#: product/models.py:146
+#: product/models.py:151
 msgid "variant"
 msgstr "گونه"
 
-#: product/models.py:147
+#: product/models.py:152
 msgid "detail"
 msgstr "جزییات"
 
-#: product/models.py:161
+#: product/models.py:166
 msgid "Products"
 msgstr "محصولات"
 
-#: product/models.py:175
+#: product/models.py:194
 msgid "product"
 msgstr "محصول"
 
-#: product/models.py:177
+#: product/models.py:196
 msgid "brand"
 msgstr "برند"
 
-#: product/models.py:179
+#: product/models.py:198
 msgid "size"
 msgstr "سایز"
 
-#: product/models.py:181
+#: product/models.py:200
 msgid "color"
 msgstr "رنگ"
 
-#: product/models.py:183
+#: product/models.py:202
 msgid "material"
 msgstr "جنس و مواد"
 
-#: product/models.py:190
+#: product/models.py:209
 msgid "Variant"
 msgstr "گونه"
 
-#: product/models.py:210
+#: product/models.py:229
 msgid "Discount Product"
 msgstr "تخفیف محصول"
 
-#: product/models.py:211
+#: product/models.py:230
 msgid "Discount Products"
 msgstr " تخیف محصولات"
 
-#: templates/index.html:4 templates/partials/navbar.html:43
+#: product/templates/product/detail.html:4
+#: product/templates/product/shop.html:4 templates/contact.html:4
+#: templates/index.html:4 templates/partials/navbar.html:44
 msgid "Home"
 msgstr "خانه"
 
@@ -1658,98 +1964,39 @@ msgstr "صرفه جویی 20%"
 msgid "Special Offer"
 msgstr "پیشنهاد ویژه"
 
-#: templates/partials/header.html:16
+#: templates/partials/header.html:22
 msgid "Account"
 msgstr "حساب"
 
-#: templates/partials/header.html:18
-msgid "My Sign in"
+#: templates/partials/header.html:24
+
+msgid "Sign up| Sign in"
 msgstr "ورود"
 
-#: templates/partials/header.html:19
-msgid "My Sign up"
-msgstr "ثبت نام "
-
-#: templates/partials/header.html:33
+#: templates/partials/header.html:39
 msgid "English"
 msgstr "انگلیسی"
 
-#: templates/partials/header.html:34
+#: templates/partials/header.html:40
 msgid "Persian"
 msgstr "فارسی"
 
-#: templates/partials/header.html:54 templates/partials/navbar.html:36
-#: templates/partials/navbar.html:44
+#: templates/partials/header.html:60 templates/partials/navbar.html:37
+#: templates/partials/navbar.html:45
 msgid "Shop"
 msgstr "فروشگاه"
 
-#: templates/partials/header.html:74
+#: templates/partials/header.html:80
 msgid "Customer Service"
 msgstr "سرویس مشتریان"
 
-#: templates/partials/navbar.html:7
+#: templates/partials/navbar.html:9
 msgid "Categories"
 msgstr "دسته‌بندی محصولات"
 
-#: templates/partials/navbar.html:13
-msgid "Dresses"
-msgstr "پیراهن"
-
-#: templates/partials/navbar.html:15
-msgid "Men's Dresses"
-msgstr "لباس آقایان"
-
-#: templates/partials/navbar.html:16
-msgid "Women's Dresses"
-msgstr "لباس بانوان"
-
-#: templates/partials/navbar.html:17
-msgid "Baby's Dresses"
-msgstr "لباس کودکان"
-
-#: templates/partials/navbar.html:20
-msgid "Shirts"
-msgstr "پیراهن"
-
-#: templates/partials/navbar.html:21
-msgid "Jeans"
-msgstr "جین"
-
-#: templates/partials/navbar.html:22
-msgid "Swimwear"
-msgstr "لباس شنا"
-
-#: templates/partials/navbar.html:23
-msgid "Sleepwear"
-msgstr "لباس خواب"
-
-#: templates/partials/navbar.html:24
-msgid "Sportswear"
-msgstr "لباس ورزشی"
-
-#: templates/partials/navbar.html:25
-msgid "Jumpsuits"
-msgstr "لباس سرهمی"
-
-#: templates/partials/navbar.html:26
-msgid "Blazers"
-msgstr "بلیز"
-
-#: templates/partials/navbar.html:27
-msgid "Jackets"
-msgstr "ٰژاکت"
-
-#: templates/partials/navbar.html:28
-msgid "Shoes"
-msgstr "کفش"
-
-#: templates/partials/navbar.html:35
+#: templates/partials/navbar.html:36
 msgid "Multi"
 msgstr "چندتا"
-
-#: templates/partials/navbar.html:45
-msgid "Shop Detail"
-msgstr "جزییات خرید"
 
 #: templates/partials/navbar.html:47
 msgid "Pages"
@@ -1766,6 +2013,51 @@ msgstr "تسویه حساب"
 #: templates/partials/navbar.html:53
 msgid "Contact"
 msgstr "محتوا"
+
+#~ msgid "Dresses"
+#~ msgstr "پیراهن"
+
+#~ msgid "Men's Dresses"
+#~ msgstr "لباس آقایان"
+
+#~ msgid "Women's Dresses"
+#~ msgstr "لباس بانوان"
+
+#~ msgid "Baby's Dresses"
+#~ msgstr "لباس کودکان"
+
+#~ msgid "Shirts"
+#~ msgstr "پیراهن"
+
+#~ msgid "Jeans"
+#~ msgstr "جین"
+
+#~ msgid "Swimwear"
+#~ msgstr "لباس شنا"
+
+#~ msgid "Sleepwear"
+#~ msgstr "لباس خواب"
+
+#~ msgid "Sportswear"
+#~ msgstr "لباس ورزشی"
+
+#~ msgid "Jumpsuits"
+#~ msgstr "لباس سرهمی"
+
+#~ msgid "Blazers"
+#~ msgstr "بلیز"
+
+#~ msgid "Jackets"
+#~ msgstr "ٰژاکت"
+
+#~ msgid "Shoes"
+#~ msgstr "کفش"
+
+#~ msgid "My Sign up"
+#~ msgstr "ثبت نام "
+
+#~ msgid "Shop Detail"
+#~ msgstr "جزییات خرید"
 
 #~ msgid "Men"
 #~ msgstr "آقایان"

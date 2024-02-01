@@ -13,11 +13,17 @@
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
                     <div class="btn-group">
+                        {% if user.is_authenticated %}
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{user}}</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <form action="{% url 'customers:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="background: transparent; border: none" type="submit" value="log out" ></form>
+                        </div>
+                        {% else %}
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Account' %}</button>
                         <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">{% translate 'My Sign in' %}</button>
-                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:customer_register'%}" >{% translate 'My Sign up' %}</a></button>
+                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:request_register_by_email' %}" >{% translate 'Sign up| Sign in' %}</a></button>
                         </div>
+                        {% endif %}
                     </div>
                     <div class="btn-group mx-2">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>
@@ -55,15 +61,13 @@
                 </a>
             </div>
             <div class="col-lg-4 col-6 text-left">
-                <form action="">
+                <form action="{% url 'product:products' %}" method="get">
                     <div class="input-group">
-                        {% if LANGUAGE_CODE == 'en' %}
-                        <input type="text" class="form-control" placeholder="Search for products">
-                        {% else %}
-                        <input type="text" class="form-control" placeholder="جستجو برای محصول">
-                        {% endif %}
+                        <div class="form-group">
+                            <div>{{ form.search }}</div>
+                        </div>
                         <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
+                            <span class="input-group-text bg-transparent text-primary" type="submit" style="height:45px;!important; border:transparent;">
                                 <i class="fa fa-search"></i>
                             </span>
                         </div>

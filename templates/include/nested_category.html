@@ -1,0 +1,19 @@
+<div class="dropdown-submenu ">
+    {% for category in category.children.all %}
+        <div class="nav-item dropdown dropright">
+            <a  class="dropdown-item"  >
+                <a href="{{category.get_absolute_url}}">{{ category.title }}</a></a>
+            {% if category.children.all %}
+                <div class="dropdown-submenu">
+                    <div class="dropdown-item ">
+                       {% include 'include/nested_category.html' %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+
+
+

@@ -38,6 +38,8 @@ ALLOWED_HOSTS = ['*']
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 # Application definition
 INSTALLED_APPS = [
+    "admin_interface",
+    "colorfield",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,7 +53,10 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'taggit',
-    'translated_fields'
+    'translated_fields',
+    'social_django',
+    'mptt',
+    'django_mptt_admin',
 ]
 
 MIDDLEWARE = [
@@ -118,8 +123,7 @@ CACHES = {
         }
     }
 }
-CACHE_TTL = 60 * 15
-
+CACHE_TTL = 60 * 1
 
 # Configure Django-Heroku if using Heroku
 # django_heroku.settings(locals())
@@ -185,7 +189,7 @@ AUTH_USER_MODEL = 'customers.CustomUser'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
-LOGIN_URL = 'account:User_login'
+# LOGIN_URL = 'customers:User_login'
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
@@ -198,7 +202,31 @@ EMAIL_HOST_PASSWORD = config.get('email_data', 'EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config.get('email_data', 'EMAIL_USE_TLS')
 DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
 
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
+                           "customers.authenticate.EmailBackend",
+                           'social_core.backends.google.GoogleOAuth2',]
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 # Other Django settings...
-MPTT_ALLOW_TESTING_GENERATORS=True
+MPTT_ALLOW_TESTING_GENERATORS = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 15*60
+
+# -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+

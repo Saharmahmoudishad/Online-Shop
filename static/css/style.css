@@ -9724,3 +9724,16 @@ a.text-dark:hover, a.text-dark:focus {
   text-shadow: 2px 2px 4px rgba(250, 104, 0, 0.5);
 
 }
+
+.orange-button {
+  background-color: darkred;
+  border: 3px solid #d93c03;
+}
+
+.form-group {
+    color: black;
+}
+
+a{
+  color: #565454;
+}
