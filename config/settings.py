@@ -46,10 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Local apps
     'customers.apps.CustomersConfig',
     'product.apps.ProductConfig',
     'orders.apps.OrdersConfig',
     'core.apps.CoreConfig',
+    # Third-party apps
     'ckeditor',
     'ckeditor_uploader',
     'taggit',
@@ -57,6 +59,8 @@ INSTALLED_APPS = [
     'social_django',
     'mptt',
     'django_mptt_admin',
+    # rest framework
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -84,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'orders.context_processors.cart',
             ],
         },
     },
@@ -204,7 +209,7 @@ DEFAULT_FROM_EMAIL = config.get('email_data', 'DEFAULT_FROM_EMAIL')
 
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
                            "customers.authenticate.EmailBackend",
-                           'social_core.backends.google.GoogleOAuth2',]
+                           'social_core.backends.google.GoogleOAuth2', ]
 
 LOGIN_URL = '/auth/login/google-oauth2/'
 LOGIN_REDIRECT_URL = '/'
@@ -219,7 +224,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config.get('gmail_login', 'SOCIAL_AUTH_GOOGLE
 # Other Django settings...
 MPTT_ALLOW_TESTING_GENERATORS = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 15*60
+SESSION_COOKIE_AGE = 15 * 60
 
 # -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
@@ -228,5 +233,3 @@ CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-
-
