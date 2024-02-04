@@ -33,4 +33,5 @@ urlpatterns += i18n_patterns(
     path('', include('core.urls', namespace='home')),
     path('customers/', include('customers.urls', namespace='customers')),
     path('category/', include('product.urls', namespace='product')),
+    path('orders/', include('orders.urls', namespace='orders')),
 )
