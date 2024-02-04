@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from orders.cart import Cart
 from orders.forms import CartAddForm
 from orders.models import Order, OrderItem
@@ -8,12 +10,14 @@ from product.models import Products
 
 
 # Create your views here.
-class CartView(View):
+class CartView(APIView):
     def get(self, request):
         cart = Cart(request)
-        return render(request, 'orders/cart.html', {'cart': cart})
+        # return render(request, 'orders/cart.html', {'cart': cart})
+        return Response({'cart': cart})
 
-
+    def post(self, request):
+        pass
 
 
 class CartAddView(PermissionRequiredMixin, View):
