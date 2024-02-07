@@ -15,7 +15,7 @@ class CartView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'orders/cart.html'
 
-    def get(self, request, format=None):
+    def get(self, request):
         cart = Cart(request)
 
         return Response(
@@ -24,10 +24,9 @@ class CartView(APIView):
             status=status.HTTP_200_OK
         )
 
-    def post(self, request, product_id, **kwargs):
+    def post(self, request, product_id=None, **kwargs):
         cart = Cart(request)
         product = get_object_or_404(Products, id=product_id)
-
 
         if "remove" in request.data:
             variant = request.data["variant"]
@@ -41,7 +40,6 @@ class CartView(APIView):
 
             post_data = {key: int(value[0:20]) if value.isdigit() else value[0:20] for key, value in
                          request.data.items()}
-            print("!"*50,post_data)
             post_data['size'] = Size.objects.filter(code=post_data['size']).first()
             post_data['brand'] = Brand.objects.filter(title=post_data['brand']).first()
             post_data['color'] = Color.objects.filter(name=post_data['color']).first()
@@ -64,6 +62,18 @@ class CartView(APIView):
             product = get_object_or_404(Products, id=product_id)
 
         return Response(
-            {"message": "cart updated", 'cart': cart, 'product': product},
+            {"message": "cart updated", },
             status=status.HTTP_202_ACCEPTED)
+
+
+class CartRemoveView(APIView):
+    def get(self, request, variant_id):
+        print("1"*60,"aaa")
+        cart = Cart(request)
+        variant = get_object_or_404(Variants, id=variant_id)
+        cart.remove(variant)
+        print("2" * 60,"www")
+        return Response('orders:cart')
+
+
 
