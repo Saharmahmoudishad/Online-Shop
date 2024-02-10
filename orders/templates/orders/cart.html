@@ -72,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error('Network response was not ok');
                 }
                 console.log('Product removed successfully');
+                location.reload();
             })
             .catch(function(error) {
                 console.error('There was a problem with the fetch operation:', error.message);
@@ -97,7 +98,6 @@ function getCookie(name) {
 }
 
 </script>
-
             {% endfor %}
                 <tr>
                     <td class="align-middle">${{ item.price }}</td>
@@ -107,40 +107,101 @@ function getCookie(name) {
 
                     </tbody>
                 </table>
+            <button class="btn btn-primary px-3" id="checkout-button">Final order registration</button>
             </div>
-            <div class="col-lg-4">
-                <form class="mb-30" action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Coupon</button>
-                        </div>
-                    </div>
-                </form>
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
-                <div class="bg-light p-30 mb-5">
-                    <div class="border-bottom pb-2">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h6>Subtotal</h6>
-                            <h6>$150</h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium"></h6>
-                            <h6 class="font-weight-medium">$10</h6>
-                        </div>
-                    </div>
-                    <div class="pt-2">
-                        <div class="d-flex justify-content-between mt-2">
-                            <h5>Total</h5>
-                            <h5>$160</h5>
-                        </div>
-                        <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
-                    </div>
-                </div>
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('checkout-button').addEventListener('click', function() {
+        fetch('{% url "orders:oder_create"  %}', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('Received data:', data);
+                location.reload();
+                receivedData = data;
+
+                // Update HTML elements with received data
+                document.getElementById('order-id').innerText = data.id;
+                document.getElementById('user-id').innerText = data.user;
+                document.getElementById('paid').innerText = data.paid;
+                document.getElementById('order-time').innerText = data.order_time;
+                document.getElementById('delivery-cost').innerText = data.delivery_cost;
+                document.getElementById('calculation').innerText = data.calculation;
+
+            })
+            .catch(function(error) {
+                console.error('There was a problem with the fetch operation:', error.message);
+            });
+        });
+    });
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+<div class="col-lg-4">
+    <form class="mb-30" action="">
+        <!-- Your form content here -->
+    </form>
+    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+    <div class="bg-light p-30 mb-5">
+        <!-- Display Order Summary -->
+        <div class="border-bottom pb-2" >
+            <div class="d-flex justify-content-between mb-3" id="order-details">
+                <h6>Order ID</h6>
+                <p><span id="order-id"></span></p>
+            </div>
+            <div class="d-flex justify-content-between mb-3" id="order-details">
+                <h6>User ID</h6>
+                <p><span id="user-id"></span></p>
+            </div>
+            <div class="d-flex justify-content-between mb-3" id="order-details">
+                <h6>Paid</h6>
+                <p><span id="paid"></span></p>
+            </div>
+            <div class="d-flex justify-content-between mb-3" id="order-details">
+                <h6>Order Time</h6>
+                <p><span id="order-time"></span></p>
+            </div>
+            <!-- Display Delivery Cost -->
+            <div class="d-flex justify-content-between mb-3" id="order-details">
+                <h6>Delivery Cost</h6>
+                <p><span id="delivery-cost"></span></p>
             </div>
         </div>
+        <!-- Display Total -->
+        <div class="pt-2">
+            <div class="d-flex justify-content-between mt-2" id="order-details">
+                <h5>Total</h5>
+                <p><span id="calculation"></span></p>
+            </div>
+            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+        </div>
     </div>
+</div>
     <!-- Cart End -->
+
 
 
 
