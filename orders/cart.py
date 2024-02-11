@@ -1,5 +1,9 @@
-from product.models import Variants
-from product.serializers import VariantsSerializer
+from django.contrib.contenttypes.models import ContentType
+
+from core.API.serializers import ImageSerializer
+from core.models import Image
+from product.models import Variants, Products
+from product.API.serializers import VariantsSerializer
 
 CART_SESSION_ID = 'cart'
 
@@ -18,7 +22,11 @@ class Cart:
         cart = self.cart.copy()
         for variant in variants:
             variant_data = VariantsSerializer(variant).data
-            variant_data['image_tag'] = variant.image_tag()  # Include image tag data
+            images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products),
+                                          object_id=variant.product.id).first()
+            print("1"*70,images)
+            image_tag = ImageSerializer(instance=images).data
+            variant_data['image_tag'] = image_tag  # Include image tag data
             cart[str(variant.id)]['variant'] = variant_data
         for item in cart.values():
             item["title"] = item['variant']["title"]
