@@ -34,13 +34,19 @@ class Cart:
         variant_id = str(variant.id)
         if variant_id not in self.cart:
             self.cart[variant_id] = {'brand': brand, 'color': color, 'size': size, 'material': material,
-                                     'attribute': attribute, 'quantity': quantity, 'price': str(variant.price), 'discount_price':discount_price}
+                                     'attribute': attribute, 'quantity': quantity, 'price': str(variant.price),
+                                     'discount_price': discount_price}
         else:
             self.cart[variant_id]["quantity"] += quantity
         self.save()
 
+    def update(self, variant_id, quantity, **args):
+        variant_id = str(variant_id)
+        self.cart[variant_id]["quantity"] = quantity
+        self.save()
+
     def remove(self, variant):
-        variant_id = str(variant['id'])
+        variant_id = str(variant.id)
         if variant_id in self.cart:
             del self.cart[variant_id]
         self.save()
@@ -50,10 +56,9 @@ class Cart:
         self.session.modified = True
 
     def get_total_price(self):
-        return sum(float(item['price']) * item['quantity'] for item in self.cart.values())
+        return sum(float(item['discount_price']) * item['quantity'] for item in self.cart.values())
 
     def clear(self):
+        self.cart.clear()
         del self.session[CART_SESSION_ID]
-        self.save()
-
-
+        self.session.modified = True
