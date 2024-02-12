@@ -9745,3 +9745,17 @@ a{
  h6 {
     font-size: 14px;
 }
+
+#error_message {
+    display: none;
+    border: 2px solid black;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    margin-bottom: .5rem;
+    background-color: #f9f9f9;
+    border-radius: .25rem;
+    max-width: 300px;
+    width: 100%;
+    max-height: 200px;
+    box-sizing: border-box;
+}
