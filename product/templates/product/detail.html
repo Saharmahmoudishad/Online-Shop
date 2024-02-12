@@ -143,7 +143,7 @@
                                     <input type="text" class="custom-control-input" id="attribute{{product_variants.first.attribute.type}}" name="attribute" value="{{product_variants.first.attribute.type}}">
                              {% endif %}
                          </div>
-                         <div class="d-flex align-items-center mb-4 pt-2">
+                         <div class="d-flex align-items-center mb-4 pt-2" >
                              <div class="input-group quantity mr-3" style="width: 130px;">
                                  <!-- Input for quantity -->
                                  <div class="input-group-btn">
@@ -158,16 +158,14 @@
                                      </button>
                                  </div>
                              </div>
-                             <p id="error_message" class="text-danger" style="display: none;"></p>
+{#                             <p id="error_message" class="text-danger" style="display: none;"></p>#}
                              <!-- Button to add to cart -->
                              <button type="submit" class="btn btn-primary px-3" id="addToCartButton" data-redirect-url="{% url 'product:products' %}">
                                 <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                              </button>
-{#                             <button type="submit" class="btn btn-primary px-3" id="addToCartButton" onclick="addToCart()" >#}
-{#                                 <i class="fa fa-shopping-cart mr-1"></i> Add To Cart#}
-{#                             </button>#}
                          </div>
                     </form>
+                    <div id="error_message"></div>
                     <script>
 
                         function increaseQuantity() {
@@ -381,15 +379,26 @@ document.getElementById("formId").addEventListener("submit", function(event) {
   const formData = new FormData(this);
   fetch("{% url 'orders:cart_add_product' product.id %}", {
     method: "POST",
-    body: formData
+    body: formData,
   })
   .then(response => {
     if (response.ok) {
+      document.getElementById('error_message').style.display = 'block';
+      document.getElementById('error_message').innerHTML = '<p>your order product add to your cart</p>';
+          setTimeout(function() {
       window.location.href = "{% url 'product:product_detail' product.slug %}";
+    }, 3000);
     } else {
+      document.getElementById('error_message').style.color = '#721c24';
+      document.getElementById('error_message').style.display = 'block';
+      document.getElementById('error_message').innerHTML = '<p>dont forget choosing properties of product completely.As well as The requested quantity must not more than the stock of the product.</p>';
       console.error("Error:", response.statusText);
+      throw new Error(response.statusText);
     }
   })
+  .then(data => {
+  window.alert(data.message);
+    })
   .catch(error => {
     console.error("Error:", error);
   });
