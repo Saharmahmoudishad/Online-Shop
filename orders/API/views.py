@@ -1,9 +1,15 @@
+import json
+
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from django.views import View
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from core.models import DiscountCode
+from customers.models import Address
+from customers.serializers import AddressSerializer, CustomUserSerializer
 from orders.cart import Cart
 from orders.models import Order, OrderItem
 from orders.API.serializers import OrderSerializer, OrderItemSerializer
@@ -11,22 +17,13 @@ from product.models import Products, Variants, Size, Brand, Color, Material, Att
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 
-class CartView(View):
-    # renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'orders/cart.html'
-
+class CartAddProductView(APIView):
     def get(self, request):
         cart = Cart(request)
+        return Response(
+            {"cart": cart},
+            status=status.HTTP_200_OK)
 
-        return render(
-            {"cart": cart, "data": list(cart.__iter__()),
-             "cart_total_price": cart.get_total_price()},
-            status=status.HTTP_200_OK
-        )
-
-
-class CartAddProductView(APIView):
-    template_name = 'product/shop.html'
     def post(self, request, product_id=None, **kwargs):
         cart = Cart(request)
         post_data = {key: int(value[0:20]) if value.isdigit() else value[0:20] for key, value in
@@ -56,6 +53,24 @@ class CartAddProductView(APIView):
 
         return Response(status=status.HTTP_200_OK)
 
+    def put(self, request, variant_id=None):
+        cart = Cart(request)
+        variant_chose = get_object_or_404(Variants, id=variant_id)
+        try:
+            data = json.loads(request.body)
+            new_quantity = int(data['quantity'])
+            if new_quantity > variant_chose.quantity or variant_chose.quantity == 0:
+                return Response({
+                    "message": f"The requested quantity is more than the stock of the product."}, )
+            cart.update(variant_id, new_quantity)
+            return Response(
+                {"message": "Cart updated successfully"},
+                status=status.HTTP_200_OK)
+        except json.JSONDecodeError:
+            return Response(
+                {"message": "Invalid JSON data"},
+                status=status.HTTP_400_BAD_REQUEST)
+
 
 class CartRemoveView(APIView):
 
@@ -81,13 +96,24 @@ class ReciptView(APIView):
     def get(self, request):
         cart = Cart(request)
         order = Order.objects.create(user=request.user, calculation=cart.get_total_price())
+
         for item in cart:
             product = get_object_or_404(Products, id=item['variant']['product'])
             OrderItem.objects.create(order=order, items=product, quantity=item['quantity'])
         cart.clear()
-        print("1"*50,cart)
+
         ser_data = OrderSerializer(order)
+        print("1" * 50, ser_data.data)
         return JsonResponse(ser_data.data, status=status.HTTP_201_CREATED)
+
+    def post(self, request):
+        discountcode = request.data['discountcode']
+        discount_factor = DiscountCode.objects.get(title=discountcode)
+        order = Order.objects.get(id=149)
+        order.calculation = float(order.calculation) * float(discount_factor.amount)
+        order.save()
+
+        return Response(status=status.HTTP_200_OK)
 
     def put(self, request, order_id):
         oderitem = OrderItem.objects.create(order=order_id)
@@ -101,3 +127,29 @@ class ReciptView(APIView):
         order = Order.objects.create(id=order_id)
         order.logical_delete()
         return Response('message:orders deleted by user')
+
+
+class CheckOutView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request):
+        print("12" * 50, request.user)
+        if request.user.is_authenticated:
+            user = request.user
+            try:
+                address = Address.objects.get(user=user)
+                print("13" * 50, address)
+            except Address.DoesNotExist:
+                raise NotFound("User address not found")
+            address_serializer = AddressSerializer(instance=address)
+            user_serializer = CustomUserSerializer(instance=user)
+            print("14" * 50, {
+                "user": user_serializer.data,
+                "address": address_serializer.data
+            })
+            return Response({
+                "user": user_serializer.data,
+                "address": address_serializer.data
+            })
+        else:
+            return Response({"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)

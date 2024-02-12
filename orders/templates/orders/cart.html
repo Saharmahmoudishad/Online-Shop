@@ -19,6 +19,8 @@
 
 
     <!-- Cart Start -->
+    <div id="error_message"></div>
+    <div id='error_update_message' style=" display: none;"></div>
     <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-lg-9 table-responsive mb-5">
@@ -118,8 +120,13 @@
                         })
                         .then(function(response) {
                             if (!response.ok) {
+                                document.getElementById('error_message').style.color = '#721c24';
+                                document.getElementById('error_message').style.display = 'block';
+                                document.getElementById('error_message').innerHTML = '<p>please try again.Network response has problem</p>'
+                                {#window.alert("please try again.Network response has problem");#}
                                 throw new Error('Network response was not ok');
                             }
+                            {#window.alert("Product removed successfully");#}
                             console.log('Product removed successfully');
                             location.reload();
                         })
@@ -129,7 +136,6 @@
                     });
                 });
             });
-
 
             function getCookie(name) {
                 var cookieValue = null;
@@ -168,6 +174,10 @@
                 if (response.ok) {
                   window.location.href = "{% url 'orders:cart' %}";
                 } else {
+                  document.getElementById('error_message').style.color = '#721c24';
+                  document.getElementById('error_message').style.display = 'block';
+                  document.getElementById('error_message').innerHTML = '<p>check the Product inventory on the detail product page</p>';
+                  window.alert("check the Product inventory on the detail product page");
                   console.error("Error:", response.statusText);
                 }
               })
@@ -201,18 +211,25 @@
                 </table>
             <button class="btn btn-primary px-3" id="checkout-button">Final order registration</button>
             </div>
-        <script>
-             document.addEventListener('DOMContentLoaded', function() {
-                 document.getElementById('checkout-button').addEventListener('click', function() {
-                     fetch('{% url "orders:oder_create"  %}', {
-                         method: 'GET',
-                         headers: {
-                             'Content-Type': 'application/json',
-                             'X-CSRFToken': getCookie('csrftoken')
-                         }
-                     })
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('checkout-button').addEventListener('click', function() {
+            fetch('{% url "orders:order_create"  %}', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
             .then(function(response) {
                 if (!response.ok) {
+
+                    document.getElementById('error_message').style.color = '#721c24';
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>you must login first</p>';
+                    setTimeout(function() {
+                    window.location.href = "{% url 'customers:request_register_by_email' %}";
+                    }, 3000);
                     throw new Error('Network response was not ok');
                 }
                 return response.json();
@@ -226,41 +243,39 @@
                 document.getElementById('order-time').innerText = data.order_time;
                 document.getElementById('delivery-cost').innerText = data.delivery_cost;
                 document.getElementById('calculation').innerText = data.calculation;
-
-               fetch('{% url "orders:cart_final_product" %}', {
-                            method: 'GET'
-                        })
-                        .then(function(cartResponse) {
-                            console.log('Cart response:', cartResponse);
-                        })
-                        .catch(function(cartError) {
-                            console.error('Error adding product to cart:', cartError.message);
-                        });
-                    })
-                    .catch(function(error) {
-                        console.error('There was a problem with the fetch operation:', error.message);
-                    });
-                });
+            })
+            .catch(function(error) {
+                console.error('There was a problem with the fetch operation:', error.message);
             });
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
+        });
+    });
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-                return cookieValue;
             }
-            </script>
+        }
+        return cookieValue;
+    }
+</script>
+
 <div class="col-lg-3 m-0 p-0">
-    <form class="mb-30" action="">
-        <!-- Your form content here -->
-    </form>
+<form id="couponForm" class="mb-30">
+   <div class="input-group">
+        <input id="couponInput" type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
+        <input type="hidden" class="custom-control-input" id="order-id" name="order_id">
+      <div class="input-group-append">
+           <button type="button" id="applyCouponBtn" class="btn btn-primary">Apply Coupon</button>
+      </div>
+   </div>
+</form>
     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
     <div class="bg-light p-30 mb-5">
         <!-- Display Order Summary -->
@@ -293,10 +308,54 @@
                 <h5>Total</h5>
                 <p><span id="calculation"></span></p>
             </div>
-            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3">Proceed To Checkout</button>
+            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3"><a href="{% url 'orders:checkout' %}">Proceed To Checkout</a></button>
         </div>
     </div>
 </div>
     <!-- Cart End -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const applyCouponBtn = document.getElementById("applyCouponBtn");
+    applyCouponBtn.addEventListener("click", function() {
+        const couponCode = document.getElementById("couponInput").value;
+        const orderId = document.getElementById("order-id").value;
+
+
+        fetch('{% url "orders:oder_add_discount" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({ discountcode: couponCode, orderId: orderId })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Coupon applied successfully");
+            } else {
+                console.error("Failed to apply coupon");
+            }
+        })
+        .catch(error => {
+            console.error("Network error:", error);
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
 
 {% endblock %}
