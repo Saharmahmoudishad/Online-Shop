@@ -1,11 +1,20 @@
 from django.urls import path
-from . import views
+from .views import CartView, CheckOutView
+from .API import views
 
 app_name = 'orders'
 urlpatterns = [
-    path('create/', views.OrderCreateView.as_view(), name='oder_create'),
-    path('detail/<int:order_id>', views.OrderDetailView.as_view(), name='oder_detail'),
-    path('cart/', views.CartView.as_view(), name='cart'),
-    path('cart/add/<int:product_id>', views.CartAddView.as_view(), name='cart_add'),
-    path('cart/remove/<int:product_id>', views.CartRemoveView.as_view(), name='cart_remove'),
+    # django Views************************************#
+    path('cart/', CartView.as_view(), name='cart'),
+    path('checkout/', CheckOutView.as_view(), name='checkout'),
+    # API Views****************************************#
+    path('create/', views.ReciptCreateView.as_view(), name='order_create'),
+    path('create/update/<int:order_id>', views.ReciptUpdateView.as_view(), name='order_create'),
+    path('create/addiscount/', views.ReciptAddDiscountView.as_view(), name='oder_add_discount'),
+    path('cart/final/', views.CartAddProductView.as_view(), name='cart_final_product'),
+    path('cart/update/<int:variant_id>/', views.CartAddProductView.as_view(), name='cart_update_product'),
+    path('cart/<int:product_id>/', views.CartAddProductView.as_view(), name='cart_add_product'),
+    path('cart/remove/<int:variant_id>/', views.CartRemoveView.as_view(), name='cart_remove'),
+    path('checkout/detail/', views.CheckOutView.as_view(), name='checkout_detail'),
+
 ]
