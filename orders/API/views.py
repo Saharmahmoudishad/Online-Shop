@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -7,8 +8,9 @@ from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core.API.permissions import OwnerOrReadonly
 from core.models import DiscountCode
-from customers.models import Address
+from customers.models import Address, CustomUser
 from customers.serializers import AddressSerializer, CustomUserSerializer
 from orders.cart import Cart
 from orders.models import Order, OrderItem
@@ -78,78 +80,117 @@ class CartRemoveView(APIView):
         cart = Cart(request)
         variant = get_object_or_404(Variants, id=variant_id)
         cart.remove(variant)
-        return Response('orders:cart')
+        return Response('orders:cart', status=status.HTTP_200_OK)
 
 
-class OrderDetailView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get(self, request, order_id):
-        order = get_object_or_404(Order, id=order_id)
-        serializer = OrderSerializer(order)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class ReciptView(APIView):
+class ReciptCreateView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         cart = Cart(request)
         order = Order.objects.create(user=request.user, calculation=cart.get_total_price())
-
         for item in cart:
-            product = get_object_or_404(Products, id=item['variant']['product'])
-            OrderItem.objects.create(order=order, items=product, quantity=item['quantity'])
+            variant = get_object_or_404(Variants, id=item['variant']['id'])
+            item = OrderItem.objects.create(order=order, items=variant, quantity=item['quantity'])
         cart.clear()
-
         ser_data = OrderSerializer(order)
-        print("1" * 50, ser_data.data)
-        return JsonResponse(ser_data.data, status=status.HTTP_201_CREATED)
+        response = JsonResponse(ser_data.data, status=status.HTTP_201_CREATED)
+        expiration_time = datetime.now() + timedelta(days=1)
+        response.set_cookie('orderid', order.id, expires=expiration_time)
+        return response
+
+
+class ReciptAddDiscountView(APIView):
+    permission_classes = [OwnerOrReadonly]
 
     def post(self, request):
         discountcode = request.data['discountcode']
+        orderId = request.COOKIES.get('orderid')
+    
         discount_factor = DiscountCode.objects.get(title=discountcode)
-        order = Order.objects.get(id=149)
+        order = Order.objects.get(id=orderId)
+        self.check_object_permissions(request, order)
+
         order.calculation = float(order.calculation) * float(discount_factor.amount)
         order.save()
+        return Response(status=status.HTTP_201_CREATED)
 
-        return Response(status=status.HTTP_200_OK)
+
+class ReciptUpdateView(APIView):
+    permission_classes = [OwnerOrReadonly]
 
     def put(self, request, order_id):
-        oderitem = OrderItem.objects.create(order=order_id)
-        ser_data = OrderItemSerializer(instance=oderitem, data=request.data, partial=True)
+        order = OrderItem.objects.get(id=order_id)
+        self.check_object_permissions(request, order)
+        orderitem = OrderItem.objects.filter(order=order_id)
+
+        ser_data = OrderItemSerializer(instance=orderitem, data=request.data, partial=True)
         if ser_data.is_valid():
             ser_data.save()
             return Response(ser_data.data, status=status.HTTP_200_OK)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, order_id):
-        order = Order.objects.create(id=order_id)
+        order = Order.objects.get(id=order_id)
+        self.check_object_permissions(request, order)
         order.logical_delete()
-        return Response('message:orders deleted by user')
+        return Response('message:orders deleted by user', status=status.HTTP_200_OK)
 
 
 class CheckOutView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [OwnerOrReadonly]
 
     def get(self, request):
-        print("12" * 50, request.user)
         if request.user.is_authenticated:
             user = request.user
             try:
-                address = Address.objects.get(user=user)
-                print("13" * 50, address)
+                address = Address.objects.filter(user=user)
+
             except Address.DoesNotExist:
                 raise NotFound("User address not found")
-            address_serializer = AddressSerializer(instance=address)
+            address_serializer = AddressSerializer(instance=address, many=True)
             user_serializer = CustomUserSerializer(instance=user)
-            print("14" * 50, {
-                "user": user_serializer.data,
-                "address": address_serializer.data
-            })
-            return Response({
-                "user": user_serializer.data,
-                "address": address_serializer.data
-            })
+            orderId = request.COOKIES.get('orderid')
+
+            if orderId:
+                order = get_object_or_404(Order, id=orderId)
+                self.check_object_permissions(request, order)
+                ser_order = OrderSerializer(instance=order)
+                print("1" * 50, ser_order.data)
+                return Response({
+                    "user": user_serializer.data,
+                    "addresses": address_serializer.data,
+                    "order": ser_order.data,
+                }, status=status.HTTP_200_OK)
+            return Response({"user": user_serializer.data,
+                             "addresses": address_serializer.data,
+                             "message": "Your order ID expire Please order again"},
+                            status=status.HTTP_200_OK)
         else:
             return Response({"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+    def post(self, request):
+        ser_data = AddressSerializer(data=request.data)
+        orderId = request.COOKIES.get('orderid')
+        if ser_data.is_valid():
+            new_address = ser_data.validated_data['new_address']
+            province = ser_data.validated_data['province']
+            city = ser_data.validated_data['city']
+            postcode = ser_data.validated_data['postcode']
+            delivery_method = ser_data.validated_data['delivery_method']
+            user = CustomUser.objects.get(phonenumber=ser_data.validated_data['phonenumber'])
+            order = Order.objects.get(id=orderId)
+            self.check_object_permissions(request, order)
+            delivery_address = Address.objects.create(user=user, city=city, province=province, postcode=postcode,
+                                                      address=new_address)
+            order.delivery_address = delivery_address
+            order.delivery_method = delivery_method
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request):
+        orderId = request.COOKIES.get('orderid')
+        order = Order.objects.get(id=orderId)
+        self.check_object_permissions(request, order)
+        order.delete()
+        return Response({"message": "your order is canceled"}, status=status.HTTP_200_OK)
