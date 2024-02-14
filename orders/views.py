@@ -1,34 +1,22 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.shortcuts import render
 from django.views import View
 
+from orders.cart import Cart
 
-# Create your views here.
+
 class CartView(View):
-    def get(self, request):
-        pass
-
-    def post(self, request):
-        pass
-
-
-class CartAddView(PermissionRequiredMixin, View):
-
-    def post(self, request):
-        pass
-
-
-class CartRemoveView(View):
-    def get(self, request):
-        pass
-
-
-class OrderDetailView(LoginRequiredMixin, View):
-    def get(self, request):
-        pass
-
-
-class OrderCreateView(LoginRequiredMixin, View):
+    template_name = 'orders/cart.html'
 
     def get(self, request):
-        pass
+        cart = Cart(request)
+        return render(request, self.template_name, {"cart": cart, "data": list(cart.__iter__()),
+                                                    "cart_total_price": cart.get_total_price()}, )
+
+
+class CheckOutView(View):
+    template_name = 'orders/checkout.html'
+
+    def get(self, request):
+
+        # cart = Cart(request)
+        return render(request, self.template_name, )
