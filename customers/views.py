@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+import requests
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate
 from django.contrib.auth.tokens import default_token_generator
@@ -9,11 +12,13 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views import View
 from django.views.generic import CreateView, FormView
-from utils import generate_and_store_otp, send_otpcode_email, send_registration_email, kave_negar_token_send
+from utils import generate_and_store_otp, send_otpcode_email, send_registration_email, kave_negar_token_send, \
+    ExpiringTokenGenerator
 from django.contrib.auth import views as auth_view
 from .forms import VerifyCodeFrom, RequestRegisterByEmailForm, \
     RequestRegistrationByPhoneFrom, UserCreationForm, CustomAuthenticationForm
 from .models import CustomUser
+from django.http import HttpResponse, HttpResponseRedirect
 
 user = get_user_model()
 
@@ -27,7 +32,8 @@ class RequestRegisterView(FormView):
     template_name = 'customers/registeration_by_email.html'
     success_url = reverse_lazy('core:home')
     form_class = RequestRegisterByEmailForm
-    token_generator = default_token_generator
+    # token_generator = default_token_generator
+    token_generator = ExpiringTokenGenerator()
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
 
     def dispatch(self, request, *args, **kwargs):
@@ -184,29 +190,46 @@ class UserLoginByPassView(auth_view.LoginView):
 
     def form_valid(self, form):
         identifier_value = self.kwargs['identifier']
-        print("1"*50,identifier_value)
         super().form_valid(form)
         username_from_session = self.request.session.get('user_registration_info', {}).get(identifier_value)
-        print("1" * 50, username_from_session)
         if username_from_session:
             form.cleaned_data['username'] = username_from_session
-            if identifier_value =='email':
-               user_login = authenticate(self.request, username=username_from_session, password=form.cleaned_data['password'])
+            if identifier_value == 'email':
+                user_login = authenticate(self.request, username=username_from_session,
+                                          password=form.cleaned_data['password'])
             else:
-                user_login = authenticate(self.request, username=username_from_session, password=form.cleaned_data['password'])
-                print("2" * 50, user_login)
+                user_login = authenticate(self.request, username=username_from_session,
+                                          password=form.cleaned_data['password'])
             if user_login is not None:
                 login(self.request, user_login)
-                return redirect(reverse('core:home'))
+                url = 'http://127.0.0.1:8000/en/customers/api/token/'
+                data = {
+                    'phonenumber': user_login.phonenumber,
+                    'password': form.cleaned_data['password']}
+                response = requests.post(url, data=data)
+                token_data = response.json()
+                if response.status_code == 200:
+                    access_token = token_data.get('access')
+                    response = HttpResponseRedirect(self.request.session.get('previous_url', reverse('core:home')))
+                    expires = datetime.now() + timedelta(days=3)
+                    response.set_cookie("jwt_token", access_token, expires=expires)
+                # response = HttpResponseRedirect(self.request.session.get('previous_url', reverse('core:home')))
+                # self.request.session['phonenumber'] = user_login.phonenumber
+                return response
         return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier': identifier_value}))
 
     def form_invalid(self, form):
         messages.error(self.request, 'Invalid login credentials. Please try again.')
-        return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier':self.kwargs['identifier']}))
+        return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier': self.kwargs['identifier']}))
 
 
 class UserLogoutView(auth_view.LogoutView):
     """handle logout of users"""
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        response.delete_cookie('jwt_token')
+        return response
 
     def get_success_url(self):
         return self.request.GET.get('next', reverse_lazy('core:home'))

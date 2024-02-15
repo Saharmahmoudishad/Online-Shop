@@ -1,11 +1,11 @@
 {% load static %}
 {% load i18n %}
-{% for reply in comment.replies.all %}
-<div class="media mb-3 ml-5">
+<div class="media mb-3 ml-3">
     <img src="{% static 'img/customers.jpeg' %}" alt="Image" class="img-fluid mr-3 mt-1" style="width: 80px;">
     <div class="media-body">
+    {% for comment in comment.replies.all %}
         <h6>{{ reply.user }}<small> - <i>{{ reply.created|timesince }}</i></small></h6>
-        <p class="bg-primary p-2" style="'width:150px;height:40px;">{{ reply.content }}</p>
+        <p class="bg-primary p-2" style="'width:150px;height:40px;">{{ comment.content }}</p>
         {% if request.user.is_authenticated %}
         <form class="" method="post" action="{% url 'product:reply_product_comment' product.slug comment.id %}">
             {% csrf_token %}
@@ -22,15 +22,12 @@
             <p>only Logged in users can comment</p>
             {% endif %}
         </form>
-        {% if reply.children.all %}
-                <div class="media mb-3">
-                    <div class="media-body ">
-                       {% include 'include/nested_comment.html' %}
-                    </div>
-                </div>
-            {% endif %}
+        {% include 'include/nested_comment.html' %}
+    {% endfor %}
     </div>
 </div>
-{% endfor %}
+
+
+
 
 

@@ -1,6 +1,7 @@
 from datetime import timedelta
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
@@ -98,7 +99,7 @@ class CategoryProduct(MPTTModel, SoftDeleteMixin):
     slug = models.SlugField(null=True, blank=True, verbose_name=_("slug"))
     parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children',
                             verbose_name=_("parent"))
-    status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
+    available = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
     tags = TaggableManager()
     description = models.TextField(max_length=255, verbose_name=_("description"))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
@@ -152,7 +153,7 @@ class Products(SoftDeleteMixin):
     variant = models.CharField(max_length=30, choices=VARIANTS, default='None', verbose_name=_("variant"))
     detail = RichTextUploadingField(verbose_name=_("detail"))
     slug = models.SlugField(null=True, blank=True, verbose_name=_("slug"))
-    status = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
+    available = models.CharField(max_length=15, choices=STATUS, verbose_name=_("status"))
     created = models.DateTimeField(auto_now_add=True, verbose_name=_("created"))
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name="products",
@@ -230,6 +231,21 @@ class Variants(SoftDeleteMixin):
         if images.exists():
             return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
+
+    def update_quantity(self):
+
+        ordered_quantity = self.orderItem.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
+
+        remaining_quantity = self.quantity - ordered_quantity
+        remaining_pquantity = self.product.quantity - ordered_quantity
+
+        self.quantity = remaining_quantity
+        self.product.quantity = remaining_pquantity
+        self.save()
+
+        if self.quantity == 0:
+            self.status = False
+            self.save()
 
 
 class DiscountProduct(SoftDeleteMixin):

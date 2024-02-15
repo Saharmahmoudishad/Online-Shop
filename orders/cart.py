@@ -24,7 +24,6 @@ class Cart:
             variant_data = VariantsSerializer(variant).data
             images = Image.objects.filter(content_type=ContentType.objects.get_for_model(Products),
                                           object_id=variant.product.id).first()
-            print("1"*70,images)
             image_tag = ImageSerializer(instance=images).data
             variant_data['image_tag'] = image_tag  # Include image tag data
             cart[str(variant.id)]['variant'] = variant_data

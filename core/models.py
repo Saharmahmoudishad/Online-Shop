@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
@@ -22,7 +24,7 @@ class Comment(SoftDeleteMixin):
         verbose_name_plural = _("Comments")
 
     def __str__(self):
-        return self.parent_comment
+        return f'{self.parent_comment}'
 
     def get_absolute_url(self):
         return reverse('core:comment_detail', )
@@ -37,8 +39,6 @@ class Image(SoftDeleteMixin):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _("Images")
-
-
 
     def image_tag(self):
         if self.image:
@@ -66,12 +66,13 @@ class City(SoftDeleteMixin):
 
 
 class DiscountCode(SoftDeleteMixin):
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    title = models.CharField(max_length=255, verbose_name=_("Title"), null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Amount"))
     deadline = models.DateTimeField(verbose_name=_("Deadline"))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(verbose_name=_("Object ID"))
     content_object = GenericForeignKey('content_type', 'object_id')
+    statusCharge = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = _('Discount')
@@ -79,3 +80,8 @@ class DiscountCode(SoftDeleteMixin):
 
     def __str__(self):
         return f'{self.title}_{self.amount}'
+
+    def save(self, *args, **kwargs):
+        if not self.title:
+            self.title = str(uuid.uuid4()).replace('-', '')[:10]
+        super().save(*args, **kwargs)

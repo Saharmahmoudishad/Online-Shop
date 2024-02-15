@@ -20,8 +20,11 @@ from django.conf.urls.i18n import i18n_patterns
 from core.views import ChangeLangView
 from django.conf.urls.static import static
 from django.conf import settings
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-urlpatterns = [
+urlpatterns = [   path('schema/', SpectacularAPIView.as_view(), name='schema'),
+                  path('schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+                  path('schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
                   path('change-lang/', ChangeLangView.as_view(), name='change_lang'),
                   path('', include('social_django.urls', namespace='social')),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
