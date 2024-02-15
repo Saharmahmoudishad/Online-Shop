@@ -66,7 +66,7 @@ class City(SoftDeleteMixin):
 
 
 class DiscountCode(SoftDeleteMixin):
-    title = models.CharField(max_length=255, verbose_name=_("Title"),null=True, blank=True)
+    title = models.CharField(max_length=255, verbose_name=_("Title"), null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Amount"))
     deadline = models.DateTimeField(verbose_name=_("Deadline"))
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)

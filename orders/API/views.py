@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from core.API.permissions import OwnerOrReadonly
-from core.models import DiscountCode
+from core.models import DiscountCode, Province, City
 from customers.API.Jwt import decode_jwt_token
 # from customers.API.Jwt import decode_jwt_token
 from customers.models import Address, CustomUser
@@ -297,20 +297,31 @@ class NewAddressView(APIView):
     def post(self, request):
         orderId = request.COOKIES.get('orderid')
         order = Order.objects.get(id=orderId)
-        print("12" * 60, request.POST.dict())
-        data = {'user': request.POST.get('user', request.user)}
-        data.update(request.POST.dict())
-        print("13" * 60, data)
+        data = request.POST.dict()
+        data.pop('csrfmiddlewaretoken', None)
+        try:
+            province = Province.objects.get(name=data['province'])
+        except province.DoesNotExist:
+
+            province = Province.objects.create(name=data['province'])
+        try:
+            city = City.objects.get(name=data['city'], province=province)
+        except City.DoesNotExist:
+            city = City.objects.create(name=data['city'], province=province)
+        data['province'], data['city'] = province.id, city.id
+        data = {'user': request.user.id, 'address': data['new_address'],
+                'city': city.id, 'province': province.id, 'postcode': data['postcode']}
         ser_address = AddressSerializer(data=data)
         if ser_address.is_valid():
-            Address.objects.create(address=ser_address.validated_data['new_address'],
-                                   province=ser_address.validated_data['province'],
-                                   city=ser_address.validated_data['city'],
-                                   postcode=ser_address.validated_data['postcode'], )
-            order.delivery_address = ser_address.validated_data['new_address']
+            address = Address.objects.create(address=ser_address.validated_data['address'],
+                                             province=ser_address.validated_data['province'],
+                                             city=ser_address.validated_data['city'],
+                                             postcode=ser_address.validated_data['postcode'],
+                                             user=ser_address.validated_data['user'])
+            order.delivery_address = address.id
             order.save()
             ser_order = OrderSerializer(instance=order)
-            return Response(data={'order': ser_order.data, 'address': ser_address.data},
+            return Response({'order': ser_order.data, 'address': ser_address.data},
                             status=status.HTTP_201_CREATED)
         return Response(ser_address.errors, status=status.HTTP_400_BAD_REQUEST)
 

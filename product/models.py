@@ -237,8 +237,10 @@ class Variants(SoftDeleteMixin):
         ordered_quantity = self.orderItem.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
 
         remaining_quantity = self.quantity - ordered_quantity
+        remaining_pquantity = self.product.quantity - ordered_quantity
 
         self.quantity = remaining_quantity
+        self.product.quantity = remaining_pquantity
         self.save()
 
         if self.quantity == 0:

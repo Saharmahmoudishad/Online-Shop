@@ -4,7 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from customers.API.Jwt import JWTAuthentication
+from customers.API.Jwt import CustomJWTAuthentication
 
 
 class HandlingToken(APIView):
@@ -14,7 +14,7 @@ class HandlingToken(APIView):
         print("123" * 50, request.user)
         user = self.request.session.get('phonenumber', None)
         if user:
-            jwt_token = JWTAuthentication.create_JWT(user)
+            jwt_token = CustomJWTAuthentication.create_JWT(user)
             response = Response({'token': jwt_token})
             current_datetime = datetime.now()
             expires = current_datetime + timedelta(days=3)
