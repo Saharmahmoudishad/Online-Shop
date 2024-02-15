@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, Group
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator, validate_email
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from django.db import models
@@ -33,7 +33,7 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     is_active = models.BooleanField(default=True, verbose_name=_("is active"))
     is_admin = models.BooleanField(default=False, verbose_name=_("is admin"))
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=1)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=4)
 
     class Meta:
         verbose_name = _('User')
@@ -75,14 +75,14 @@ def handle_group(sender, **kwargs):
         group, created = Group.objects.get_or_create(name=group_name)
         if group_name == 'supervisors':
             add_view_permission_to_group(group, 'view')
-        elif group_name == 'operators':
+        elif group_name == 'operators' or group_name == 'customers':
             add_all_permission_of_app('orders', group)
             add_all_permission_of_app('customers', group)
         elif group_name == 'managers':
             add_full_permission(group)
 
 
-class Address(AbstractBaseUser, SoftDeleteMixin):
+class Address(SoftDeleteMixin):
     """ model of users Addresses  """
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"))

@@ -19,8 +19,6 @@ class ModelsTestCase(TestCase):
 
         image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
         self.image = Image.objects.create(image=image_file, content_type=self.content_type, object_id=1)
-        # Image.objects.create(image='path/to/employee_image.jpg',
-        #                      content_type=ContentType.objects.get_for_model(Employee), object_id=employee.id)
 
         self.province = Province.objects.create(name='Test Province')
 
@@ -47,7 +45,8 @@ class DiscountCodeTest(TestCase):
     def setUp(self):
         self.content_type, created = ContentType.objects.get_or_create(model='testmodel', app_label='testapp')
         self.discount_code = DiscountCode.objects.create(title='Test Discount', amount=10.00,
-                                                         deadline=timezone.now() + timezone.timedelta(days=7), content_type=self.content_type,
+                                                         deadline=timezone.now() + timezone.timedelta(days=7),
+                                                         content_type=self.content_type,
                                                          object_id=1)
 
     def test_discount_code_creation(self):

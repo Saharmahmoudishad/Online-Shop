@@ -12,6 +12,10 @@
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
+                    <a href="{% url 'orders:cart' %}" class="btn px-0 ml-3">
+                        <i class="fas fa-shopping-cart text-primary"></i>
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;background-color: #1b1e21">{{cart|length}}</span>
+                    </a>
                     <div class="btn-group">
                         {% if user.is_authenticated %}
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{user}}</button>

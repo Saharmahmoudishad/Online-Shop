@@ -7,7 +7,7 @@ from rest_framework.authentication import BaseAuthentication
 from config import settings
 
 
-class JWTAuthentication(BaseAuthentication):
+class CustomJWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         user = self.decode_jwt_token(request)
         if user is None:

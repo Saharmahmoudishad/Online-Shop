@@ -211,61 +211,84 @@
                 </table>
             <button class="btn btn-primary px-3" id="checkout-button">Final order registration</button>
             </div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('checkout-button').addEventListener('click', function() {
-            fetch('{% url "orders:order_create"  %}', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                }
-            })
-            .then(function(response) {
-                if (!response.ok) {
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('checkout-button').addEventListener('click', function() {
 
-                    document.getElementById('error_message').style.color = '#721c24';
-                    document.getElementById('error_message').style.display = 'block';
-                    document.getElementById('error_message').innerHTML = '<p>you must login first</p>';
-                    setTimeout(function() {
-                    window.location.href = "{% url 'customers:request_register_by_email' %}";
-                    }, 3000);
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(function(data) {
-                console.log('Received data:', data);
-                receivedData = data;
-                document.getElementById('order-id').innerText = data.id;
-                document.getElementById('user-id').innerText = data.user;
-                document.getElementById('paid').innerText = data.paid;
-                document.getElementById('order-time').innerText = data.order_time;
-                document.getElementById('delivery-cost').innerText = data.delivery_cost;
-                document.getElementById('calculation').innerText = data.calculation;
-            })
-            .catch(function(error) {
-                console.error('There was a problem with the fetch operation:', error.message);
-            });
-        });
+        const accessToken = getCookie('jwt_token');
+
+
+        if (accessToken) {
+
+            makeFetchRequest(accessToken);
+        } else {
+
+            redirectToLoginPage();
+        }
     });
+});
 
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
+
+function makeFetchRequest(accessToken) {
+    fetch('{% url "orders:order_create"  %}', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Authorization': 'Bearer ' + accessToken
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            document.getElementById('error_message').style.color = '#721c24';
+            document.getElementById('error_message').style.display = 'block';
+            document.getElementById('error_message').innerHTML = '<p>network has problem</p>';
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('Received data:', data);
+        receivedData = data;
+        document.getElementById('order').innerText = data.id;
+        document.getElementById('user-id').innerText = data.user;
+        document.getElementById('paid').innerText = data.paid;
+        document.getElementById('order-time').innerText = data.order_time;
+        document.getElementById('delivery-cost').innerText = data.delivery_cost;
+        document.getElementById('calculation').innerText = data.calculation;
+    })
+    .catch(function(error) {
+        console.error('There was a problem with the fetch operation:', error.message);
+    });
+}
+
+
+function redirectToLoginPage() {
+    document.getElementById('error_message').style.color = '#721c24';
+    document.getElementById('error_message').style.display = 'block';
+    document.getElementById('error_message').innerHTML = '<p>You must login first</p>';
+    setTimeout(function() {
+    window.location.href = "{% url 'customers:request_register_by_email' %}";
+    }, 3000);
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
-        return cookieValue;
     }
-</script>
+    return cookieValue;
+}
 
+</script>
 <div class="col-lg-3 m-0 p-0">
 <form id="couponForm" class="mb-30">
    <div class="input-group">
@@ -282,7 +305,7 @@
         <div class="border-bottom pb-2" >
             <div class="d-flex justify-content-between mb-3" id="order-details">
                 <h6>Order ID</h6>
-                <p><span id="order-id"></span></p>
+                <p><span id='order'></span></p>
             </div>
             <div class="d-flex justify-content-between mb-3" id="order-details">
                 <h6>User ID</h6>
@@ -319,13 +342,15 @@ document.addEventListener("DOMContentLoaded", function() {
     applyCouponBtn.addEventListener("click", function() {
         const couponCode = document.getElementById("couponInput").value;
         const orderId = document.getElementById("order-id").value;
-
+        const accessToken = getCookie('jwt_token');
 
         fetch('{% url "orders:oder_add_discount" %}', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
+                'X-CSRFToken': getCookie('csrftoken'),
+
             },
             body: JSON.stringify({ discountcode: couponCode, orderId: orderId })
         })
@@ -340,22 +365,8 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error("Network error:", error);
         });
     });
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
 });
+
 </script>
 
 {% endblock %}

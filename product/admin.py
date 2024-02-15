@@ -13,7 +13,7 @@ class ImageInline(admin.TabularInline):
 class CategoryProductAdmin(DraggableMPTTAdmin):
     mptt_indent_field = "title"
     list_display = ('tree_actions', 'indented_title',
-                    'related_products_count', 'related_products_cumulative_count', "status", "image_tag",)
+                    'related_products_count', 'related_products_cumulative_count', "available", "image_tag",)
     list_display_links = ('indented_title',)
 
     def get_queryset(self, request):
@@ -77,7 +77,7 @@ class VariantsInline(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "status", "image_tag", ]
+    list_display = ["title", "available", "image_tag", ]
     search_fields = ["category__title", "title", ]
     list_filter = ["category", "quantity"]
     inlines = [VariantsInline, ]

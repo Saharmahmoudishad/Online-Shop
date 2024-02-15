@@ -1,7 +1,7 @@
  <!-- Navbar Start -->
 
  {% load cache i18n %}
- {% cache 10 "navbar_cache" %}
+ {% cache 259200 "navbar_cache" %}
     <div class="container-fluid bg-dark mb-30">
         <div class="row px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
@@ -46,21 +46,14 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{% translate 'Pages' %}<i class="fa fa-angle-down mt-1"></i></a>
                                 <div class="dropdown-menu bg-primary rounded-0 border-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">{% translate 'Shopping Cart' %}</a>
-                                    <a href="checkout.html" class="dropdown-item">{% translate 'Checkout' %}</a>
+                                    <a href="{% url 'orders:cart' %}" class="dropdown-item">{% translate 'Shopping Cart' %}</a>
+                                    <a href="{% url 'orders:checkout' %}" class="dropdown-item">{% translate 'Checkout' %}</a>
                                 </div>
                             </div>
                             <a href="{% url 'core:contact' %}" class="nav-item nav-link">{% translate 'Contact' %}</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="" class="btn px-0">
-                                <i class="fas fa-heart text-primary"></i>
-                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
-                            </a>
-                            <a href="" class="btn px-0 ml-3">
-                                <i class="fas fa-shopping-cart text-primary"></i>
-                                <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;">0</span>
-                            </a>
+
                         </div>
                     </div>
                 </nav>

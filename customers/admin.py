@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
 from django.contrib import admin
+
+from core.models import DiscountCode, City, Province
 from customers.forms import UserChangeForm, UserCreationForm
 from customers.models import CustomUser, Address
 
@@ -13,14 +15,14 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     list_display = ["phonenumber", "firstname", "lastname", "is_active",
-                    "is_admin", "is_deleted"]
+                    "is_admin", "is_deleted","group"]
     search_field = ["phonenumber", "is_admin", "is_active"]
-    list_filter = ["is_admin", "created", "is_active", "is_deleted"]
+    list_filter = ["is_admin", "created", "is_active", "is_deleted", "group"]
     fieldsets = [
         (None, {"fields": ["email", "password"]}),
         ("Personal info", {"fields": ["phonenumber", "firstname", "lastname", ]}),
         ("General info", {"fields": ["how_know_us", "is_deleted"]}),
-        ("Permissions", {"fields": ["is_active", "is_admin", "groups", "user_permissions"]}),
+        ("Permissions", {"fields": ["is_active", "is_admin", "group", "user_permissions"]}),
     ]
 
     add_fieldsets = [
@@ -41,6 +43,7 @@ admin.site.unregister(Group)
 
 
 class CustomGroupAdmin(GroupAdmin):
+
     def __init__(self, model, admin_site):
         super().__init__(model, admin_site)
         self.user = None

@@ -7,8 +7,8 @@ from config import settings
 from kavenegar import *
 from config.settings import config
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.crypto import constant_time_compare, salted_hmac
-from django.utils.http import base36_to_int, int_to_base36
+from django.utils.crypto import constant_time_compare
+from django.utils.http import base36_to_int
 from django.utils import timezone
 from datetime import timedelta
 
