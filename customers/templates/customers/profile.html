@@ -18,7 +18,7 @@
     <!-- Breadcrumb End -->
 
     <!-- Checkout Start -->
-
+<div id="error_message"></div>
 <div class="container">
     <div id="error_message"></div>
     <div class="row">
@@ -30,10 +30,10 @@
                 </div>
                 <div class="card-body">
                 <p>Full Name: <span id="full-name"></span></p>
-                <p>Email: <span id="email"></span></p>
-                <p>Phone number: <span id="mobile-no"></span></p>
+                <p>Email: <input type="text" class="form-control no-border" id="email" ></p>
+                <p>Phone number: <input  class="form-control no-border" id="mobile-no"></p>
                 </div>
-                <a href="#" class="btn btn-primary mt-3">Edit</a>
+                <a href="#" class="btn btn-primary mt-3" id="edit_user_data">Edit</a>
             </div>
 
             <div class="card mt-12">
@@ -154,8 +154,8 @@
             const orders = data.order;
 
             document.getElementById('full-name').innerText = user.firstname + ' ' + user.lastname;
-            document.getElementById('email').innerText = user.email;
-            document.getElementById('mobile-no').innerText = user.phonenumber;
+            document.getElementById('email').value = user.email;
+            document.getElementById('mobile-no').value = user.phonenumber;
 
             var addressesDiv = document.getElementById('addresses');
             addresses.forEach(function(address) {
@@ -335,7 +335,6 @@ document.addEventListener("DOMContentLoaded", function () {
             button.addEventListener('click', function() {
 
                 const addressId = this.getAttribute('data-update-address-id');
-                console.log(addressId);
                 const updateUrl = "{% url 'customers:address_update' 0 %}".replace('0', addressId);
                 const accessToken = getCookie('jwt_token');
                 const addressValue = document.getElementById('address_value'+addressId).value;
@@ -385,6 +384,51 @@ function getCookie(name) {
 }
 
 </script>
+<script>
+document.getElementById("edit_user_data").addEventListener("click", function() {
+              const email = document.getElementById('email').value;
+              const phonenumber = document.getElementById('mobile-no').value;
+              const accessToken = getCookie('jwt_token');
+              fetch("{% url 'customers:update_customer_profile' %}", {
+                method: "PUT",
+                headers: {
+                  'Authorization': 'Bearer ' + accessToken,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email:email, phonenumber:phonenumber})
+              })
+              .then(response => {
+                if (response.ok) {
+
+                  document.getElementById('error_message').style.display = 'block';
+                  document.getElementById('error_message').innerHTML = '<p>your profile update</p>';
+                } else {
+                  document.getElementById('error_message').style.color = '#721c24';
+                  document.getElementById('error_message').style.display = 'block';
+                  document.getElementById('error_message').innerHTML = '<p>check your input</p>';
+                  console.error("Error:", response.statusText);
+                }
+              })
+              .catch(error => {
+                console.error("Error:", error);
+              });
+            });
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            </script>
 
 {% endblock %}
 
