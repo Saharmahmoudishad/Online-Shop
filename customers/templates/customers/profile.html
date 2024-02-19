@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{%  block title %}{% translate 'Home' %}{% endblock %}
+{%  block title %}{% translate 'your profile' %}{% endblock %}
 {% block content %}
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -18,208 +18,130 @@
     <!-- Breadcrumb End -->
 
     <!-- Checkout Start -->
-    <div class="container-fluid">
-        <div class="row px-xl-5">
-            <div class="col-lg-8">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Billing Address</span></h5>
-                <div id="checkout-form" class="bg-light p-30 mb-5">
-                         <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label>First Name</label>
-                                <input id="first-name" class="form-control" type="text" placeholder="">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Last Name</label>
-                                <input id="last-name" class="form-control" type="text" placeholder="">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>E-mail</label>
-                                <input id="email" class="form-control" type="text" placeholder="">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Mobile No</label>
-                                <input id="mobile-no" class="form-control" type="text" placeholder="">
-                            </div>
-                            <form class="col-md-12 delivery-details-form" action={% url "orders:checkout_set_address" %} id="AddressForm">
-                            {% csrf_token %}
-                            <div class="col-md-6 form-group align-middle">
-                                 <label>Address</label>
-                                <select id="choose-address" class="form-control">
-                                </select>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Post Code</label>
-                                <input id="postcode" class="form-control" type="text" placeholder="">
-                            </div>
-                            <button id="submit-billing-address" class="btn btn-block btn-primary font-weight-bold py-3">set Address</button>
-                            </form>
-                        <div class="col-md-12">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">send to new address</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="delivery">
-                                <label class="custom-control-label" for="delivery"  data-toggle="collapse" data-target="#delivery-method">choose delivery method</label>
-                            </div>
-                        </div>
-                    </div>
+
+<div class="container">
+    <div id="error_message"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Sidebar -->
+            <div class="card">
+                <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                    Personal Information
                 </div>
-                <div class="collapse mb-5" id="shipping-address">
-                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Add new Address</span></h5>
-                    <div class="bg-light p-30">
-                        <form class="col-md-12 delivery-details-form" action={% url "orders:checkout_set_new_address" %} id="new_address_form">
-                        {% csrf_token %}
-                         <div class="row">
-                            <div class="col-md-6 form-group">
-                                <label for="province">Province:</label>
-                                <select name="province" id="province" onChange="irancitylist(this.value);" class="form-control">
-                                    <option value="0">Please select a province</option>
-                                    <option value="Tehran">Tehran</option>
-                                    <option value="Gilan">Gilan</option>
-                                    <option value="East Azerbaijan">East Azerbaijan</option>
-                                    <option value="Khuzestan">Khuzestan</option>
-                                    <option value="Persia">Persia</option>
-                                    <option value="Isfahan">Isfahan</option>
-                                    <option value="Khorasan Razavi">Khorasan Razavi</option>
-                                    <option value="Qazvin">Qazvin</option>
-                                    <option value="Semnan">Semnan</option>
-                                    <option value="Qom">Qom</option>
-                                    <option value="center">center</option>
-                                    <option value="Zanjan">Zanjan</option>
-                                    <option value="Mazandaran">Mazandaran</option>
-                                    <option value="Golestan">Golestan</option>
-                                    <option value="Ardebil">Ardebil</option>
-                                    <option value="West Azerbaijan">West Azerbaijan</option>
-                                    <option value="Hamadan">Hamadan</option>
-                                    <option value="Kurdistan">Kurdistan</option>
-                                    <option value="Kermanshah">Kermanshah</option>
-                                    <option value="Lorestan">Lorestan</option>
-                                    <option value="Bushehr">Bushehr</option>
-                                    <option value="Kerman">Kerman</option>
-                                    <option value="Hormozgan">Hormozgan</option>
-                                    <option value="Chaharmahal and Bakhtiari">Chaharmahal and Bakhtiari</option>
-                                    <option value="Yazd">Yazd</option>
-                                    <option value="Sistan and Baluchistan">Sistan and Baluchistan</option>
-                                    <option value="Ilam">Ilam</option>
-                                    <option value="Kehgluye and Boyerahmad">Kehgelue and Boyerahmad</option>
-                                    <option value="Northern Khorasan">Northern Khorasan</option>
-                                    <option value="South Khorasan">South Khorasan</option>
-                                    <option value="Alborz">Alborz</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="city">City:</label>
-                                <select name="city" id="city" class="form-control">
-                                    <option value="0">Please select a city</option>
-                                </select>
-                            </div>
-                            <script language="javascript" src="{% static 'js/city.js' %}"></script>
-                            <div class="col-md-6 form-group">
-                                <label for="new_address">Input New Address</label>
-                                <input name="new_address" id="new_address" class="form-control" type="text" placeholder="Enter new Address">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label for="postcode">POST Code</label>
-                                <input name="postcode" id=postcode" class="form-control" type="text" placeholder="Enter new post code">
-                            </div>
-                            <button id="submit-new-address" class="btn btn-block btn-primary font-weight-bold py-3" type="submit">set Address</button>
-                            </form>
-                        </div>
-                    </div>
+                <div class="card-body">
+                <p>Full Name: <span id="full-name"></span></p>
+                <p>Email: <span id="email"></span></p>
+                <p>Phone number: <span id="mobile-no"></span></p>
                 </div>
-                <div class="collapse mb-5" id="delivery-method">
-                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">choose method</span></h5>
-                    <div class="bg-light p-30">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                   <label>Delivery Method</label>
-                                   <select id="delivery-method" class="form-control">
-                                       <option value="0" data-price="Delivery Cost" >Please select </option>
-                                       <option value="post" data-price="30000">Post</option>
-                                       <option value="courier" data-price="80000">Send by courier</option>
-                                   </select>
-                               </div>
-                               <div class="col-md-6 form-group">
-                                   <label>Delivery Cost</label>
-                                   <input id="delivery-cost" class="form-control" type="text" placeholder="Delivery Cost">
-                               </div>
-                               <script>
-                                   document.getElementById('delivery-method').addEventListener('change', function() {
-                                       var selectedOption = this.options[this.selectedIndex];
-                                       var price = selectedOption.getAttribute('data-price');
-                                       document.getElementById('delivery-cost').value = price;
-                                   });
-                               </script>
-                        </div>
+                <a href="#" class="btn btn-primary mt-3">Edit</a>
+            </div>
+
+            <div class="card mt-12">
+                <div class="card">
+                    <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                        Address Information
+                    </div>
+                    <div class="card-body" id="addresses">
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="shipto">
+                        <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#add-address">Add new address</label>
+                    </div>
+                    <div class="collapse mb-5" id="add-address">
+                         <div class="bg-light p-30">
+                              <div class="row">
+                                  <div class="col-md-6 form-group">
+                                    <label for="province">Province:</label>
+                                    <select name="province" id="province" onChange="irancitylist(this.value);" type="text" class="form-control">
+                                        <option value="0">Please select a province</option>
+                                        <option value="Tehran">Tehran</option>
+                                        <option value="Gilan">Gilan</option>
+                                        <option value="East Azerbaijan">East Azerbaijan</option>
+                                        <option value="Khuzestan">Khuzestan</option>
+                                        <option value="Persia">Persia</option>
+                                        <option value="Isfahan">Isfahan</option>
+                                        <option value="Khorasan Razavi">Khorasan Razavi</option>
+                                        <option value="Qazvin">Qazvin</option>
+                                        <option value="Semnan">Semnan</option>
+                                        <option value="Qom">Qom</option>
+                                        <option value="center">center</option>
+                                        <option value="Zanjan">Zanjan</option>
+                                        <option value="Mazandaran">Mazandaran</option>
+                                        <option value="Golestan">Golestan</option>
+                                        <option value="Ardebil">Ardebil</option>
+                                        <option value="West Azerbaijan">West Azerbaijan</option>
+                                        <option value="Hamadan">Hamadan</option>
+                                        <option value="Kurdistan">Kurdistan</option>
+                                        <option value="Kermanshah">Kermanshah</option>
+                                        <option value="Lorestan">Lorestan</option>
+                                        <option value="Bushehr">Bushehr</option>
+                                        <option value="Kerman">Kerman</option>
+                                        <option value="Hormozgan">Hormozgan</option>
+                                        <option value="Chaharmahal and Bakhtiari">Chaharmahal and Bakhtiari</option>
+                                        <option value="Yazd">Yazd</option>
+                                        <option value="Sistan and Baluchistan">Sistan and Baluchistan</option>
+                                        <option value="Ilam">Ilam</option>
+                                        <option value="Kehgluye and Boyerahmad">Kehgelue and Boyerahmad</option>
+                                        <option value="Northern Khorasan">Northern Khorasan</option>
+                                        <option value="South Khorasan">South Khorasan</option>
+                                        <option value="Alborz">Alborz</option>
+                                    </select>
+                                  </div>
+                                     <div class="col-md-6 form-group">
+                                         <label for="city">City:</label>
+                                         <select name="city" id="city" type="text" class="form-control">
+                                             <option value="0">Please select a city</option>
+                                         </select>
+                                     </div>
+                                     <script language="javascript" src="{% static 'js/city.js' %}"></script>
+                                     <div class="col-md-6 form-group">
+                                         <label for="address">New Address</label>
+                                         <input type="text" name="address" id="address" class="form-control"  placeholder="Enter new address">
+                                     </div>
+                                     <div class="col-md-6 form-group">
+                                         <label for="postcode">POST Code</label>
+                                         <input type="text" name="postcode" id="postcode" class="form-control"  placeholder="Enter new post code">
+                                     </div>
+                                     <a href="#" id="addAddressBtn" class="btn btn-primary mt-3">Add New Address</a>
+                                  </div>
+                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Order Total</span></h5>
-                <div class="bg-light p-30 mb-5">
-                    <div class="border-bottom">
-                        <h6 class="mb-3">Products</h6>
-                           <div id="items-container"></div>
-                    </div>
-                    <div class="border-bottom pt-3 pb-2">
-                        <div class="d-flex justify-content-between mb-3">
-                            <h6>Delivery Cost</h6>
-                            <p><span id="delivery_cost"></span></p>
+            <div class="card mt-12 ">
+                <div class="card">
+                    <table id="order-table" class="table">
+                        <thead>
+                        <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                             Order History
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Paid</h6>
-                            <p><span id="paid"></span></p>
-                        </div>
-                    </div>
-                    <div class="pt-2">
-                        <div class="d-flex justify-content-between mt-2">
-                            <h5>Total</h5>
-                            <p><span id="calculation"></span></p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-5">
-                    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Payment</span></h5>
-                    <div class="bg-light p-30">
-                        <form>{% csrf_token %}
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                                <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                <label class="custom-control-label" for="directcheck">Direct Check</label>
-                            </div>
-                        </div>
-                        <div class="form-group mb-4">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
-                            </div>
-                        </div>
-                         </form>
-                        <button id="submit-billing-address" class="btn btn-block btn-primary font-weight-bold py-3">Place Order</button>
-                    </div>
+                        <tr>
+                            <th>Calculation</th>
+                            <th>Paid</th>
+                            <th>Order Time</th>
+                            <th>Delivery Cost</th>
+                            <th>Delivery Method</th>
+                            <th>Delivery Address</th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
     <!-- Checkout End -->
 <script>
-    const checkoutUrl = "{% url 'orders:checkout_detail' %}";
-    const accessToken = getCookie('jwt_token');
-    fetch(checkoutUrl, {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        }
-    })
+    document.addEventListener("DOMContentLoaded", function () {
+        const accessToken = getCookie('jwt_token');
+
+        fetch('{% url "customers:customer_profile" %}', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json',
+            }
+        })
         .then(function(response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -229,56 +151,62 @@
         .then(function(data) {
             const user = data.user;
             const addresses = data.addresses;
-            const order = data.order;
-            const items = data.order.orderitems;
-            document.getElementById('first-name').value = user.firstname;
-            document.getElementById('last-name').value = user.lastname;
-            document.getElementById('email').value = user.email;
-            document.getElementById('mobile-no').value = user.phonenumber;
-            document.getElementById('calculation').textContent = order.calculation;
-            document.getElementById('paid').textContent = order.paid;
-           document.getElementById('delivery_cost').textContent = order.delivery_cost;
+            const orders = data.order;
 
-        const itemsContainer = document.getElementById('items-container');
+            document.getElementById('full-name').innerText = user.firstname + ' ' + user.lastname;
+            document.getElementById('email').innerText = user.email;
+            document.getElementById('mobile-no').innerText = user.phonenumber;
 
-        items.forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('item');
-
-            const itemName = document.createElement('span');
-            itemName.textContent = `${item.items}   `;
-
-            const itemQuantity = document.createElement('span');
-            itemQuantity.textContent = `    ${item.quantity}`;
-
-            itemDiv.appendChild(itemName);
-            itemDiv.appendChild(document.createTextNode(' '));
-            itemDiv.appendChild(itemQuantity);
-
-            itemsContainer.appendChild(itemDiv);
-        });
-            const selectElement = document.getElementById('choose-address');
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = 'Select an address';
-            selectElement.appendChild(defaultOption);
+            var addressesDiv = document.getElementById('addresses');
             addresses.forEach(function(address) {
-                const option = document.createElement('option');
-                option.value = address.address;
-                option.textContent = address.address;
-                selectElement.appendChild(option);
+                var addressDiv = document.createElement('div');
+                addressDiv.innerHTML = `
+                    <div class="row" >
+                      <div class="col-md-8">
+                          <label for="address_value">Address:</label>
+                          <input id="address_value${address.id}" class="form-control no-border" value="${address.address}">
+                          <label for="postcode_value">Postcode:</label>
+                          <input id="postcode_value${address.id}" class="form-control no-border" value="${address.postcode}">
+                      </div>
+                      <div class="col-md-3">
+                          <button class="btn btn-link delete-btn" data-address-id="${address.id}">Delete</button>
+                          <button class="btn btn-link update-btn" data-update-address-id="${address.id}">Update</button>
+                      </div>
+                    </div>
+                    <hr>
+                `;
+                addressesDiv.appendChild(addressDiv);
             });
-            selectElement.addEventListener('change', function() {
-                const selectedAddressId = this.value.toString();
-                const selectedAddress = addresses.find(address => address.id == selectedAddressId);
-                if (selectedAddress) {
-                    document.getElementById('postcode').value = selectedAddress.postcode;
-                }
+
+            var orderTable = document.getElementById('order-table');
+            orders.forEach(function(order) {
+                var row = orderTable.insertRow();
+
+                var calculationCell = row.insertCell(0);
+                calculationCell.innerHTML = order.calculation;
+
+                var paidCell = row.insertCell(1);
+                paidCell.innerHTML = order.paid;
+
+                var orderTimeCell = row.insertCell(2);
+                orderTimeCell.innerHTML = order.order_time;
+
+                var deliveryCostCell = row.insertCell(3);
+                deliveryCostCell.innerHTML = order.delivery_cost;
+
+                var deliveryMethodCell = row.insertCell(4);
+                deliveryMethodCell.innerHTML = order.delivery_method;
+
+                var deliveryAddressCell = row.insertCell(5);
+                deliveryAddressCell.innerHTML = order.delivery_address;
             });
-            if (addresses.length > 0) {
-                document.getElementById('postcode').value = addresses[0].postcode;
-            }
+
         })
+        .catch(error => {
+            console.error('Error fetching user profile:', error);
+        });
+    });
+
     function getCookie(name) {
         var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -294,71 +222,174 @@
         return cookieValue;
     }
 </script>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("submit-billing-address").addEventListener("click", function (event) {
-        event.preventDefault();
+document.getElementById("addAddressBtn").addEventListener("click", function(event) {
+    event.preventDefault();
+    const accessToken = getCookie('jwt_token');
+    console.log('Received data:', accessToken);
 
-        var selectedAddress = document.getElementById("choose-address").value.toString();
-        var postcode = document.getElementById("postcode").value;
+    var province = document.getElementById("province").value;
+    var city = document.getElementById("city").value;
+    var address = document.getElementById("address").value;
+    var postcode = document.getElementById("postcode").value;
+    var requestData = {
+        city: city,
+        province: province,
+        address: address,
+        postcode: postcode
+    };
+    fetch("{% url 'customers:add_address' %}", {
+        method: "POST",
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            "Content-Type": "application/json",
 
-        const accessToken = getCookie('jwt_token');
-        const formData = new FormData();
-        formData.append("selected-address", selectedAddress);
-        formData.append("postcode", postcode);
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload();
 
-        fetch("{% url 'orders:checkout_set_address' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                'Authorization': 'Bearer ' + accessToken,
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('There was an error!', error);
-        });
+        } else {
+            throw new Error("Network response was not ok.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
     });
 });
+function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function() {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+
+                const addressId = this.getAttribute('data-address-id');
+                console.log(addressId);
+                const deleteUrl = "{% url 'customers:delete_address' 0 %}".replace('0', addressId);
+                const accessToken = getCookie('jwt_token');
+                fetch(deleteUrl,{
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>Address deleted successfully</p>';
+                    console.log('Address deleted successfully');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                });
+            });
+        });
+    }, 1000);
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("new_address_form").addEventListener("submit", function (event) {
-        event.preventDefault();
+    setTimeout(function() {
+        const updateButtons = document.querySelectorAll('.update-btn');
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
 
-        var formData = new FormData(this);
-        const accessToken = getCookie('jwt_token');
-        fetch("{% url 'orders:checkout_set_new_address' %}", {
-            method: "POST",
-            body: formData,
-            headers: {
-                'Authorization': 'Bearer ' + accessToken,
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('There was an error!', error);
+                const addressId = this.getAttribute('data-update-address-id');
+                console.log(addressId);
+                const updateUrl = "{% url 'customers:address_update' 0 %}".replace('0', addressId);
+                const accessToken = getCookie('jwt_token');
+                const addressValue = document.getElementById('address_value'+addressId).value;
+                const postcodeValue = document.getElementById('postcode_value'+addressId).value;
+
+                fetch(updateUrl,{
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    address: addressValue,
+                    postcode: postcodeValue
+                }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>Address updated successfully</p>';
+                    console.log('Address deleted successfully');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                });
+            });
         });
-    });
+    }, 1000);
 });
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 </script>
+
 {% endblock %}
+
+
+
+
+
+
