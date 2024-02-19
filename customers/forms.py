@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationForm
 from django.core.exceptions import ValidationError
 
@@ -15,6 +16,11 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('phonenumber', "firstname", "lastname", "how_know_us",)
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
+        password_validation.validate_password(password1, self.instance)
+        return password1
 
     def clean(self):
         datas = super().clean()
@@ -52,11 +58,6 @@ class RequestRegisterByEmailForm(forms.Form):
                             widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "Email",
                                                           "style": "background: transparent !important; border: 1px solid darkorange;", }))
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get('email')
-    #     if CustomUser.objects.filter(email=email).exists():
-    #         raise ValidationError("This email is already registered.Please sign in", code='email_exists')
-    #     return email
 
 
 class RequestRegistrationByPhoneFrom(forms.Form):
