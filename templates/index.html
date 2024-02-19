@@ -292,4 +292,59 @@
         </div>
     </div>
     <!-- Vendor End -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Your script here...
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
+
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function isLoggedIn(){
+            const phonenumber = getCookie('phonenumber');
+            const password = getCookie('password');
+            const data = { phonenumber: phonenumber, password:password}
+            if (data) {
+                fetch('http://127.0.0.1:8000/en/customers/api/token/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Token received:', data);
+                    const expirationDays = 1;
+                    setCookie("jwt_token", data.access, expirationDays);
+                    deleteCookie("phonenumber");
+                    deleteCookie("password");
+                })
+                .catch(error => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                });
+            }
+        }
+
+        isLoggedIn();
+    });
+</script>
+
 {% endblock %}
