@@ -1,9 +1,5 @@
-from datetime import datetime, timedelta
-
-import requests
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login, authenticate
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.shortcuts import render, redirect
@@ -11,10 +7,11 @@ from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.views import View
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, TemplateView
 from utils import generate_and_store_otp, send_otpcode_email, send_registration_email, kave_negar_token_send, \
     ExpiringTokenGenerator
 from django.contrib.auth import views as auth_view
+
 from .forms import VerifyCodeFrom, RequestRegisterByEmailForm, \
     RequestRegistrationByPhoneFrom, UserCreationForm, CustomAuthenticationForm
 from .models import CustomUser
@@ -188,35 +185,18 @@ class UserLoginByPassView(auth_view.LoginView):
             return redirect('core:home')
         return super().dispatch(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        identifier_value = self.kwargs['identifier']
+    def form_valid(self, form, *args, **kwargs):
         super().form_valid(form)
-        username_from_session = self.request.session.get('user_registration_info', {}).get(identifier_value)
-        if username_from_session:
-            form.cleaned_data['username'] = username_from_session
-            if identifier_value == 'email':
-                user_login = authenticate(self.request, username=username_from_session,
-                                          password=form.cleaned_data['password'])
-            else:
-                user_login = authenticate(self.request, username=username_from_session,
-                                          password=form.cleaned_data['password'])
-            if user_login is not None:
-                login(self.request, user_login)
-                url = 'http://127.0.0.1:8000/en/customers/api/token/'
-                data = {
-                    'phonenumber': user_login.phonenumber,
-                    'password': form.cleaned_data['password']}
-                response = requests.post(url, data=data)
-                token_data = response.json()
-                if response.status_code == 200:
-                    access_token = token_data.get('access')
-                    response = HttpResponseRedirect(self.request.session.get('previous_url', reverse('core:home')))
-                    expires = datetime.now() + timedelta(days=3)
-                    response.set_cookie("jwt_token", access_token, expires=expires)
-                # response = HttpResponseRedirect(self.request.session.get('previous_url', reverse('core:home')))
-                # self.request.session['phonenumber'] = user_login.phonenumber
-                return response
-        return redirect(reverse('customers:user_login_by_pass', kwargs={'identifier': identifier_value}))
+        print("1" * 50, form.cleaned_data['username'])
+        user_login = authenticate(self.request, username=form.cleaned_data['username'],
+                                  password=form.cleaned_data['password'])
+        if user_login is not None:
+            login(self.request, user_login)
+            response = HttpResponseRedirect(reverse('core:home'))
+            response.set_cookie("phonenumber", user_login.phonenumber)
+            response.set_cookie("password",  form.cleaned_data['password'])
+            return response
+        return redirect(reverse('customers:user_login_by_pass',))
 
     def form_invalid(self, form):
         messages.error(self.request, 'Invalid login credentials. Please try again.')
@@ -252,3 +232,7 @@ class UserPasswordResetConfirmView(auth_view.PasswordResetConfirmView):
 
 class UserPasswordResetCompleteView(auth_view.PasswordResetCompleteView):
     template_name = 'customers/resetpassword/password_reset_complete.html'
+
+
+class CustomersProfileView(TemplateView):
+    template_name = 'customers/profile.html'
