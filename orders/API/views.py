@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
@@ -202,11 +203,11 @@ class ReceiptAddDiscountView(APIView):
         discount_factor = DiscountCode.objects.get(title=discountcode)
         if discount_factor.statusCharge <= 0:
             return Response({'message': "your discount finished"}, status=status.HTTP_400_BAD_REQUEST)
-        elif discount_factor.deadline < datetime.now():
+        elif discount_factor.deadline < timezone.now():
             return Response({'message': "your discount expired"}, status=status.HTTP_400_BAD_REQUEST)
         order = Order.objects.get(id=orderId)
         self.check_object_permissions(request, order)
-        order.calculation = float(order.calculation) * float(discount_factor.amount)
+        order.calculation = float(order.calculation) * (1-float(discount_factor.amount))
         order.save()
         ser_order = OrderSerializer(istance=order)
         return Response(data=ser_order.data, status=status.HTTP_201_CREATED)

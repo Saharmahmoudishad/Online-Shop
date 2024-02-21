@@ -17,7 +17,6 @@
     </div>
     <!-- Breadcrumb End -->
 
-
     <!-- Cart Start -->
     <div id="error_message"></div>
     <div id='error_update_message' style=" display: none;"></div>
@@ -319,7 +318,13 @@ document.addEventListener("DOMContentLoaded", function() {
             if (response.ok) {
                 console.log("Coupon applied successfully");
             } else {
-                console.error("Failed to apply coupon");
+                 response.json().then(data => {
+                    document.getElementById('error_message').style.color = '#721c24';
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = data.message;
+                    console.error("Failed to apply coupon:", data.message);
+                    {#alert("Error: " + data.message);#}
+                 });
             }
         })
         .catch(error => {

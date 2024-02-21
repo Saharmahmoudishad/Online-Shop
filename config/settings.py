@@ -64,6 +64,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # 'rest_framework.authtoken',
     'drf_spectacular',
+    # celery
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [

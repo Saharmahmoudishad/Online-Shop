@@ -2,9 +2,6 @@ from django.urls import path
 from . import views
 from .API import views as APIviews
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
-
-from .API.views import HandlingToken
-
 # from rest_framework.authtoken import views as auth_token
 
 
@@ -26,7 +23,7 @@ urlpatterns = [
     path('user/delete/address/<int:address_id>', APIviews.DeleteAddressView.as_view(), name='delete_address'),
     # tokenAuthentication for API*****************************************************************************************#
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('api-token-auth/', auth_token.obtain_auth_token),
     # path('api/token/', HandlingToken.as_view(), name='token_handle'),
 ]

@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin, GroupAdmin
 from django.contrib.auth.models import Group
 from django.contrib import admin
-
 from core.models import DiscountCode, City, Province
 from customers.forms import UserChangeForm, UserCreationForm
 from customers.models import CustomUser, Address
@@ -59,3 +58,5 @@ class AddressAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser, UserAdmin)
 admin.site.register(Group)
 admin.site.register(Address, AddressAdmin)
+
+

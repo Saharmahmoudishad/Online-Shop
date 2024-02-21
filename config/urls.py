@@ -20,6 +20,7 @@ from django.conf.urls.i18n import i18n_patterns
 from core.views import ChangeLangView
 from django.conf.urls.static import static
 from django.conf import settings
+
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [path('schema/', SpectacularAPIView.as_view(), name='schema'),
