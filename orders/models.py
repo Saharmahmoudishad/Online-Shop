@@ -15,8 +15,10 @@ class Order(SoftDeleteMixin):
     paid = models.BooleanField(default=False, verbose_name=_("status"))
     order_time = models.DateTimeField(auto_now_add=True, verbose_name=_("order time"))
     delivery_cost = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_("delivery cost"))
-    delivery_method = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_("delivery cost"))
-    delivery_address = models.CharField(max_length=50,null=True, blank=True, default=0, verbose_name=_("delivery cost"))
+    delivery_method = models.CharField(max_length=50, null=True, blank=True, default=0,
+                                       verbose_name=_("delivery method"))
+    delivery_address = models.CharField(max_length=255, null=True, blank=True, default=0,
+                                        verbose_name=_("delivery address"))
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     calculation = models.DecimalField(max_digits=10, decimal_places=2, verbose_name=_("Calculation"))
 
@@ -55,9 +57,12 @@ class OrderItem(SoftDeleteMixin):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.quantity > self.items.quantity:
-            messages.error('Code is expired', 'danger')
+        if self.quantity > self.items.quantity or self.quantity < 0:
             raise ValidationError("The selected quantity is greater than available stock.")
         self.items.quantity -= self.quantity
         self.items.product.quantity -= self.quantity
+        print("3" * 50, self.items.product.quantity)
+        if self.items.product.quantity == 0:
+            self.items.product.status = False
         self.items.save()
+        self.items.product.save()
