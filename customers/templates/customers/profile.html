@@ -109,7 +109,11 @@
                 </div>
             </div>
             <div class="card mt-12 ">
-                <div class="card">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="delivery">
+                    <label class="custom-control-label" for="delivery"  data-toggle="collapse" data-target="#Order_History">show Order History</label>
+                </div>
+                <div class="card collapse mb-5" id="Order_History">
                     <table id="order-table" class="table">
                         <thead>
                         <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
