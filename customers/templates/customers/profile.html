@@ -122,6 +122,7 @@
                             <th>Delivery Cost</th>
                             <th>Delivery Method</th>
                             <th>Delivery Address</th>
+                            <th>Items</th>
                         </tr>
                         </thead>
                     </table>
@@ -153,6 +154,7 @@
             const addresses = data.addresses;
             const orders = data.order;
 
+
             document.getElementById('full-name').innerText = user.firstname + ' ' + user.lastname;
             document.getElementById('email').value = user.email;
             document.getElementById('mobile-no').value = user.phonenumber;
@@ -179,9 +181,10 @@
             });
 
             var orderTable = document.getElementById('order-table');
+            orderTable.style.fontSize = '12px';
             orders.forEach(function(order) {
+                console.log(order.orderitems)
                 var row = orderTable.insertRow();
-
                 var calculationCell = row.insertCell(0);
                 calculationCell.innerHTML = order.calculation;
 
@@ -199,7 +202,32 @@
 
                 var deliveryAddressCell = row.insertCell(5);
                 deliveryAddressCell.innerHTML = order.delivery_address;
+                var ItemsCell = row.insertCell(6);
+                ItemsCell.style.fontSize = '12px';
+                ItemsCell.style.fontWeight = 'bold';
+                ItemsCell.style.width = '300px'
+                order.orderitems.forEach(function(orderitem) {
+                var itemDiv = document.createElement('div');
+
+                var nameDiv = document.createElement('div');
+                nameDiv.textContent = 'Name: ' + orderitem.items;
+                itemDiv.appendChild(nameDiv);
+
+                var quantityDiv = document.createElement('div');
+                quantityDiv.textContent = 'Quantity: ' + orderitem.quantity;
+                itemDiv.appendChild(quantityDiv);
+
+                if (orderitem.item_image) {
+                    var image = document.createElement('img');
+                    image.src = orderitem.item_image.image;
+                    image.alt = 'Item Image';
+                    image.style.maxWidth = '100px';
+                    itemDiv.appendChild(image);
+                }
+
+                ItemsCell.appendChild(itemDiv);
             });
+         });
 
         })
         .catch(error => {
@@ -222,7 +250,6 @@
         return cookieValue;
     }
 </script>
-
 <script>
 document.getElementById("addAddressBtn").addEventListener("click", function(event) {
     event.preventDefault();
@@ -275,7 +302,6 @@ function getCookie(name) {
         return cookieValue;
     }
 </script>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     setTimeout(function() {
@@ -325,7 +351,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -429,6 +454,7 @@ document.getElementById("edit_user_data").addEventListener("click", function() {
             }
 
             </script>
+
 
 {% endblock %}
 
