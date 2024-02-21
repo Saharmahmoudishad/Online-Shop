@@ -131,26 +131,38 @@
                 <div class="collapse mb-5" id="delivery-method">
                     <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">choose method</span></h5>
                     <div class="bg-light p-30">
-                        <div class="row">
-                            <div class="col-md-6 form-group">
-                                   <label>Delivery Method</label>
-                                   <select id="delivery-method" class="form-control">
-                                       <option value="0" data-price="Delivery Cost" >Please select </option>
-                                       <option value="post" data-price="30000">Post</option>
-                                       <option value="courier" data-price="80000">Send by courier</option>
-                                   </select>
-                               </div>
-                               <div class="col-md-6 form-group">
-                                   <label>Delivery Cost</label>
-                                   <input id="delivery-cost" class="form-control" type="text" placeholder="Delivery Cost">
-                               </div>
-                               <script>
-                                   document.getElementById('delivery-method').addEventListener('change', function() {
-                                       var selectedOption = this.options[this.selectedIndex];
-                                       var price = selectedOption.getAttribute('data-price');
-                                       document.getElementById('delivery-cost').value = price;
-                                   });
-                               </script>
+                          <div class="row">
+                          <div class="col-md-6 form-group">
+                          <label for="deliveryMethod">Delivery Method:</label>
+                          <select id="deliveryMethod" class="form-control">
+                            <option value="choose delivery method" >Please select </option>
+                            <option value="post">Post</option>
+                            <option value="snapp">Snapp</option>
+                          </select>
+                              </div>
+                          <div class="col-md-6 form-group justify-content-between">
+                          <label for="deliveryCost" >Delivery Cost:</label>
+                          <input type="text" id="deliveryCost" class="form-control"  placeholder="Delivery Cost" readonly>
+                          </div>
+                              <button id="submit-delivery-method" class="btn btn-block btn-primary font-weight-bold py-3" type="submit">choose delivery method</button>
+                          <script>
+                            const deliveryMethodSelect = document.getElementById('deliveryMethod');
+                            const deliveryCostInput = document.getElementById('deliveryCost');
+
+                            const deliveryCosts = {
+                              post: 50000,
+                              snapp: 100000,
+                            };
+
+                            function updateDeliveryCost() {
+                              const selectedMethod = deliveryMethodSelect.value;
+                              const cost = deliveryCosts[selectedMethod];
+                              deliveryCostInput.value = cost;
+                            }
+
+                            deliveryMethodSelect.addEventListener('change', updateDeliveryCost);
+                            updateDeliveryCost();
+                          </script>
                         </div>
                     </div>
                 </div>
@@ -359,6 +371,109 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-
 </script>
+ <script>
+const deliveryMethod = document.getElementById('delivery-method').value;
+const deliveryCost = document.getElementById('delivery-cost').value;
+const accessToken = getCookie('jwt_token');
+
+const data = {
+    delivery_method: deliveryMethod,
+    delivery_cost: deliveryCost
+};
+
+fetch('{% url "orders:checkout_delivery" %}', {
+    method: 'PUT',
+    headers: {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+})
+.then(response => {
+    if (response.ok) {
+        return response.json();
+    } else {
+        throw new Error('Failed to update delivery method and cost');
+    }
+})
+.then(data => {
+
+    console.log(data);
+})
+.catch(error => {
+
+    console.error(error);
+});
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('submit-delivery-method').addEventListener('click', function () {
+                const deliveryMethod = document.getElementById('deliveryMethod').value;
+                const deliveryCost = document.getElementById('deliveryCost').value;
+                console.log(deliveryMethod);
+                const accessToken = getCookie('jwt_token');
+
+                const data = {
+                    delivery_method: deliveryMethod,
+                    delivery_cost: deliveryCost
+                };
+                console.log(data);
+
+                fetch('{% url "orders:checkout_delivery" %}', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("set delivery method successfully");
+                            return response.json();
+                        } else {
+                            console.log("fill the blank with correct answer");
+                            throw new Error('Failed to update delivery method and cost');
+                        }
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            });
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Search for the CSRF token cookie
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
 {% endblock %}
