@@ -1,13 +1,11 @@
 import json
 from datetime import datetime, timedelta
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from core.API.permissions import OwnerOrReadonly
 from core.models import DiscountCode, Province, City
 from customers.API.Jwt import decode_jwt_token
@@ -21,9 +19,9 @@ from product.models import Products, Variants, Size, Brand, Color, Material, Att
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 
 
-class CartAddProductView(APIView):
+class CartProductView(APIView):
     """
-    Show products and customer add to cart
+    Show products that customer add in cart
     Authentication:
     customer or Anonymous can request to get method
     """
@@ -35,23 +33,36 @@ class CartAddProductView(APIView):
         This method show products that user add to the session
 
         :param request: None
-        :return: the Features of the products extracted from Variants models and the Order number
+        :return: the Features of the products (for user's order items) extracted from Variants models and the Order
+        number, showed in cart page
         brand, color, size, material and other attributes of product,Plus custom product quantity
 
-        **handle the error** of Product stock, in this method if user order product more than Product stock  or if Product stock==0 mthod return error
+        **handle the error** of Product stock, in this method if user order product more than Product stock  or if Product stock==0
+         we must show  error
         """
         cart = Cart(request)
         return Response(
             {"cart": cart},
             status=status.HTTP_200_OK)
 
+
+class CartAddProductView(APIView):
+    """
+    handle that customer add products to cart
+    Authentication:
+    customer or Anonymous can request to get method
+    """
+    permission_classes = [AllowAny]
+    serializer_class = None
+
     def post(self, request, product_id=None, **kwargs):
         """
-       :param request:  brand, color, size, material and other attributes of product,Plus order product quantity
+       :param request:  brand, color, size, material and other attributes for each product,Plus order product quantity
 
-       :param product_id: id of product of Product model in database
-       :param kwargs:...
-       :return: status 200 if post request get response
+       :param product_id: id of Product model in database
+
+       :return: response ok for post request, return status 200
+                response is not ok or post request, return status 400.(param request doesn't choose completely or the product quantity doesn't enough for customers order)
        """
         cart = Cart(request)
         post_data = {key: int(value[0:20]) if value.isdigit() else value[0:20] for key, value in
@@ -80,14 +91,25 @@ class CartAddProductView(APIView):
                  attribute=post_data['attribute'].type, )
         return Response(status=status.HTTP_200_OK)
 
+
+class CartUpdateProductView(APIView):
+    """
+    handle that customer update the number of products were ordered in cart
+    Authentication:
+    customer or Anonymous can request to get method
+    """
+    permission_classes = [AllowAny]
+    serializer_class = None
+
     def put(self, request, variant_id=None):
         """
         This method is updated the quantity of order for each product in cart dictionary in session
         if quantity get value more than product stock return message
 
-        param variant_id: key of dictionary cart data for updating quantity
+        param variant_id: key of cart dictionary  for each product, used in updating quantity
 
-        return: if response is ok the message for it
+        return: if response is ok  for put request, return status 200  and message
+                if response is not ok  for put request, return status 400 and message
         """
         cart = Cart(request)
         variant_chose = get_object_or_404(Variants, id=variant_id)
@@ -109,11 +131,11 @@ class CartAddProductView(APIView):
 
 class CartRemoveView(APIView):
     """
-    This method is removed the order variants in cart dictionary in session
+    This method is removed the order variants in cart dictionary handling in session
 
-    param variant_id: key of dictionary cart data for updating quantity
+    param variant_id: key of cart dictionary for updating quantity
 
-    return: update cart value after remove
+    return: if response is ok return updated cart value after remove and status 200
     """
 
     def get(self, request, variant_id):
@@ -123,7 +145,7 @@ class CartRemoveView(APIView):
 
         cart.remove(variant)
 
-        return Response('orders:cart', status=status.HTTP_200_OK)
+        return Response({'cart': cart}, status=status.HTTP_200_OK)
 
 
 class ReceiptCreateView(APIView):
@@ -138,17 +160,15 @@ class ReceiptCreateView(APIView):
 
     def get(self, request):
         """
-        fix oder nad add data in models of order and orderItem and set order id in cookie for one day
+        fix oder and add data in models of order and orderItem and set order id in cookie for one day
         user have time to compelete their order
 
-        :param request:
-        :return:order data(json)
+        :param request:user authentication token
+        :return:order data(json), status code 201
         """
-
         cart = Cart(request)
-        user_id = decode_jwt_token(request)
-        print("1" * 50, user_id)
-        user = get_object_or_404(CustomUser, id=user_id)
+        # user_id = decode_jwt_token(request)
+        user = get_object_or_404(CustomUser, id=request.user.id)
         order = Order.objects.create(user=user, calculation=cart.get_total_price())
         for item in cart:
             variant = get_object_or_404(Variants, id=item['variant']['id'])
@@ -172,9 +192,9 @@ class ReceiptAddDiscountView(APIView):
     def post(self, request):
         """
         this method calculate the final receipt
-        param: order id that user get from cookies
+        :param request: user authentication token, discountcode
 
-        return json dtata of order after update receipt
+        return json data of order after update receipt
         """
         discountcode = request.data['discountcode']
         orderId = request.COOKIES.get('orderid')
@@ -191,7 +211,7 @@ class ReceiptAddDiscountView(APIView):
 
 class ReceiptUpdateView(APIView):
     """
-    this class has to method put and delete for update and delete order item from database befor receipt fix at the end
+    this class has to method put for update order item from database before receipt fix at the end
     permission: user must Authenticated and must be the owner of receipt
     """
     permission_classes = [OwnerOrReadonly]
@@ -200,7 +220,7 @@ class ReceiptUpdateView(APIView):
     def put(self, request, order_id):
         """
         owner can update the item of their order
-
+        :param request: user authentication token
         :param order_id: order_id that is not paid
         :return: orderitem after updating as json response
         errors are handled by message response
@@ -215,10 +235,12 @@ class ReceiptUpdateView(APIView):
             return Response(ser_data.data, status=status.HTTP_200_OK)
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class ReceiptDeleteView(APIView):
     def delete(self, request, order_id):
         """
         owner can delete the order logically not completely
-
+        :param request: user authentication token
         :param order_id: order_id that is not paid
         :return: message to show order was deleted
         """
@@ -238,6 +260,11 @@ class CheckOutView(APIView):
     serializer_class = AddressSerializer, OrderSerializer
 
     def get(self, request):
+        """
+
+        :param request: user authentication token
+        :return:
+        """
         user_id = decode_jwt_token(request)
         user = get_object_or_404(CustomUser, id=user_id)
         try:
@@ -261,10 +288,19 @@ class CheckOutView(APIView):
                          "message": "Your order ID expire Please order again"},
                         status=status.HTTP_200_OK)
 
+
+class CheckOutSetAddressView(APIView):
+    """
+    this class has to method post for show final receipt and users data.
+    permission: user must Authenticated and must be the owner of receipt
+    """
+    permission_classes = [OwnerOrReadonly]
+    serializer_class = AddressSerializer, OrderSerializer
+
     def post(self, request):
         """
         select one of addresses by owner for send items by shop
-
+        :param request: user authentication token
         :return: order
         """
         selected_address = request.POST.get('selected-address', '')
@@ -280,6 +316,7 @@ class CheckOutView(APIView):
         owner can delete the order completely in checkout page too
 
         :param order_id: order_id that is not paid
+        :param request: user authentication token
         :return: message to show order was deleted
 
         """
@@ -295,6 +332,11 @@ class NewAddressView(APIView):
     serializer_class = AddressSerializer
 
     def post(self, request):
+        """
+
+        :param request: user authentication token
+        :return:
+        """
         orderId = request.COOKIES.get('orderid')
         order = Order.objects.get(id=orderId)
         data = request.POST.dict()
@@ -325,3 +367,26 @@ class NewAddressView(APIView):
                             status=status.HTTP_201_CREATED)
         return Response(ser_address.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class DeliveryMethodView(APIView):
+    permission_classes = [OwnerOrReadonly]
+    serializer_class = OrderSerializer
+    """
+    this class handle method and cost of delivery
+    """
+
+    def put(self, request):
+        """
+        :param request: user authentication token
+        :return:if response is ok return order and status code 200
+                if response is not ok return error and status code 400
+
+        """
+        orderId = request.COOKIES.get('orderid')
+        order = Order.objects.get(id=orderId)
+        ser_order = OrderSerializer(instance=order, data=request.data, partial=True)
+        if ser_order.is_valid():
+            ser_order.save()
+            return Response({'order': ser_order.data, },
+                            status=status.HTTP_200_OK)
+        return Response(ser_order.errors, status=status.HTTP_400_BAD_REQUEST)
