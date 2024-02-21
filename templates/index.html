@@ -294,7 +294,6 @@
     <!-- Vendor End -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        // Your script here...
         function getCookie(name) {
             const value = `; ${document.cookie}`;
             const parts = value.split(`; ${name}=`);
@@ -317,7 +316,11 @@
             const password = getCookie('password');
             const data = { phonenumber: phonenumber, password:password}
             if (data) {
-                fetch('http://127.0.0.1:8000/en/customers/api/token/', {
+                const hostname = window.location.hostname;
+        const port = window.location.port;
+        const baseUrl = 'http://' + hostname + (port ? ':' + port : '');
+        const tokenEndpoint = baseUrl + '/en/customers/api/token/';
+                fetch(tokenEndpoint , {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -327,11 +330,15 @@
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
+
                     }
                     return response.json();
                 })
                 .then(data => {
                     console.log('Token received:', data);
+                    const expirationDate = new Date(0);
+
+                    setCookie("jwt_token", "", { expires: expirationDate });
                     const expirationDays = 1;
                     setCookie("jwt_token", data.access, expirationDays);
                     deleteCookie("phonenumber");

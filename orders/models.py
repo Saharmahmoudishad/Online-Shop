@@ -36,7 +36,8 @@ class Order(SoftDeleteMixin):
         return f"{self.user}"
 
     def get_total_price(self):
-        return sum(item.get_cost for item in self.orderItem.all()) + self.delivery_cost
+
+        return sum(item.get_cost for item in self.orderItem.all()) + float(self.delivery_cost)
 
 
 class OrderItem(SoftDeleteMixin):
@@ -61,7 +62,6 @@ class OrderItem(SoftDeleteMixin):
             raise ValidationError("The selected quantity is greater than available stock.")
         self.items.quantity -= self.quantity
         self.items.product.quantity -= self.quantity
-        print("3" * 50, self.items.product.quantity)
         if self.items.product.quantity == 0:
             self.items.product.status = False
         self.items.save()

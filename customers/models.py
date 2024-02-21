@@ -87,10 +87,11 @@ class Address(SoftDeleteMixin):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"))
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name=_("City"))
-    address = models.CharField(max_length=40, verbose_name=_("address description"))
+    address = models.CharField(max_length=255, verbose_name=_("address description"))
     postcode = models.CharField(max_length=40, verbose_name=_("post code"))
 
     class Meta:
+        unique_together = ['user', 'address']
         verbose_name = _('Address')
         verbose_name_plural = _("Addresses")
 

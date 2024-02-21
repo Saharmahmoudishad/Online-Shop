@@ -30,6 +30,8 @@
                             <th scope="col">The number of items</th>
                             <th>Products</th>
                             <th>Images</th>
+                            <th>color</th>
+                            <th>Size</th>
                             <th>Price</th>
                             <th>Final Price</th>
                             <th>Quantity</th>
@@ -42,165 +44,130 @@
             {% for item in cart %}
                 <tr>
                     <th scope="row " class="align-middle m-0 p-0">{{ forloop.counter }}</th>
-                    <td class="align-middle">{{ item.title}}</td>
-                    <td class="align-middle">
+                    <td class="align-middle p-0">{{ item.title}}</td>
+                    <td class="align-middle p-0">
                          <img src="{{ item.image.image }}" alt="Variant Image" class="variant-image">
                     </td>
-                    <td class="align-middle">${{ item.price }}</td>
-                    <td class="align-middle">${{ item.discount_price }}</td>
+                    <td class="align-middle p-0">{{ item.color }}</td>
+                    <td class="align-middle p-0">{{ item.size }}</td>
+                    <td class="align-middle p-0">${{ item.price }}</td>
+                    <td class="align-middle p-0">${{ item.discount_price }}</td>
                     <form id="formId{{ item.variant.id }}"  action="{% url 'orders:cart_update_product' item.variant.id %}" method="put" class="" enctype="multipart/form-data" novalidate>
-                    <td class="align-middle">
+                    <td class="align-middle p-0">
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-primary btn-minus btn-sm m-0 " onclick="decreaseQuantity(this)">
-                                    <i class="fa fa-minus fa-sm" style="font-size: 10px;"></i>
+                                    <i class="fa fa-minus fa-sm" style="font-size: 8px;"></i>
                                 </button>
                             </div>
                             <input type="number" class="form-control bg-secondary border-0 text-center btn-sm m-0 p-0" value="{{ item.quantity }}" min="1" name="quantity">
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary btn-plus btn-sm m-0" onclick="increaseQuantity(this)">
-                                    <i class="fa fa-plus" style="font-size: 10px;"></i>
+                                <button type="button" class="btn btn-primary btn-plus btn-sm " onclick="increaseQuantity(this)">
+                                    <i class="fa fa-plus" style="font-size: 8px;"></i>
                                 </button>
                             </div>
+                            <script>
+                                function increaseQuantity(button) {
+                                    var input = button.parentElement.previousElementSibling;
+                                    input.value = parseInt(input.value) + 1;
+                                }
+                                function decreaseQuantity(button) {
+                                    var input = button.parentElement.nextElementSibling;
+                                    var currentValue = parseInt(input.value);
+                                    if (currentValue > 1) {
+                                        input.value = currentValue - 1;
+                                    }
+                                }
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const quantityInputs = document.querySelectorAll('.quantity-input');
+                                    quantityInputs.forEach(input => {
+                                        input.addEventListener('change', function() {
+                                            // Ensure the value is at least 1
+                                            if (parseInt(this.value) < 1) {
+                                                this.value = 1;
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
                         </div>
                     </td>
-                    <td class="align-middle">${{ item.total_price }}</td>
-                    <td class="align-middle">
-                        <button class="remove-button{{ item.variant.id }} m-0 " data-variant-id="{{ item.variant.id }}">
-                            <i class="fa fa-times"></i>
+                    <td class="align-middle p-0">${{ item.total_price }}</td>
+                    <td class="align-middle p-0">
+                        <button class="remove-button{{ item.variant.id }} " data-variant-id="{{ item.variant.id }}">
+                            <i class="fa fa-times" ></i>
                         </button>
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle p-0">
                         <p id="error_message" class="text-danger" style="display: none;"></p>
                         <!-- Button to update cart -->
-                        <button type="submit" class="update-button{{ item.variant.id }} m-0 " data-variant-id="{{ item.variant.id }}">
-                            <i class="fas fa-sync-alt"></i>
+                        <button type="submit" class="update-button{{ item.variant.id }}" data-variant-update-id="{{ item.variant.id }}">
+                            <i class="fas fa-sync-alt" ></i>
                         </button>
                     </td>
                     </form>
                 </tr>
 
-                <script>
-                function increaseQuantity(button) {
-                    var input = button.parentElement.previousElementSibling;
-                    input.value = parseInt(input.value) + 1;
-                }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.remove-button{{ item.variant.id }}').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const variantId = this.getAttribute('data-variant-id');
 
-                function decreaseQuantity(button) {
-                    var input = button.parentElement.nextElementSibling;
-                    var currentValue = parseInt(input.value);
-                    if (currentValue > 1) {
-                        input.value = currentValue - 1;
-                    }
-                }
-
-                document.addEventListener('DOMContentLoaded', function() {
-                    const quantityInputs = document.querySelectorAll('.quantity-input');
-                    quantityInputs.forEach(input => {
-                        input.addEventListener('change', function() {
-                            // Ensure the value is at least 1
-                            if (parseInt(this.value) < 1) {
-                                this.value = 1;
-                            }
-                        });
-                    });
-                });
-            </script>
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                document.querySelectorAll('.remove-button{{ item.variant.id }}').forEach(function(button) {
-                    button.addEventListener('click', function() {
-
-                        fetch('{% url "orders:cart_remove" item.variant.id %}', {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': getCookie('csrftoken')
-                            }
-                        })
-                        .then(function(response) {
-                            if (!response.ok) {
-                                document.getElementById('error_message').style.color = '#721c24';
-                                document.getElementById('error_message').style.display = 'block';
-                                document.getElementById('error_message').innerHTML = '<p>please try again.Network response has problem</p>'
-                                {#window.alert("please try again.Network response has problem");#}
-                                throw new Error('Network response was not ok');
-                            }
-                            {#window.alert("Product removed successfully");#}
-                            console.log('Product removed successfully');
-                            location.reload();
-                        })
-                        .catch(function(error) {
-                            console.error('There was a problem with the fetch operation:', error.message);
-                        });
-                    });
-                });
-            });
-
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            </script>
-            <script>
-            document.getElementById("formId{{ item.variant.id }}").addEventListener("submit", function(event) {
-              event.preventDefault();
-
-              const formData = new FormData(this);
-              const jsonData = {};
-              formData.forEach((value, key) => {
-                jsonData[key] = value;
-              });
-
-              fetch("{% url 'orders:cart_update_product' item.variant.id %}", {
-                method: "PUT",
+            fetch('{% url "orders:cart_remove" item.variant.id %}', {
+                method: 'GET',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(jsonData)
-              })
-              .then(response => {
-                if (response.ok) {
-                  window.location.href = "{% url 'orders:cart' %}";
-                } else {
-                  document.getElementById('error_message').style.color = '#721c24';
-                  document.getElementById('error_message').style.display = 'block';
-                  document.getElementById('error_message').innerHTML = '<p>check the Product inventory on the detail product page</p>';
-                  window.alert("check the Product inventory on the detail product page");
-                  console.error("Error:", response.statusText);
+                    'Content-Type': 'application/json',
                 }
-              })
-              .catch(error => {
-                console.error("Error:", error);
-              });
-            });
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    document.getElementById('error_message').style.color = '#721c24';
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>please try again.Network response has problem</p>'
+                    throw new Error('Network response was not ok');
                 }
-                return cookieValue;
-            }
 
-            </script>
+                console.log('Product removed successfully');
+                window.location.reload();
+            })
+            .catch(function(error) {
+                console.error('There was a problem with the fetch operation:', error.message);
+            });
+        });
+    });
+});
+
+</script>
+<script>
+    document.getElementById("formId{{ item.variant.id }}").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+        fetch("{% url 'orders:cart_update_product' item.variant.id %}", {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData)
+        })
+            .then(response => {if (response.ok) {
+                window.location.href = "{% url 'orders:cart' %}";
+            } else {
+                document.getElementById('error_message').style.color = '#721c24';
+                document.getElementById('error_message').style.display = 'block';
+                document.getElementById('error_message').innerHTML = '<p>check the Product inventory on the detail product page</p>';
+                window.alert("check the Product inventory on the detail product page");
+                console.error("Error:", response.statusText);
+            }
+            })
+            .catch(error => {console.error("Error:", error);
+            });
+    });
+ </script>
             {% endfor %}
                 <tr>
                     <td class="align-middle">${{ item.price }}</td>
@@ -210,7 +177,7 @@
                     </tbody>
                 </table>
             <button class="btn btn-primary px-3" id="checkout-button">Final order registration</button>
-            </div>
+        </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -229,13 +196,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 function makeFetchRequest(accessToken) {
     fetch('{% url "orders:order_create"  %}', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
             'Authorization': 'Bearer ' + accessToken
         }
     })
@@ -262,8 +227,6 @@ function makeFetchRequest(accessToken) {
         console.error('There was a problem with the fetch operation:', error.message);
     });
 }
-
-
 function redirectToLoginPage() {
     document.getElementById('error_message').style.color = '#721c24';
     document.getElementById('error_message').style.display = 'block';
@@ -272,7 +235,6 @@ function redirectToLoginPage() {
     window.location.href = "{% url 'customers:request_register_by_email' %}";
     }, 3000);
 }
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -287,54 +249,53 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 </script>
-<div class="col-lg-3 m-0 p-0">
-<form id="couponForm" class="mb-30">
-   <div class="input-group">
-        <input id="couponInput" type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
-        <input type="hidden" class="custom-control-input" id="order-id" name="order_id">
-      <div class="input-group-append">
-           <button type="button" id="applyCouponBtn" class="btn btn-primary">Apply Coupon</button>
+      <div class="col-lg-3 m-0 p-0">
+      <form id="couponForm" class="mb-30">
+         <div class="input-group">
+              <input id="couponInput" type="text" class="form-control border-0 p-4" placeholder="Coupon Code">
+              <input type="hidden" class="custom-control-input" id="order-id" name="order_id">
+            <div class="input-group-append">
+                 <button type="button" id="applyCouponBtn" class="btn btn-primary">Apply Coupon</button>
+            </div>
+         </div>
+      </form>
+          <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
+          <div class="bg-light p-30 mb-5">
+              <!-- Display Order Summary -->
+              <div class="border-bottom pb-2" >
+                  <div class="d-flex justify-content-between mb-3" id="order-details">
+                      <h6>Order ID</h6>
+                      <p><span id='order'></span></p>
+                  </div>
+                  <div class="d-flex justify-content-between mb-3" id="order-details">
+                      <h6>User ID</h6>
+                      <p><span id="user-id"></span></p>
+                  </div>
+                  <div class="d-flex justify-content-between mb-3" id="order-details">
+                      <h6>Paid</h6>
+                      <p><span id="paid"></span></p>
+                  </div>
+                  <div class="d-flex justify-content-between mb-3" id="order-details">
+                      <h6>Order Time</h6>
+                      <p style="font-size: small"><span id="order-time"></span></p>
+                  </div>
+                  <!-- Display Delivery Cost -->
+                  <div class="d-flex justify-content-between mb-3" id="order-details">
+                      <h6>Delivery Cost</h6>
+                      <p><span id="delivery-cost"></span></p>
+                  </div>
+              </div>
+              <!-- Display Total -->
+              <div class="pt-2">
+                  <div class="d-flex justify-content-between mt-2" id="order-details">
+                      <h5>Total</h5>
+                      <p><span id="calculation"></span></p>
+                  </div>
+                  <button class="btn btn-block btn-primary font-weight-bold my-3 py-3"><a href="{% url 'orders:checkout' %}">Proceed To Checkout</a></button>
+              </div>
+          </div>
       </div>
-   </div>
-</form>
-    <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Cart Summary</span></h5>
-    <div class="bg-light p-30 mb-5">
-        <!-- Display Order Summary -->
-        <div class="border-bottom pb-2" >
-            <div class="d-flex justify-content-between mb-3" id="order-details">
-                <h6>Order ID</h6>
-                <p><span id='order'></span></p>
-            </div>
-            <div class="d-flex justify-content-between mb-3" id="order-details">
-                <h6>User ID</h6>
-                <p><span id="user-id"></span></p>
-            </div>
-            <div class="d-flex justify-content-between mb-3" id="order-details">
-                <h6>Paid</h6>
-                <p><span id="paid"></span></p>
-            </div>
-            <div class="d-flex justify-content-between mb-3" id="order-details">
-                <h6>Order Time</h6>
-                <p style="font-size: small"><span id="order-time"></span></p>
-            </div>
-            <!-- Display Delivery Cost -->
-            <div class="d-flex justify-content-between mb-3" id="order-details">
-                <h6>Delivery Cost</h6>
-                <p><span id="delivery-cost"></span></p>
-            </div>
-        </div>
-        <!-- Display Total -->
-        <div class="pt-2">
-            <div class="d-flex justify-content-between mt-2" id="order-details">
-                <h5>Total</h5>
-                <p><span id="calculation"></span></p>
-            </div>
-            <button class="btn btn-block btn-primary font-weight-bold my-3 py-3"><a href="{% url 'orders:checkout' %}">Proceed To Checkout</a></button>
-        </div>
-    </div>
-</div>
     <!-- Cart End -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -368,5 +329,4 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 </script>
-
 {% endblock %}

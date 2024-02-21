@@ -2,6 +2,8 @@ from django.core.cache import cache
 from django.utils.crypto import get_random_string
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+
+from core.models import Province, City
 from customers.tasks import send_email_task
 from config import settings
 from kavenegar import *
@@ -99,5 +101,13 @@ class ExpiringTokenGenerator(PasswordResetTokenGenerator):
         return False
 
 
-
-
+def addprovincecity(input_province, input_city):
+    try:
+        province = Province.objects.get(name=input_province)
+    except Province.DoesNotExist:
+        province = Province.objects.create(name=input_province)
+    try:
+        city = City.objects.get(name=input_city, province=province)
+    except City.DoesNotExist:
+        city = City.objects.create(name=input_city, province=province)
+    return province.id, city.id

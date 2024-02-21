@@ -65,3 +65,5 @@ def decode_jwt_token(request):
                 return user
     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, TokenError):
         return None
+
+

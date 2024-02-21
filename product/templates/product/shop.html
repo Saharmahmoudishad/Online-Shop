@@ -78,11 +78,9 @@
                                      {{ product.image_tag|safe }}
                                 {% endif %}
                                 <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href="{% url 'product:product_like' product.id %}">{{product.likes_count}}
                                         <i class="far fa-heart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                                 </div>
                             </div>
                             <div class="text-center py-4">
@@ -95,12 +93,11 @@
                                     {% endif %}
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>(99)</small>
+                                    {% if product.quantity == 0 %}
+                                        <p style="color: #721c24">Non-availability <span style="color: red; font-weight: bold;">✘</span></p>
+                                    {% else %}
+                                    <p>Inventory : {{product.quantity}}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

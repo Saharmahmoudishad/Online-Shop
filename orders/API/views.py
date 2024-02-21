@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timedelta
+from decimal import Decimal
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
@@ -15,7 +16,7 @@ from customers.serializers import AddressSerializer, CustomUserSerializer
 from orders.cart import Cart
 from orders.models import Order, OrderItem
 from orders.API.serializers import OrderSerializer, OrderItemSerializer
-from product.models import Products, Variants, Size, Brand, Color, Material, Attribute
+from product.models import Variants, Size, Brand, Color, Material, Attribute
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 
 
@@ -167,7 +168,6 @@ class ReceiptCreateView(APIView):
         :return:order data(json), status code 201
         """
         cart = Cart(request)
-        # user_id = decode_jwt_token(request)
         user = get_object_or_404(CustomUser, id=request.user.id)
         order = Order.objects.create(user=user, calculation=cart.get_total_price())
         for item in cart:
@@ -344,7 +344,6 @@ class NewAddressView(APIView):
         try:
             province = Province.objects.get(name=data['province'])
         except province.DoesNotExist:
-
             province = Province.objects.create(name=data['province'])
         try:
             city = City.objects.get(name=data['city'], province=province)
@@ -353,14 +352,14 @@ class NewAddressView(APIView):
         data['province'], data['city'] = province.id, city.id
         data = {'user': request.user.id, 'address': data['new_address'],
                 'city': city.id, 'province': province.id, 'postcode': data['postcode']}
-        ser_address = AddressSerializer(data=data)
+        ser_address = AddressSerializer(data=data, )
         if ser_address.is_valid():
             address = Address.objects.create(address=ser_address.validated_data['address'],
                                              province=ser_address.validated_data['province'],
                                              city=ser_address.validated_data['city'],
                                              postcode=ser_address.validated_data['postcode'],
                                              user=ser_address.validated_data['user'])
-            order.delivery_address = address.id
+            order.delivery_address = address.address
             order.save()
             ser_order = OrderSerializer(instance=order)
             return Response({'order': ser_order.data, 'address': ser_address.data},
@@ -387,6 +386,8 @@ class DeliveryMethodView(APIView):
         ser_order = OrderSerializer(instance=order, data=request.data, partial=True)
         if ser_order.is_valid():
             ser_order.save()
+            order.calculation = order.calculation + Decimal(request.data['delivery_cost'])
+            order.save()
             return Response({'order': ser_order.data, },
                             status=status.HTTP_200_OK)
         return Response(ser_order.errors, status=status.HTTP_400_BAD_REQUEST)

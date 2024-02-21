@@ -9,9 +9,9 @@ class OrderItemInline(admin.TabularInline):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "order_time", 'paid']
+    list_display = ["id", "user", "order_time", 'paid', 'delivery_address', 'delivery_method']
     list_filter = ('paid',)
-    inlines =(OrderItemInline,)
+    inlines = (OrderItemInline,)
 
 
 class OrderItemAdmin(admin.ModelAdmin):
@@ -20,4 +20,3 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem, OrderItemAdmin)
-

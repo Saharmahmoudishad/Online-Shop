@@ -49,7 +49,7 @@ class Image(SoftDeleteMixin):
 
 
 class Province(SoftDeleteMixin):
-    name = models.CharField(max_length=40, verbose_name=_("Province Name"))
+    name = models.CharField(max_length=40, verbose_name=_("Province Name"), unique=True)
 
     class Meta:
         verbose_name = _('Province')
@@ -57,7 +57,7 @@ class Province(SoftDeleteMixin):
 
 
 class City(SoftDeleteMixin):
-    name = models.CharField(max_length=40, verbose_name=_("City Name"))
+    name = models.CharField(max_length=40, verbose_name=_("City Name"), unique=True)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"), default="0")
 
     class Meta:

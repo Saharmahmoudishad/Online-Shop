@@ -18,5 +18,4 @@ class CheckOutView(View):
 
     def get(self, request):
 
-        # cart = Cart(request)
         return render(request, self.template_name, )
