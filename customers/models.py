@@ -33,7 +33,7 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     is_active = models.BooleanField(default=True, verbose_name=_("is active"))
     is_admin = models.BooleanField(default=False, verbose_name=_("is admin"))
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=4)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=4,verbose_name=_("group"))
 
     class Meta:
         verbose_name = _('User')
