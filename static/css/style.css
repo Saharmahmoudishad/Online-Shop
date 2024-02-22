@@ -9762,4 +9762,6 @@ a{
 .no-border {
     border: none;
     background: none;
+    border-bottom:1px dotted black;
+    width:40%;
 }
