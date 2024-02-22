@@ -43,8 +43,8 @@ Task Queue: Celery is integrated into the project for handling asynchronous task
 
 ## Entity-Relationship Diagram (ERD)
 You can visualize the database schema of the project using the Entity-Relationship Diagram (ERD) available at the following link:
-erd:https://dbdiagram.io/d/656c217d56d8064ca044e198
-ERD PDF
+[ERD PDF](https://dbdiagram.io/d/656c217d56d8064ca044e198)
+**you can find pdf of ERD PDF in Doc directory of project**
 
 This ERD provides an overview of the database structure and relationships between different entities in the project.
 
@@ -76,7 +76,7 @@ Update the [gmail_login] section with your Google OAuth2 credentials. These are 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: Google OAuth2 client ID.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: Google OAuth2 client secret.
 - **SMS Configuration**:
-- Update the [sending_sms] section with your SMS API credentials and phone number. Modify the following parameters:
+Update the [sending_sms] section with your SMS API credentials and phone number. Modify the following parameters:
 
 APIKey: Your SMS API key.
 phonenumber: Your phone number for sending SMS notifications.
@@ -84,7 +84,8 @@ Once you've updated the config.ini file with your configuration details, you can
 
 Once you've completed the configuration, you can proceed to run the project using the following command:
 
-```python manage.py runserver
+```python
+python manage.py runserver
 ```
 This will start the Django development server, and your project will be accessible at the specified URL.
 
@@ -94,18 +95,21 @@ To utilize Celery for task management, you need to first start Redis and then ru
 ## Run the Django Server:
 
 
-```python manage.py runserver
+```python
+python manage.py runserver
 ```
 ### Start the Redis Server:
 Before using Celery, ensure that the Redis server is running. Depending on how Redis is installed and configured, you may use different commands for this purpose. Typically, you can use the following command:
 
 
-```redis-server
+```bash
+redis-server
 ```
 ### Run Celery Workers:
 
 
-```python -m celery -A django_celery worker
+```bash
+python -m celery -A django_celery worker
 ```
 This command starts Celery workers as part of your system. This way, Celery is ready to handle tasks in the background.
 
