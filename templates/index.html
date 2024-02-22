@@ -20,7 +20,7 @@
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Men Fashion' %}</h1>
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="{% url 'product:category_filter' 'men-fashion' %}">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
                         </div>
@@ -30,7 +30,7 @@
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Women Fashion' %}</h1>
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="{% url 'product:category_filter' 'women-fashion' %}">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
                         </div>
@@ -40,7 +40,7 @@
                                 <div class="p-3" style="max-width: 700px;">
                                     <h1 class="display-4 text-white mb-3 animate__animated animate__fadeInDown">{% translate 'Kids Fashion' %}</h1>
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">{% translate 'Having a beautiful appearance is not limited to buying expensive clothes, but your smart choice will bring you beauty, glory and dignity.' %}</p>
-                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="#">{% translate 'Shop Now' %}</a>
+                                    <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp" href="{% url 'product:category_filter' 'kids-fashion' %}">{% translate 'Shop Now' %}</a>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +116,7 @@
                                    {% endif %}
                                </div>
                                <div class="flex-fill pl-3">
-                                   <a  href="{{category_info.get_absolute_url}}"><h3>{{ category_info.title }}</h3></a>
+                                   <a  href="{{category_info.slug}}"><h3>{{ category_info.title }}</h3></a>
                                    <small class="text-body">{{ category_info.children|length }} categories</small>
                                </div>
                            </div>
@@ -158,11 +158,9 @@
                                      {{ product.image_tag|safe }}
                                 {% endif %}
                                 <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-shopping-cart"></i></a>
                                      <a class="btn btn-outline-dark btn-square" href="{% url 'product:product_like' product.id %}">{{product.likes_count}}
                                         <i class="far fa-heart"></i></a>
                                     <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
                                 </div>
                             </div>
                             <div class="text-center py-4">
@@ -175,12 +173,7 @@
                                  {% endif %}
                                 </div>
                                 <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>({{ product.quantity }})</small>
+                                    <small>(Inventory:{{ product.quantity }})</small>
                                 </div>
                             </div>
                         </div>
@@ -189,32 +182,6 @@
         </div>
     </div>
     <!-- Products End -->
-    <!-- Offer Start -->
-    <div class="container-fluid pt-5 pb-3">
-        <div class="row px-xl-5">
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="img/offer-1.jpg" alt="">
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="product-offer mb-30" style="height: 300px;">
-                    <img class="img-fluid" src="img/offer-2.jpg" alt="">
-                    <div class="offer-text">
-                        <h6 class="text-white text-uppercase">Save 20%</h6>
-                        <h3 class="text-white mb-3">Special Offer</h3>
-                        <a href="" class="btn btn-primary">Shop Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Offer End -->
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent Products</span></h2>
@@ -242,14 +209,6 @@
                             {% else %}
                             <h5>{{ recent_product.price }}</h5>
                             {% endif %}
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
                         </div>
                     </div>
                 </div>

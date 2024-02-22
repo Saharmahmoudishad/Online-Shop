@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
             {% endfor %}
                 <tr>
                     <td class="align-middle">${{ item.price }}</td>
-                    <td colspan="5"></td>
+                    <td colspan="7"></td>
                     <td class="align-middle">${{ cart.get_total_price }}</td>
                 </tr>
                     </tbody>
@@ -309,13 +309,13 @@ document.addEventListener("DOMContentLoaded", function() {
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'),
-
             },
             body: JSON.stringify({ discountcode: couponCode, orderId: orderId })
         })
         .then(response => {
             if (response.ok) {
+                document.getElementById('error_message').style.display = 'block';
+                document.getElementById('error_message').innerHTML = "Coupon applied successfully";
                 console.log("Coupon applied successfully");
             } else {
                  response.json().then(data => {
