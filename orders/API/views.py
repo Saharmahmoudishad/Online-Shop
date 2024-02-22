@@ -207,11 +207,12 @@ class ReceiptAddDiscountView(APIView):
             return Response({'message': "your discount expired"}, status=status.HTTP_400_BAD_REQUEST)
         order = Order.objects.get(id=orderId)
         self.check_object_permissions(request, order)
-        order.calculation = float(order.calculation) * (1-float(discount_factor.amount))
+        order.calculation = float(order.calculation) * (1 - float(discount_factor.amount))
+        discount_factor.statusCharge -= 1
+        discount_factor.save()
         order.save()
-        ser_order = OrderSerializer(istance=order)
+        ser_order = OrderSerializer(instance=order)
         return Response(data=ser_order.data, status=status.HTTP_201_CREATED)
-
 
 
 class ReceiptUpdateView(APIView):

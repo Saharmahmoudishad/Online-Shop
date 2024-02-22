@@ -237,7 +237,6 @@
         headers: {
             'Authorization': 'Bearer ' + accessToken,
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
         }
     })
         .then(function(response) {
@@ -334,7 +333,6 @@ document.addEventListener("DOMContentLoaded", function () {
             body: formData,
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
-                'X-CSRFToken': '{{ csrf_token }}'
             }
         })
         .then(response => {
@@ -365,7 +363,6 @@ document.addEventListener("DOMContentLoaded", function () {
             body: formData,
             headers: {
                 'Authorization': 'Bearer ' + accessToken,
-                'X-CSRFToken': '{{ csrf_token }}'
             }
         })
         .then(response => {

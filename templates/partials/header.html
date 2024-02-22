@@ -7,7 +7,6 @@
                     <a class="text-body mr-3" href="">{% translate About %}</a>
                     <a class="text-body mr-3" href="">{% translate Contact %}</a>
                     <a class="text-body mr-3" href="">{% translate Help %}</a>
-                    <a class="text-body mr-3" href="">FAQs</a>
                 </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -24,19 +23,11 @@
                         <button class="dropdown-item" type="button" ><a href="{% url 'customers:User_profile' %}" >{% translate 'Your profile' %}</a></button>
                         </div>
                         {% else %}
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Account' %}</button>
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle m-1" data-toggle="dropdown">{% translate 'Account' %}</button>
                         <div class="dropdown-menu dropdown-menu-right">
                             <button class="dropdown-item" type="button" ><a href="{% url 'customers:request_register_by_email' %}" >{% translate 'Sign up| Sign in' %}</a></button>
                         </div>
                         {% endif %}
-                    </div>
-                    <div class="btn-group mx-2">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">USD</button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">EUR</button>
-                            <button class="dropdown-item" type="button">GBP</button>
-                            <button class="dropdown-item" type="button">CAD</button>
-                        </div>
                     </div>
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Language' %}</button>
