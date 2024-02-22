@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{%  block title %}{% translate 'your profile' %}{% endblock %}
+{% block content %}
+    <!-- Breadcrumb Start -->
+    <div class="container-fluid">
+        <div class="row px-xl-5">
+            <div class="col-12">
+                <nav class="breadcrumb bg-light mb-30">
+                    <a class="breadcrumb-item text-dark" href="#">Home</a>
+                    <a class="breadcrumb-item text-dark" href="#">Shop</a>
+                    <span class="breadcrumb-item active">Checkout</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- Breadcrumb End -->
+
+    <!-- Checkout Start -->
+<div id="error_message"></div>
+<div class="container">
+    <div id="error_message"></div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Sidebar -->
+            <div class="card">
+                <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                    Personal Information
+                </div>
+                <div class="card-body">
+                <p>Full Name: <span id="full-name"></span></p>
+                <p>Email: <input type="text" class="form-control no-border" id="email" ></p>
+                <p>Phone number: <input  class="form-control no-border" id="mobile-no"></p>
+                </div>
+                <a href="#" class="btn btn-primary mt-3" id="edit_user_data">Edit</a>
+            </div>
+
+            <div class="card mt-12">
+                <div class="card">
+                    <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                        Address Information
+                    </div>
+                    <div class="card-body" id="addresses">
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="shipto">
+                        <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#add-address">Add new address</label>
+                    </div>
+                    <div class="collapse mb-5" id="add-address">
+                         <div class="bg-light p-30">
+                              <div class="row">
+                                  <div class="col-md-6 form-group">
+                                    <label for="province">Province:</label>
+                                    <select name="province" id="province" onChange="irancitylist(this.value);" type="text" class="form-control">
+                                        <option value="0">Please select a province</option>
+                                        <option value="Tehran">Tehran</option>
+                                        <option value="Gilan">Gilan</option>
+                                        <option value="East Azerbaijan">East Azerbaijan</option>
+                                        <option value="Khuzestan">Khuzestan</option>
+                                        <option value="Persia">Persia</option>
+                                        <option value="Isfahan">Isfahan</option>
+                                        <option value="Khorasan Razavi">Khorasan Razavi</option>
+                                        <option value="Qazvin">Qazvin</option>
+                                        <option value="Semnan">Semnan</option>
+                                        <option value="Qom">Qom</option>
+                                        <option value="center">center</option>
+                                        <option value="Zanjan">Zanjan</option>
+                                        <option value="Mazandaran">Mazandaran</option>
+                                        <option value="Golestan">Golestan</option>
+                                        <option value="Ardebil">Ardebil</option>
+                                        <option value="West Azerbaijan">West Azerbaijan</option>
+                                        <option value="Hamadan">Hamadan</option>
+                                        <option value="Kurdistan">Kurdistan</option>
+                                        <option value="Kermanshah">Kermanshah</option>
+                                        <option value="Lorestan">Lorestan</option>
+                                        <option value="Bushehr">Bushehr</option>
+                                        <option value="Kerman">Kerman</option>
+                                        <option value="Hormozgan">Hormozgan</option>
+                                        <option value="Chaharmahal and Bakhtiari">Chaharmahal and Bakhtiari</option>
+                                        <option value="Yazd">Yazd</option>
+                                        <option value="Sistan and Baluchistan">Sistan and Baluchistan</option>
+                                        <option value="Ilam">Ilam</option>
+                                        <option value="Kehgluye and Boyerahmad">Kehgelue and Boyerahmad</option>
+                                        <option value="Northern Khorasan">Northern Khorasan</option>
+                                        <option value="South Khorasan">South Khorasan</option>
+                                        <option value="Alborz">Alborz</option>
+                                    </select>
+                                  </div>
+                                     <div class="col-md-6 form-group">
+                                         <label for="city">City:</label>
+                                         <select name="city" id="city" type="text" class="form-control">
+                                             <option value="0">Please select a city</option>
+                                         </select>
+                                     </div>
+                                     <script language="javascript" src="{% static 'js/city.js' %}"></script>
+                                     <div class="col-md-6 form-group">
+                                         <label for="address">New Address</label>
+                                         <input type="text" name="address" id="address" class="form-control"  placeholder="Enter new address">
+                                     </div>
+                                     <div class="col-md-6 form-group">
+                                         <label for="postcode">POST Code</label>
+                                         <input type="text" name="postcode" id="postcode" class="form-control"  placeholder="Enter new post code">
+                                     </div>
+                                     <a href="#" id="addAddressBtn" class="btn btn-primary mt-3">Add New Address</a>
+                                  </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-12 ">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="delivery">
+                    <label class="custom-control-label" for="delivery"  data-toggle="collapse" data-target="#Order_History">show Order History</label>
+                </div>
+                <div class="card collapse mb-5" id="Order_History">
+                    <table id="order-table" class="table">
+                        <thead>
+                        <div class="card-header" style="background-color: #383e42; color: #d8dadb;">
+                             Order History
+                        </div>
+                        <tr>
+                            <th>Calculation</th>
+                            <th>Paid</th>
+                            <th>Order Time</th>
+                            <th>Delivery Cost</th>
+                            <th>Delivery Method</th>
+                            <th>Delivery Address</th>
+                            <th>Items</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Checkout End -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const accessToken = getCookie('jwt_token');
+
+        fetch('{% url "customers:customer_profile" %}', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            const user = data.user;
+            const addresses = data.addresses;
+            const orders = data.order;
+
+
+            document.getElementById('full-name').innerText = user.firstname + ' ' + user.lastname;
+            document.getElementById('email').value = user.email;
+            document.getElementById('mobile-no').value = user.phonenumber;
+
+            var addressesDiv = document.getElementById('addresses');
+            addresses.forEach(function(address) {
+                var addressDiv = document.createElement('div');
+                addressDiv.innerHTML = `
+                    <div class="row" >
+                      <div class="col-md-8">
+                          <label for="address_value">Address:</label>
+                          <input id="address_value${address.id}" class="form-control no-border" value="${address.address}">
+                          <label for="postcode_value">Postcode:</label>
+                          <input id="postcode_value${address.id}" class="form-control no-border" value="${address.postcode}">
+                      </div>
+                      <div class="col-md-3">
+                          <button class="btn btn-link delete-btn" data-address-id="${address.id}">Delete</button>
+                          <button class="btn btn-link update-btn" data-update-address-id="${address.id}">Update</button>
+                      </div>
+                    </div>
+                    <hr>
+                `;
+                addressesDiv.appendChild(addressDiv);
+            });
+
+            var orderTable = document.getElementById('order-table');
+            orderTable.style.fontSize = '12px';
+            orders.forEach(function(order) {
+                console.log(order.orderitems)
+                var row = orderTable.insertRow();
+                var calculationCell = row.insertCell(0);
+                calculationCell.innerHTML = order.calculation;
+
+                var paidCell = row.insertCell(1);
+                paidCell.innerHTML = order.paid;
+
+                var orderTimeCell = row.insertCell(2);
+                orderTimeCell.innerHTML = order.order_time;
+
+                var deliveryCostCell = row.insertCell(3);
+                deliveryCostCell.innerHTML = order.delivery_cost;
+
+                var deliveryMethodCell = row.insertCell(4);
+                deliveryMethodCell.innerHTML = order.delivery_method;
+
+                var deliveryAddressCell = row.insertCell(5);
+                deliveryAddressCell.innerHTML = order.delivery_address;
+                var ItemsCell = row.insertCell(6);
+                ItemsCell.style.fontSize = '12px';
+                ItemsCell.style.fontWeight = 'bold';
+                ItemsCell.style.width = '300px'
+                order.orderitems.forEach(function(orderitem) {
+                var itemDiv = document.createElement('div');
+
+                var nameDiv = document.createElement('div');
+                nameDiv.textContent = 'Name: ' + orderitem.items;
+                itemDiv.appendChild(nameDiv);
+
+                var quantityDiv = document.createElement('div');
+                quantityDiv.textContent = 'Quantity: ' + orderitem.quantity;
+                itemDiv.appendChild(quantityDiv);
+
+                if (orderitem.item_image) {
+                    var image = document.createElement('img');
+                    image.src = orderitem.item_image.image;
+                    image.alt = 'Item Image';
+                    image.style.maxWidth = '100px';
+                    itemDiv.appendChild(image);
+                }
+
+                ItemsCell.appendChild(itemDiv);
+            });
+         });
+
+        })
+        .catch(error => {
+            console.error('Error fetching user profile:', error);
+        });
+    });
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+<script>
+document.getElementById("addAddressBtn").addEventListener("click", function(event) {
+    event.preventDefault();
+    const accessToken = getCookie('jwt_token');
+    console.log('Received data:', accessToken);
+
+    var province = document.getElementById("province").value;
+    var city = document.getElementById("city").value;
+    var address = document.getElementById("address").value;
+    var postcode = document.getElementById("postcode").value;
+    var requestData = {
+        city: city,
+        province: province,
+        address: address,
+        postcode: postcode
+    };
+    fetch("{% url 'customers:add_address' %}", {
+        method: "POST",
+        headers: {
+            'Authorization': 'Bearer ' + accessToken,
+            "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.reload();
+
+        } else {
+            throw new Error("Network response was not ok.");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+});
+function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function() {
+        const deleteButtons = document.querySelectorAll('.delete-btn');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+
+                const addressId = this.getAttribute('data-address-id');
+                console.log(addressId);
+                const deleteUrl = "{% url 'customers:delete_address' 0 %}".replace('0', addressId);
+                const accessToken = getCookie('jwt_token');
+                fetch(deleteUrl,{
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>Address deleted successfully</p>';
+                    console.log('Address deleted successfully');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                });
+            });
+        });
+    }, 1000);
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function() {
+        const updateButtons = document.querySelectorAll('.update-btn');
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+
+                const addressId = this.getAttribute('data-update-address-id');
+                const updateUrl = "{% url 'customers:address_update' 0 %}".replace('0', addressId);
+                const accessToken = getCookie('jwt_token');
+                const addressValue = document.getElementById('address_value'+addressId).value;
+                const postcodeValue = document.getElementById('postcode_value'+addressId).value;
+
+                fetch(updateUrl,{
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                    address: addressValue,
+                    postcode: postcodeValue
+                }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    document.getElementById('error_message').style.display = 'block';
+                    document.getElementById('error_message').innerHTML = '<p>Address updated successfully</p>';
+                    console.log('Address deleted successfully');
+                    location.reload();
+                })
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                });
+            });
+        });
+    }, 1000);
+});
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+<script>
+document.getElementById("edit_user_data").addEventListener("click", function() {
+              const email = document.getElementById('email').value;
+              const phonenumber = document.getElementById('mobile-no').value;
+              const accessToken = getCookie('jwt_token');
+              fetch("{% url 'customers:update_customer_profile' %}", {
+                method: "PUT",
+                headers: {
+                  'Authorization': 'Bearer ' + accessToken,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({email:email, phonenumber:phonenumber})
+              })
+              .then(response => {
+                if (response.ok) {
+
+                  document.getElementById('error_message').style.display = 'block';
+                  document.getElementById('error_message').innerHTML = '<p>your profile update</p>';
+                } else {
+                  document.getElementById('error_message').style.color = '#721c24';
+                  document.getElementById('error_message').style.display = 'block';
+                  document.getElementById('error_message').innerHTML = '<p>check your input</p>';
+                  console.error("Error:", response.statusText);
+                }
+              })
+              .catch(error => {
+                console.error("Error:", error);
+              });
+            });
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            </script>
+
+
+{% endblock %}
+
+
+
+
+
+

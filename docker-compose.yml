@@ -1,0 +1,61 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=Online_Shop
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - main
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - postgres_online_shop:/var/lib/postgresql/data
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+
+
+  celery_worker:
+    container_name: celery_worker
+    command: "python3 -m celery -A config.celery_config worker"
+#    command: "celery -A A worker -l INFO"
+    depends_on:
+      - app
+      - postgres
+      - redis
+    build: .
+    environment:
+      - C_FORCE_ROOT="true"
+    networks:
+      - main
+    restart: always
+
+  app:
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn A.wsgi -b 0.0.0.0:8000 && && python manage.py runserver 0.0.0.0:8000"
+    container_name: online_shop
+    volumes:
+      - .:/code/
+    depends_on:
+      - postgres
+      - redis
+    expose:
+      - "8000"
+    networks:
+      - main
+    restart: always
+
+
+networks:
+  main:
+
+volumes:
+  postgres_online_shop:
+
+

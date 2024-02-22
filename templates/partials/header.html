@@ -1,0 +1,79 @@
+<!-- Topbar Start -->
+{% load i18n %}
+    <div class="container-fluid">
+        <div class="row bg-secondary py-1 px-xl-5">
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="d-inline-flex align-items-center h-100">
+                    <a class="text-body mr-3" href="">{% translate About %}</a>
+                    <a class="text-body mr-3" href="">{% translate Contact %}</a>
+                    <a class="text-body mr-3" href="">{% translate Help %}</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a href="{% url 'orders:cart' %}" class="btn px-0 ml-3">
+                        <i class="fas fa-shopping-cart text-primary"></i>
+                        <span class="badge text-secondary border border-secondary rounded-circle" style="padding-bottom: 2px;background-color: #1b1e21">{{cart|length}}</span>
+                    </a>
+                    <div class="btn-group">
+                        {% if user.is_authenticated %}
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{user}}</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                        <form action="{% url 'customers:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="background: transparent; border: none" type="submit" value="log out" ></form>
+                        <button class="dropdown-item" type="button" ><a href="{% url 'customers:User_profile' %}" >{% translate 'Your profile' %}</a></button>
+                        </div>
+                        {% else %}
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle m-1" data-toggle="dropdown">{% translate 'Account' %}</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <button class="dropdown-item" type="button" ><a href="{% url 'customers:request_register_by_email' %}" >{% translate 'Sign up| Sign in' %}</a></button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Language' %}</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=en&next=/en/{{request.path|slice:'4:'}}" >{% translate 'English' %}</a>
+                            <a class="dropdown-item" href="{% url 'change_lang' %}?lang=fa&next=/fa/{{request.path|slice:'4:'}}" >{% translate 'Persian' %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-inline-flex align-items-center d-block d-lg-none">
+                    <a href="" class="btn px-0 ml-2">
+                        <i class="fas fa-heart text-dark"></i>
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">0</span>
+                    </a>
+                    <a href="" class="btn px-0 ml-2">
+                        <i class="fas fa-shopping-cart text-dark"></i>
+                        <span class="badge text-dark border border-dark rounded-circle" style="padding-bottom: 2px;">0</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row align-items-center bg-light py-3 px-xl-5 d-none d-lg-flex">
+            <div class="col-lg-4">
+                <a href="" class="text-decoration-none">
+                    <span class="h1 text-uppercase text-primary bg-dark px-2">DroomBT</span>
+                    <span class="h1 text-uppercase text-dark bg-primary px-2 ml-n1">{% translate 'Shop' %}</span>
+                </a>
+            </div>
+            <div class="col-lg-4 col-6 text-left">
+                <form action="{% url 'product:products' %}" method="get">
+                    <div class="input-group">
+                        <div class="form-group">
+                            <div>{{ form.search }}</div>
+                        </div>
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-transparent text-primary" type="submit" style="height:45px;!important; border:transparent;">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-4 col-6 text-right">
+                <p class="m-0">{% translate 'Customer Service' %}</p>
+                <h5 class="m-0">+012 345 6789</h5>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
