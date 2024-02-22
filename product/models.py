@@ -232,21 +232,6 @@ class Variants(SoftDeleteMixin):
             return mark_safe('<img src="{}" width="{}" height="{}" />'.format(images.first().image.url, width, height))
         return None
 
-    def update_quantity(self):
-
-        ordered_quantity = self.orderItem.aggregate(total_quantity=Sum('quantity'))['total_quantity'] or 0
-
-        remaining_quantity = self.quantity - ordered_quantity
-        remaining_pquantity = self.product.quantity - ordered_quantity
-
-        self.quantity = remaining_quantity
-        self.product.quantity = remaining_pquantity
-        self.save()
-
-        if self.quantity == 0:
-            self.status = False
-            self.save()
-
 
 class DiscountProduct(SoftDeleteMixin):
     AMOUNT_TYPE_CHOICES = [('amount', _('Amount')), ('percentage', _('Percentage')), ]

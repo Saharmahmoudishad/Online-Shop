@@ -33,7 +33,7 @@ class CustomUser(AbstractBaseUser, SoftDeleteMixin, PermissionsMixin):
     updated = models.DateTimeField(auto_now=True, verbose_name=_("updated"))
     is_active = models.BooleanField(default=True, verbose_name=_("is active"))
     is_admin = models.BooleanField(default=False, verbose_name=_("is admin"))
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=4)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, default=4,verbose_name=_("group"))
 
     class Meta:
         verbose_name = _('User')
@@ -87,10 +87,11 @@ class Address(SoftDeleteMixin):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"))
     city = models.ForeignKey(City, on_delete=models.CASCADE, verbose_name=_("City"))
-    address = models.CharField(max_length=40, verbose_name=_("address description"))
+    address = models.CharField(max_length=255, verbose_name=_("address description"))
     postcode = models.CharField(max_length=40, verbose_name=_("post code"))
 
     class Meta:
+        unique_together = ['user', 'address']
         verbose_name = _('Address')
         verbose_name_plural = _("Addresses")
 

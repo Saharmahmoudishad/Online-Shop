@@ -49,7 +49,7 @@ class Image(SoftDeleteMixin):
 
 
 class Province(SoftDeleteMixin):
-    name = models.CharField(max_length=40, verbose_name=_("Province Name"))
+    name = models.CharField(max_length=40, verbose_name=_("Province Name"), unique=True)
 
     class Meta:
         verbose_name = _('Province')
@@ -57,7 +57,7 @@ class Province(SoftDeleteMixin):
 
 
 class City(SoftDeleteMixin):
-    name = models.CharField(max_length=40, verbose_name=_("City Name"))
+    name = models.CharField(max_length=40, verbose_name=_("City Name"), unique=True)
     province = models.ForeignKey(Province, on_delete=models.CASCADE, verbose_name=_("Province"), default="0")
 
     class Meta:
@@ -72,7 +72,7 @@ class DiscountCode(SoftDeleteMixin):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(verbose_name=_("Object ID"))
     content_object = GenericForeignKey('content_type', 'object_id')
-    statusCharge = models.IntegerField(default=0)
+    statusCharge = models.IntegerField(default=0, verbose_name=_("Status Charge"))
 
     class Meta:
         verbose_name = _('Discount')

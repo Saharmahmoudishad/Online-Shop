@@ -21,6 +21,7 @@
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{{user}}</button>
                         <div class="dropdown-menu dropdown-menu-right">
                         <form action="{% url 'customers:User_logout' %}" method="post" class="dropdown-item">{% csrf_token %}<input  class="logout" style="background: transparent; border: none" type="submit" value="log out" ></form>
+                        <button class="dropdown-item" type="button" ><a href="{% url 'customers:User_profile' %}" >{% translate 'Your profile' %}</a></button>
                         </div>
                         {% else %}
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown">{% translate 'Account' %}</button>

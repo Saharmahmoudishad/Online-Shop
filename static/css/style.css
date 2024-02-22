@@ -9759,3 +9759,7 @@ a{
     max-height: 200px;
     box-sizing: border-box;
 }
+.no-border {
+    border: none;
+    background: none;
+}

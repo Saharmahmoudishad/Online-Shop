@@ -56,7 +56,8 @@ class Cart:
         variant_id = str(variant.id)
         if variant_id in self.cart:
             del self.cart[variant_id]
-        self.save()
+            self.save()
+
 
     def save(self):
         self.session[CART_SESSION_ID] = self.cart

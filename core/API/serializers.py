@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Image, Province, City, DiscountCode
+from core.models import Image, Province, City, DiscountCode, Comment
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -31,3 +31,9 @@ class DiscountCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiscountCode
         fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'content', 'content_type', 'object_id', 'user', 'created', 'parent_comment', 'replies']

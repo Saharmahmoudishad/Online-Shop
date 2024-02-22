@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{%  block title %}{% translate 'Home' %}{% endblock %}
+{%  block title %}{% translate 'detail' %}{% endblock %}
 {% block content %}
     <!-- Breadcrumb Start -->
     <div class="container-fluid">
@@ -51,6 +51,7 @@
                         </div>
                         <small class="pt-1">({{product.likes_count}} Likes)</small>
                     </div>
+                    {% if product.quantity != 0 %}
                     {% if product.discount_products.all %}
                     {% for discount in product.discount_products.all %}
                     <li class="mb-4">{{ discount.title }} - {{ discount.amount }}{% if discount.amount_type == 'percentage' %}%{% endif %} off</li>
@@ -148,7 +149,6 @@
                              <div class="input-group quantity mr-3" style="width: 130px;">
                                  <!-- Input for quantity -->
                               <!-- Button to add to cart -->
-                                 {% if product.quantity <= 10 and  0 < product.quantity %}
                                  <div class="input-group-btn">
                                      <button type="button" class="btn btn-primary btn-minus" onclick="decreaseQuantity()">
                                          <i class="fa fa-minus"></i>
@@ -164,33 +164,17 @@
                              <button type="submit" class="btn btn-primary px-3" id="addToCartButton" data-redirect-url="{% url 'product:products' %}">
                                   <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
                              </button>
-                             <h4>Last stock</h4>
-                             {% elif product.quantity == 0 %}
-                             <div class="input-group quantity mr-3" style="width: 130px;">
+                             {% if product.quantity <= 10 and  0 < product.quantity %}
+                             <h4> Last stock : {{ product.quantity }}</h4>
+                             {% endif %}
+                         {% else %}
+                         <div class="input-group quantity mr-3" style="width: 130px;">
                                 <h4 style="color: darkred; background-color: #d8dadb">Unavailable</h4>
-                             </div>
-                                 {% else %}
-                                 <div class="inpout-group-btn">
-                                     <button type="button" class="btn btn-primary btn-minus" onclick="decreaseQuantity()">
-                                         <i class="fa fa-minus"></i>
-                                     </button>
-                                 </div>
-                                 <input type="text" class="form-control bg-secondary border-0 text-center" id="quantityInput" name="quantity" value="1">
-                                 <div class="input-group-btn">
-                                     <button type="button" class="btn btn-primary btn-plus" onclick="increaseQuantity()">
-                                         <i class="fa fa-plus"></i>
-                                     </button>
-                                 </div>
-                             </div>
-                                     <button type="submit" class="btn btn-primary px-3" id="addToCartButton" data-redirect-url="{% url 'product:products' %}">
-                                         <i class="fa fa-shopping-cart mr-1"></i> Add To Cart
-                                     </button>
-                                 {% endif %}
-                             </button>
                          </div>
+                         {% endif %}
+                    </div>
                     </form>
                     <script>
-
                         function increaseQuantity() {
                             var quantityInput = document.getElementById('quantityInput');
                             quantityInput.value = parseInt(quantityInput.value) + 1;
@@ -410,7 +394,7 @@ document.getElementById("formId").addEventListener("submit", function(event) {
       document.getElementById('error_message').innerHTML = '<p>your order product add to your cart</p>';
           setTimeout(function() {
       window.location.href = "{% url 'product:product_detail' product.slug %}";
-    }, 3000);
+    }, 500);
     } else {
       document.getElementById('error_message').style.color = '#721c24';
       document.getElementById('error_message').style.display = 'block';
