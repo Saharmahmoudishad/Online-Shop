@@ -1,3 +1,4 @@
+
 # Online Shop django Project
 ## overview
 This project is an online shop developed using Django, a high-level Python web framework. It encompasses various functionalities essential for an e-commerce platform.
@@ -113,5 +114,3 @@ python -m celery -A django_celery worker
 This command starts Celery workers as part of your system. This way, Celery is ready to handle tasks in the background.
 
 By following these steps, the Celery environment is ready for use, and you can utilize it to manage various tasks within your project.
-
-
