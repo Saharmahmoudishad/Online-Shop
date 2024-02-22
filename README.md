@@ -29,7 +29,6 @@ The cart and checkout functionalities are seamlessly integrated into the order m
 Before running the project, make sure to install the required Python packages listed in the requirements.txt file. You can do this by executing the following command:
 
 ```bash
-Copy code
 pip install -r requirements.txt
 ```
 This command will install all the necessary dependencies for the project to run successfully.
