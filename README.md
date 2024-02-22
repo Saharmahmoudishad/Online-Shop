@@ -1,3 +1,4 @@
+![Coffee Logo](https://images.app.goo.gl/5VqrS4KgErjBMpYN7)
 # Online Shop django Project
 ## overview
 This project is an online shop developed using Django, a high-level Python web framework. It encompasses various functionalities essential for an e-commerce platform.
