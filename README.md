@@ -1,4 +1,4 @@
-![Online Shop Logo](Online-Shop/media/admin-interface/coffee_logo.png)
+![Online Shop Logo](media/admin-interface/coffee_logo.png)
 
 # Online Shop django Project
 ## overview
