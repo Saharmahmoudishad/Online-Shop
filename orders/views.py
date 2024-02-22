@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
 from orders.cart import Cart
+from orders.models import Order
 
 
 class CartView(View):
@@ -17,5 +18,15 @@ class CheckOutView(View):
     template_name = 'orders/checkout.html'
 
     def get(self, request):
-
         return render(request, self.template_name, )
+
+
+class CheckOutEndView(View):
+    template_name = 'orders/checkout.html'
+
+    def get(self, request):
+        orderId = request.COOKIES.get('orderid')
+        order = Order.objects.get(id=orderId)
+        order.paid = True
+        order.save()
+        return redirect("core:home")
