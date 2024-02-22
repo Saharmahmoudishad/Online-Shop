@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CartView, CheckOutView
+from .views import CartView, CheckOutView, CheckOutEndView
 from .API import views
 
 app_name = 'orders'
@@ -7,6 +7,7 @@ urlpatterns = [
     # django Views************************************#
     path('cart/', CartView.as_view(), name='cart'),
     path('checkout/', CheckOutView.as_view(), name='checkout'),
+    path('checkout/paid/', CheckOutEndView.as_view(), name='checkout_paid'),
     # API Views****************************************#
     path('create/', views.ReceiptCreateView.as_view(), name='order_create'),
     path('create/update/<int:order_id>', views.ReceiptUpdateView.as_view(), name='order_create'),
