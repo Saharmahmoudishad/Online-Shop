@@ -31,3 +31,4 @@ django-redis
 djangorestframework-simplejwt
 drf-spectacular
 django-celery-beat
+kavenegar

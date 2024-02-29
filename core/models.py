@@ -36,6 +36,9 @@ class Image(SoftDeleteMixin):
     object_id = models.PositiveIntegerField(verbose_name=_("object id"))
     content_object = GenericForeignKey('content_type', 'object_id')
 
+    def __str__(self):
+        return str(self.content_object)
+
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _("Images")
